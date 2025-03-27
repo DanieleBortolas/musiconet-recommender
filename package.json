@@ -1,0 +1,21 @@
+{
+  "name": "musiconet-recommender",
+  "version": "1.0.0",
+  "description": "Music event recommender system for MusicoNet",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DanieleBortolas/musiconet-recommender.git"
+  },
+  "keywords": [],
+  "author": "Daniele Bortolas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DanieleBortolas/musiconet-recommender/issues"
+  },
+  "homepage": "https://github.com/DanieleBortolas/musiconet-recommender#readme"
+}
