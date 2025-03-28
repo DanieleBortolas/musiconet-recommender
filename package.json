@@ -17,5 +17,9 @@
   "bugs": {
     "url": "https://github.com/DanieleBortolas/musiconet-recommender/issues"
   },
-  "homepage": "https://github.com/DanieleBortolas/musiconet-recommender#readme"
+  "homepage": "https://github.com/DanieleBortolas/musiconet-recommender#readme",
+  "dependencies": {
+    "@types/sqlite3": "^5.1.0",
+    "sqlite3": "^5.1.7"
+  }
 }
