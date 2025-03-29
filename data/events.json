@@ -1,0 +1,30 @@
+[
+    {
+        "name": "Concerto Orchestra",
+        "date": "2023-12-25",
+        "genres": ["classical", "orchestral"],
+        "artists": ["Orchestra Filarmonica", "Ludwig van Beethoven"],
+        "location": "Berlin"
+    },
+    {
+        "name": "Jazz Night",
+        "date": "2023-11-15",
+        "genres": ["jazz", "blues"],
+        "artists": ["Miles Davis", "John Coltrane"],
+        "location": "Los Angeles"
+    },
+    {
+        "name": "Rock Fest",
+        "date": "2024-01-10",
+        "genres": ["rock", "pop"],
+        "artists": ["Queen", "The Beatles"],
+        "location": "New York"
+    },
+    {
+        "name": "Hip-Hop Showcase",
+        "date": "2024-02-20",
+        "genres": ["hip-hop", "rap"],
+        "artists": ["Kendrick Lamar", "J. Cole"],
+        "location": "Chicago"
+    }
+]

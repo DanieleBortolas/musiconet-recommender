@@ -8,25 +8,25 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const data_1 = require("./data");
+const db_operations_1 = __importDefault(require("./db_operations"));
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
-        yield (0, data_1.createTable)();
-        //Controlla se il database è già stato popolato
-        const users = yield (0, data_1.getUsers)();
-        if (users.length === 0) {
-            // Se il db è vuoto, inserisci i dati iniziali
-            yield (0, data_1.insertUser)('Daniele', 22, ['metal', 'rock'], 'guitar', ['Metallica', 'ACDC'], 'Feltre');
-            yield (0, data_1.insertUser)('Giovanni', 25, ['pop', 'rock'], 'drums', ['Queen', 'Pink Floyd'], 'Belluno');
-            console.log('Utenti inseriti correttamente');
+        const db = db_operations_1.default.openDatabase();
+        yield db_operations_1.default.createTable(db);
+        //Conto il numero di utenti nel database
+        const result = yield db_operations_1.default.executeQuery(db, 'SELECT COUNT(*) as count FROM users');
+        if (result[0].count == 0) {
+            //Popolo il database se è vuoto
+            yield db_operations_1.default.populate(db);
+            console.log('Database popolato con successo');
         }
-        else {
-            console.log('Database già popolato');
-        }
-        // Stampa gli users
-        const allUsers = yield (0, data_1.getUsers)();
-        console.log('Utenti:', allUsers);
+        const users = yield db_operations_1.default.getUsers(db);
+        console.log('Utenti:', users);
+        yield db_operations_1.default.closedDatabase(db);
     });
 }
 main();
