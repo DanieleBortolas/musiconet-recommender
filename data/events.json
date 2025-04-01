@@ -1,30 +1,646 @@
 [
     {
-        "name": "Concerto Orchestra",
-        "date": "2023-12-25",
-        "genres": ["classical", "orchestral"],
-        "artists": ["Orchestra Filarmonica", "Ludwig van Beethoven"],
-        "location": "Berlin"
+        "id": 100, 
+        "name":"BLUES LEGENDS NIGHT",       
+        "location": "Trento, Teatro Sociale", 	                        
+        "date": "15 settembre 2025, 21:00 – 00:30", 
+        "description": "Una serata imperdibile per gli amanti del blues puro! Buddy Guy, una leggenda vivente, incanterà il pubblico con la sua chitarra e la sua voce carismatica. Ad accompagnarlo, Joe Bonamassa, virtuoso del blues-rock, pronto a far vibrare il teatro con i suoi assoli intensi."
     },
     {
-        "name": "Jazz Night",
-        "date": "2023-11-15",
-        "genres": ["jazz", "blues"],
-        "artists": ["Miles Davis", "John Coltrane"],
-        "location": "Los Angeles"
+        "id": 101, 
+        "name":"BLUE MOUNTAIN FEST",        
+        "location": "Madonna di Campiglio (TN)", 	                    
+        "date": "12 luglio 2025, 17:00 – 01:00",    
+        "description": "Un festival blues immerso nelle Dolomiti! Gary Clark Jr. porterà il suo stile unico tra blues, rock e soul, mentre Kingfish, il giovane prodigio della chitarra, dimostrerà perché è considerato il futuro del genere. Un mix perfetto di tradizione e innovazione per un pubblico appassionato."
     },
     {
-        "name": "Rock Fest",
-        "date": "2024-01-10",
-        "genres": ["rock", "pop"],
-        "artists": ["Queen", "The Beatles"],
-        "location": "New York"
+        "id": 102, 
+        "name":"BLUES & WINE EXPERIENCE",   
+        "location": "Valdobbiadene (BL), Tenuta Vinicola", 	            
+        "date": "20 giugno 2025, 19:00 – 23:30",    
+        "description": "Un’esperienza unica che unisce il miglior blues a degustazioni di vini locali. Joe Bonamassa infiammerà la serata con il suo sound energico, mentre Kingfish regalerà un assaggio della nuova generazione blues. Un evento esclusivo per chi ama la musica e il buon vino."
     },
     {
-        "name": "Hip-Hop Showcase",
-        "date": "2024-02-20",
-        "genres": ["hip-hop", "rap"],
-        "artists": ["Kendrick Lamar", "J. Cole"],
-        "location": "Chicago"
+        "id": 103, 
+        "name":"Blues Night Live",          
+        "location": "Rovereto, Teatro Zandonai", 	                   
+        "date": "22 settembre 2025, 21:00 – 00:00", "description": "Una serata che celebra il blues in tutte le sue forme, con le leggendarie chitarre di Buddy Guy e The Black Keys."
+    },
+    {
+        "id": 104, 
+        "name":"Blues & Rock Extravaganza", 
+        "location": "Cortina d'Ampezzo, Teatro",                        
+        "date": "28 settembre 2025, 21:00 – 00:00", 
+        "description": "Joe Bonamassa e The Beatles insieme per una serata unica che fonde blues e rock in un connubio perfetto."
+    },
+    {
+        "id": 105, 
+        "name":"GRAND GALA CLASSICO",       
+        "location": "Trento, Teatro Sociale", 	                        
+        "date": "20 luglio 2025, 20:30 – 23:30",    
+        "description": "Un evento straordinario con due dei più grandi musicisti al mondo: Lang Lang incanterà con il suo virtuosismo al pianoforte, mentre Yo-Yo Ma emozionerà con il suo violoncello. Una serata imperdibile per gli amanti della musica classica."
+    },
+    {
+        "id": 106, 
+        "name":"SINFONIE SOTTO LE STELLE",  
+        "location": "Rovereto, Mart - Museo di Arte Moderna", 	        
+        "date": "10 agosto 2025, 21:00 – 00:00",    
+        "description": "Il leggendario John Williams dirige un'orchestra in un viaggio emozionante tra le sue celebri colonne sonore, accompagnato dalla straordinaria violinista Anne-Sophie Mutter. Un concerto epico all’aperto."
+    },
+    {
+        "id": 107, 
+        "name":"VAL DI FIEMME CLASSICA",    
+        "location": "Cavalese, Piazza Italia", 	                        
+        "date": "5 luglio 2025, 18:00 – 22:00",    
+        "description": "Il carismatico André Rieu porta la sua orchestra in una performance coinvolgente tra valzer e grandi classici, trasformando la piazza in un'esperienza musicale unica."
+    },
+    {
+        "id": 108, 
+        "name":"DOLOMITI IN MUSICA",        
+        "location": "Madonna di Campiglio, Sala Congressi", 	        
+        "date": "25 agosto 2025, 20:00 – 22:30",    
+        "description": "Víkingur Ólafsson, uno dei pianisti più innovativi del momento, si esibirà insieme al brillante violinista Ray Chen, in un programma che mescola Bach e repertorio romantico."
+    },
+    {
+        "id": 109, 
+        "name":"ROMANTICISMO AL CHIARO DI LUNA",
+        "location": "Riva del Garda, Palazzo dei Congressi", 
+        "date": "18 settembre 2025, 21:00 – 23:30", 	
+        "description": "Una serata raffinata con il giovane talento Sheku Kanneh-Mason al violoncello e la poliedrica Alma Deutscher al pianoforte e al violino. Un viaggio nella musica romantica tra Chopin e Schumann."
+    },
+    {
+        "id": 110, 
+        "name":"CONCERTO SINFONICO DELLE DOLOMITI", 
+        "location": "Trento, Castello del Buonconsiglio", 
+        "date": "3 agosto 2025, 19:30 – 22:00", 	
+        "description": "Yo-Yo Ma incanterà con il suo violoncello in un programma orchestrale diretto dal maestro John Williams, tra classici e colonne sonore indimenticabili."
+    },
+    {
+        "id": 111, 
+        "name":"NOTTE DI CHITARRA CLASSICA", 
+        "location": "Belluno, Teatro Comunale",
+        "date": "28 giugno 2025, 20:30 – 22:30", 	
+        "description": "Miloš Karadaglić, uno dei più grandi chitarristi classici contemporanei, si esibirà in un recital tra Bach, Albéniz e repertorio latinoamericano."
+    },
+    {
+        "id": 112, 
+        "name":"LA GRANDE TRADIZIONE CLASSICA", 
+        "location": "Bolzano, Auditorium Haydn", 
+        "date": "12 luglio 2025, 21:00 – 23:30", 	
+        "description": "Un duo stellare: il pianoforte passionale di Lang Lang incontra il violino impeccabile di Anne-Sophie Mutter, in un programma che spazia da Beethoven a Ravel."
+    },
+    {
+        "id": 113, 
+        "name":"NOTE D’ALTA QUOTA", 
+        "location": "Canazei, Rifugio Fuciade", 
+        "date": "6 agosto 2025, 16:30 – 19:00", 	
+        "description": "Un concerto immerso nella natura, con le sonorità ipnotiche di Víkingur Ólafsson al pianoforte e il tocco delicato di Sheku Kanneh-Mason al violoncello. Un'esperienza musicale unica sulle Dolomiti."
+    },
+    {
+        "id": 114,
+        "name":"VALZER E ARIE D’OPERA", 
+        "location": "Merano, Kurhaus", 
+        "date": "22 settembre 2025, 20:00 – 23:00", 	
+        "description": "Un concerto da sogno con André Rieu, che trasforma la serata in una festa di valzer e celebri arie d'opera, con il talento poliedrico di Alma Deutscher."
+    },
+    {
+        "id": 115, 
+        "name":"OMAGGIO A BACH E MOZART", 
+        "location": "Trento, Basilica di Santa Maria Maggiore", 
+        "date": "14 ottobre 2025, 19:00 – 21:30", 	
+        "description": "Un concerto raffinato che rende omaggio ai grandi maestri del passato, con il violino virtuoso di Ray Chen e le dolci sonorità della chitarra di Miloš Karadaglić."
+    },
+    {
+        "id": 116, 
+        "name":"GRANDI COMPOSITORI DEL CINEMA", 
+        "location": "Bolzano, Stadthalle", 
+        "date": "8 luglio 2025, 21:00 – 23:30", 	
+        "description": "John Williams dirige un concerto dedicato alle sue celebri colonne sonore, accompagnato dalle straordinarie interpretazioni pianistiche di Víkingur Ólafsson."
+    },
+    {
+        "id": 117, 
+        "name":"SINFONIE NELLA NATURA", 
+        "location": "Asiago, Prato della Rocca", 
+        "date": "1 agosto 2025, 17:30 – 20:00", 	
+        "description": "Un concerto immerso nella bellezza delle montagne, con Anne-Sophie Mutter e Sheku Kanneh-Mason in un raffinato programma di musica da camera."
+    },
+    {
+        "id": 118, 
+        "name":"NOTTE DI SONATE", 
+        "location": "Trento, Castello del Buonconsiglio", 
+        "date": "20 settembre 2025, 20:00 – 22:30", 	
+        "description": "Un viaggio musicale tra sonate celebri, con il pianoforte di Lang Lang e il talento giovane ma straordinario di Alma Deutscher."
+    },
+    {
+        "id": 119, 
+        "name":"CLASSICA & VINO", 
+        "location": "Valdobbiadene (BL), Tenuta Vinicola", 
+        "date": "18 luglio 2025, 18:00 – 21:00", 	
+        "description": "Un connubio tra vino e musica da camera, con le melodie di Ray Chen e la chitarra classica di Miloš Karadaglić. Perfetto per una serata elegante."
+    },
+    {
+        "id": 120, 
+        "name":"CLASSIC MEETS MODERN", 
+        "location": "Trento, Auditorium", 
+        "date": "16 agosto 2025, 20:30 – 23:00", 	
+        "description": "Un incontro inaspettato tra Lang Lang e Taylor Swift che fonderanno la musica classica e il pop in una performance straordinaria."
+    },
+    {
+        "id": 121, 
+        "name":"ELECTRO PEAK FESTIVAL"	            , 
+        "location": "Trento, Monte Bondone", 
+        "date": "10 agosto 2025, 18:00 – 03:00", 	
+        "description": "Un festival elettronico immerso nelle Dolomiti! Calvin Harris e The Chainsmokers faranno ballare la montagna con le loro hit globali, mentre Anyma porterà un viaggio sonoro unico con il suo sound techno-melodico. Perfetto per chi vuole vivere l'energia dell'EDM in un contesto naturale mozzafiato."
+    },
+    {
+        "id": 122, 
+        "name":"LAGO BEAT EXPERIENCE", 
+        "location": "Lago di Garda (sponda trentina)", 
+        "date": "5 luglio 2025, 16:00 – 02:00", 
+        "description":	"Un evento esclusivo sulle rive del Lago di Garda, perfetto per un'esperienza immersiva tra suoni atmosferici e melodici. ODESZA incanterà il pubblico con il loro sound cinematografico, Fred again.. porterà il suo tocco emotivo e spontaneo, mentre Anyma chiuderà con un set elettronico ipnotico."
+    },
+    {
+        "id": 123, 
+        "name":"DOLOMITI ELECTRO NIGHT", 
+        "location": "Cortina d’Ampezzo (Belluno)", 
+        "date": "30 dicembre 2025, 20:00 – 04:00", 
+        "description":	"Una notte di fuoco nel cuore delle Dolomiti per salutare l'anno in grande stile! Calvin Harris sarà il protagonista assoluto con un set carico di hit globali, mentre Fred again.. scalderà la serata con il suo stile unico. Un evento imperdibile per chi ama ballare sulla neve sotto un cielo stellato."
+    },
+    {
+        "id": 124, 
+        "name":"ELECTRO & BLUES REVIVAL", 
+        "location": "Cortina d'Ampezzo, Arena", 
+        "date": "13 agosto 2025, 21:00 – 02:00", 
+        "description":	"Un incrocio di generi con Fred again.. e Gary Clark Jr. che mescolano elettronica e blues in un evento che non dimenticherete facilmente."
+    },
+    {
+        "id": 125, 
+        "name":"ELECTRO FUNK FUSION", 
+        "location": "Rovereto, Palasport", 
+        "date": "15 luglio 2025, 19:00 – 01:00", 
+        "description":	"Un mix di elettronica e funk che porta sul palco Fred again.. e Snarky Puppy per una serata di pura energia."
+    },
+    {
+        "id": 126, 
+        "name":"ELECTRO & JAZZ VIBES", 
+        "location": "Cortina d'Ampezzo, Sala Congressi", 
+        "date": "12 luglio 2025, 19:00 – 22:30", 
+        "description":	"Snarky Puppy e ODESZA insieme per un'esperienza sonora che combina elettronica e jazz contemporaneo."
+    },
+    {
+        "id": 127, 
+        "name":"DOLOMITES FOLK FEST", 
+        "location": "Trento, Piazza Duomo", 
+        "date": "15 agosto 2025, 18:00 – 00:00", 
+        "description":	"Il festival folk più atteso dell’estate! Mumford & Sons e The Lumineers faranno cantare e ballare il pubblico con il loro sound coinvolgente. Una serata magica nel cuore delle Dolomiti."
+    },
+    {
+        "id": 128, 
+        "name":"LAKEWOOD ACOUSTIC NIGHTS", 
+        "location": "Riva del Garda, Spiaggia Sabbioni", 
+        "date": "28 luglio 2025, 20:00 – 23:30", 
+        "description":	"Un’atmosfera intima e suggestiva sulle rive del lago, con le armonie eteree dei Fleet Foxes e il sound autentico dei Caamp. Perfetto per chi ama la musica sotto le stelle."
+    },
+    {
+        "id": 129, 
+        "name":"TRENTINO FOLK HARMONY", 
+        "location": "Rovereto, Castel Beseno", 
+        "date": "10 settembre 2025, 19:00 – 23:00", 
+        "description":	"The Lumineers portano il loro folk revival in un’ambientazione storica spettacolare, accompagnati dall’emergente Noah Kahan, che emozionerà il pubblico con i suoi testi profondi e il suo timbro caldo."
+    },
+    {
+        "id": 130, 
+        "name":"VALLEYS & MELODIES", 
+        "location": "Val di Fassa, Rifugio Fuciade", 
+        "date": "5 agosto 2025, 17:30 – 21:30", 
+        "description":	"Un concerto immerso nella natura, con le sonorità evocative dei Fleet Foxes e il cantautorato intenso di Noah Kahan. Un’esperienza unica tra le vette del Trentino."
+    },
+    {
+        "id": 131, 
+        "name":"FOLK & WINE EXPERIENCE", 
+        "location": "Valdobbiadene (BL), Cantina Storica", 
+        "date": "20 giugno 2025, 18:30 – 22:00", 
+        "description":	"Musica folk e degustazioni di vini in un’atmosfera rilassata. Caamp e Noah Kahan offriranno un concerto acustico emozionante tra le colline del Prosecco."
+    },
+    {
+        "id": 132, 
+        "name":"MOUNTAIN MELODIES FEST", 
+        "location": "Madonna di Campiglio, Piazza Righi", 
+        "date": "30 luglio 2025, 19:00 – 00:00", 
+        "description":	"Mumford & Sons e Fleet Foxes insieme per un evento imperdibile! Ritmi coinvolgenti e armonie folk in una location mozzafiato."
+    },
+    {
+        "id": 133, 
+        "name":"AUTUMN FOLK GATHERING", 
+        "location": "Bolzano, Castel Roncolo", 
+        "date": "12 ottobre 2025, 17:00 – 22:00", 
+        "description":	"Un concerto che celebra la bellezza dell’autunno con le melodie folk dei The Lumineers e il sound intimo dei Caamp. Atmosfera calda e accogliente in un castello medievale."
+    },
+    {
+        "id": 134, 
+        "name":"FOLK & BLUES HARMONY", 
+        "location": "Rovereto, Piazza", 
+        "date": "28 agosto 2025, 20:00 – 23:00", 
+        "description":	"Un'incredibile performance con Fleet Foxes e Gary Clark Jr. per una serata folk-blues."
+    },
+    {
+        "id": 135, 
+        "name":"MOUNTAIN GROOVE FESTIVAL", 
+        "location": "Madonna di Campiglio, Teatro", 
+        "date": "20 giugno 2025, 18:30 – 22:00", 
+        "description":	"Noah Kahan e RAYE si esibiranno insieme in un evento che unisce folk e pop in una serata unica."
+    },
+    {
+        "id": 136, 
+        "name":"FOLK & JAZZ SUMMER FESTIVAL", 
+        "location": "Madonna di Campiglio, Centro",
+        "date": "3 agosto 2025, 20:00 – 23:00", 
+        "description":	"Un'esperienza unica con Fleet Foxes e Alma Deutscher, unendo il folk e il jazz per una serata indimenticabile."
+    },
+    {
+        "id": 137, 
+        "name":"JAZZ DOLOMITES FEST", 
+        "location": "Trento, Teatro Auditorium S. Chiara", 
+        "date": "10 luglio 2025, 20:30 – 00:00", 
+        "description":	"Un viaggio tra jazz sperimentale e groove irresistibili! La leggenda Herbie Hancock porta il suo inconfondibile stile fusion, mentre gli Snarky Puppy mescolano jazz, funk e rock per uno show mozzafiato."
+    },
+    {
+        "id": 138, 
+        "name":"BLUE LAKE JAZZ NIGHT", 
+        "location": "Riva del Garda, Palazzo dei Congressi", 
+        "date": "5 agosto 2025, 21:00 – 23:30", 
+        "description":	"Un’atmosfera intima e raffinata sulle sponde del Lago di Garda. Brad Mehldau incanterà con le sue improvvisazioni uniche, mentre il giovane Immanuel Wilkins darà nuova vita al jazz contemporaneo con il suo sax."
+    },
+    {
+        "id": 139, 
+        "name":"TRENTINO SMOOTH SESSIONS", 
+        "location": "Rovereto, Cortile Urbano", 
+        "date": "18 giugno 2025, 19:00 – 22:30", 
+        "description":	"Una serata perfetta per gli amanti del jazz vocale e del groove! La voce vellutata di Samara Joy, affiancata dalla ritmica energica degli Snarky Puppy, creerà un’atmosfera unica sotto le stelle."
+    },
+    {
+        "id": 140, 
+        "name":"MOUNTAIN JAZZ SUMMIT", 
+        "location": "Madonna di Campiglio, Sala Congressi", 
+        "date": "20 settembre 2025, 20:00 – 23:30", 
+        "description":	"Herbie Hancock esplora i confini del jazz con il suo stile innovativo, mentre Immanuel Wilkins porta il suo sax in territori sperimentali. Una fusione perfetta tra tradizione e avanguardia."
+    },
+    {
+        "id": 141, 
+        "name":"VALLEY JAZZ & WINE", 
+        "location": "Valdobbiadene (BL), Cantina Storica", 
+        "date": "12 ottobre 2025, 18:30 – 22:00", 
+        "description":	"Un incontro tra jazz raffinato e i migliori vini della regione. Brad Mehldau al piano e la straordinaria voce di Samara Joy trasporteranno il pubblico in un viaggio sonoro elegante e coinvolgente."
+    },
+    {
+        "id": 142, 
+        "name":"LEGENDS OF JAZZ & BLUES", 
+        "location": "Rovereto, Teatro Zandonai", 
+        "date": "25 agosto 2025, 21:00 – 23:30", 
+        "description": "John Williams e Joe Bonamassa offrono una serata di jazz e blues indimenticabile, per veri intenditori."
+    },
+    {
+        "id": 143, 
+        "name":"JAZZ & ROCK REBIRTH", 
+        "location": "Riva del Garda, Piazza", 
+        "date": "5 ottobre 2025, 21:00 – 23:00", 
+        "description": "Brad Mehldau e Foo Fighters per una fusione unica di jazz e rock per il pubblico più esigente."
+    },
+    {
+        "id": 144, 
+        "name":"DOLOMITES METAL STORM", 
+        "location": "Trento, Stadio Briamasco", 
+        "date": "8 agosto 2025, 19:00 – 01:00", 
+        "description": "Un evento epico che porterà il metallo pesante tra le montagne! Metallica scatenerà il pubblico con i loro classici immortali, mentre Gojira aggiungerà potenza e tecnica con il loro sound innovativo. Una serata imperdibile per i veri fan del metal."
+    },
+    {
+        "id": 145, 
+        "name":"HELLFIRE MOUNTAIN FEST", 
+        "location": "Rovereto, Area Concerto Vallagarina", 
+        "date": "14 luglio 2025, 18:00 – 02:00", 
+        "description": "Un'esplosione di brutalità e adrenalina nel cuore del Trentino! Slipknot incendierà il palco con il loro show ipnotico, mentre Architects e Lorna Shore porteranno il meglio del metal moderno. Moshpit garantiti!"
+    },
+    {
+        "id": 146, 
+        "name":"BLACK PEAK METAL NIGHT", 
+        "location": "Belluno, Palasport", 
+        "date": "23 settembre 2025, 20:00 – 00:30", 
+        "description": "Una notte dedicata ai suoni più estremi del metal! Gojira impressionerà il pubblico con la loro tecnica spaventosa e i loro riff pesanti, mentre Lorna Shore porterà il lato più oscuro e feroce del deathcore. Perfetto per chi cerca emozioni forti."
+    },
+    {
+        "id": 147, 
+        "name":"ALPINE METAL ASSAULT", 
+        "location": "Bolzano, Arena Ritten", 
+        "date": "30 giugno 2025, 19:00 – 00:00", 
+        "description": "Metallica incontra la nuova generazione del metalcore in una serata unica! Un mix esplosivo tra il thrash metal più puro e il sound moderno degli Architects. Un concerto per vecchi e nuovi fan del genere."
+    },
+    {
+        "id": 148, 
+        "name":"METAL & JAZZ FUSION", 
+        "location": "Cortina d'Ampezzo, Sala Congressi", 
+        "date": "19 ottobre 2025, 19:30 – 23:00", 
+        "description": "Gojira e Herbie Hancock in una combinazione unica di metal e jazz sperimentale, per chi cerca sonorità nuove e potenti."
+    },
+    {
+        "id": 149, 
+        "name":"METAL ON THE ROCKS", 
+        "location": "Trento, Stadio Briamasco", 
+        "date": "5 agosto 2025, 19:00 – 00:30", 
+        "description": "Metallica e Led Zeppelin in una serata epica che unisce il metal classico con il rock di una delle band più leggendarie di sempre."
+    },
+    {
+        "id": 150, 
+        "name":"POP LEGENDS LIVE", 
+        "location": "Trento, PalaTrento", 
+        "date": "10 luglio 2025, 20:30 – 23:30", 
+        "description": "Un evento imperdibile con due dei più grandi nomi del pop contemporaneo, Taylor Swift e Ed Sheeran, per una serata di musica indimenticabile."
+    },
+    {
+        "id": 151, 
+        "name":"SUMMER POP FESTIVAL", 
+        "location": "Rovereto, Piazza Rosmini", 
+        "date": "15 agosto 2025, 21:00 – 23:30", 
+        "description": "Un festival all'insegna del pop con Dua Lipa e The Weeknd, pronti a infiammare la notte con i loro successi."
+    },
+    {
+        "id": 152, 
+        "name":"POP NIGHT LIVE", 
+        "location": "Belluno, Teatro Comunale", 
+        "date": "5 agosto 2025, 20:00 – 23:00", 
+        "description": "Una serata con Billie Eilish e la giovane promessa Olivia Rodrigo, un mix di pop alternativo e melodico."
+    },
+    {
+        "id": 153, 
+        "name":"POP QUEENS", 
+        "location": "Cortina d’Ampezzo, Stadio Olimpico", 
+        "date": "20 luglio 2025, 19:30 – 22:30", 
+        "description": "Due regine del pop per una notte di pura energia, dalle ballate di Taylor Swift ai suoni sperimentali di Billie Eilish."
+    },
+    {
+        "id": 154, 
+        "name":"STARS OF POP", 
+        "location": "Bolzano, Centro Congressi", 
+        "date": "28 agosto 2025, 21:00 – 23:30", 
+        "description": "Un incontro tra Ed Sheeran e The Weeknd, dove le ballate emozionanti si mescolano a ritmi urban e pop."
+    },
+    {
+        "id": 155, 
+        "name":"POP IN THE MOUNTAINS", 
+        "location": "Madonna di Campiglio, Palazzetto", 
+        "date": "2 agosto 2025, 20:30 – 23:00", 
+        "description": "Un evento esclusivo con Dua Lipa e Olivia Rodrigo che incantano con le loro hit, circondati dalla bellezza delle Dolomiti."
+    },
+    {
+        "id": 156, 
+        "name":"NIGHT OF POP HITS", 
+        "location": "Trento, Piazza Duomo", 
+        "date": "30 giugno 2025, 22:00 – 00:00", 
+        "description": "Una notte di successi internazionali con The Weeknd e l'emergente RAYE, protagonisti di un'esperienza pop unica."
+    },
+    {
+        "id": 157, 
+        "name":"FRESH POP SOUNDS", 
+        "location": "Canazei, Centro Sportivo", 
+        "date": "12 luglio 2025, 21:00 – 23:00", 
+        "description": "Una serata giovane e fresca con Tate McRae e Benson Boone, pronti a conquistare il pubblico con il loro pop emotivo."
+    },
+    {
+        "id": 158, 
+        "name":"FUTURE POP", 
+        "location": "Riva del Garda, Palazzetto Sportivo", 
+        "date": "18 luglio 2025, 19:30 – 22:00", 
+        "description": "Conan Gray e JVKE si esibiscono in un concerto che esplora il lato più moderno e innovativo del pop."
+    },
+    {
+        "id": 159,
+        "name":"NEW POP NIGHT", 
+        "location": "Rovereto, Teatro Zandonai", 
+        "date": "7 settembre 2025, 20:00 – 22:30", 
+        "description": "Un concerto per scoprire le sonorità più fresche del pop con Zach Bryan e PinkPantheress, un mix tra pop indie e alternative."
+    },
+    {
+        "id": 160, 
+        "name":"POP & ROCK FESTIVAL", 
+        "location": "Belluno, Stadio Comunale", 
+        "date": "25 agosto 2025, 20:00 – 23:30", 
+        "description": "Un evento che mescola pop e rock, con le performance emozionanti di Billie Eilish e Conan Gray, due giovani stelle della musica."
+    },
+    {
+        "id": 161, 
+        "name":"RISING POP STARS", 
+        "location": "Madonna di Campiglio, Centro Congressi", 
+        "date": "30 agosto 2025, 21:00 – 23:00", 
+        "description": "Un'opportunità per scoprire il futuro del pop, con le giovani e talentuose Gracie Abrams e Chappell Roan."
+    },
+    {
+        "id": 162, 
+        "name":"THE POP EXPERIENCE", 
+        "location": "Bolzano, Parco delle Talvera", 
+        "date": "16 luglio 2025, 19:30 – 22:00", 
+        "description": "Una serata tutta da ballare con Dua Lipa e Tate McRae, le cui hit pop faranno battere il cuore a tutti i fan."
+    },
+    {
+        "id": 163, 
+        "name":"POP VIBES UNDER THE STARS", 
+        "location": "Trento, Castello del Buonconsiglio", 
+        "date": "3 settembre 2025, 21:00 – 23:00", 
+        "description": "Un evento in un luogo magico, dove le voci di Olivia Rodrigo e RAYE saranno accompagnate dalla bellezza delle stelle sopra di noi."
+    },
+    {
+        "id": 164, 
+        "name":"GLOBAL POP TOUR", 
+        "location": "Rovereto, Arena di Rovereto", 
+        "date": "22 agosto 2025, 20:00 – 23:00", 
+        "description": "Due dei nomi più importanti del pop mondiale, Ed Sheeran e The Weeknd, si esibiscono insieme in un evento straordinario."
+    },
+    {
+        "id": 165, 
+        "name":"POP SOUNDZ", 
+        "location": "Belluno, Palasport", 
+        "date": "6 settembre 2025, 20:30 – 22:30", 
+        "description": "Un evento che celebra le nuove voci del pop, con Zach Bryan e Conan Gray, pronti a far vibrare le emozioni del pubblico."
+    },
+    {
+        "id": 166, 
+        "name":"FUTURE STARS POP FESTIVAL", 
+        "location": "Cortina d’Ampezzo, Palazzetto dello Sport", 
+        "date": "9 luglio 2025, 20:00 – 22:30", 
+        "description": "Il futuro del pop in una sola serata con le voci di Benson Boone e Olivia Rodrigo, in un concerto ricco di energia e passione."
+    },
+    {
+        "id": 167, 
+        "name":"POP & ELECTRO REVOLUTION", 
+        "location": "Trento, Arena", 
+        "date": "15 agosto 2025, 19:00 – 23:00", 
+        "description": "Dua Lipa e Fred again.. insieme in una serata di pop elettronico che lascerà il segno."
+    },
+    {
+        "id": 168, 
+        "name":"ROCK & POP BREEZE", 
+        "location": "Trento, Piazza", 
+        "date": "15 agosto 2025, 20:00 – 01:00", 
+        "description": "Benson Boone e Arctic Monkeys per una notte di pop e rock che travolgerà il pubblico."
+    },
+    {
+        "id": 169, 
+        "name":"POP & JAZZ MAGIC", 
+        "location": "Bolzano, Auditorium", 
+        "date": "17 luglio 2025, 20:30 – 23:00", 
+        "description": "Un mix magico di pop ed eleganza jazz, con Olivia Rodrigo e Brad Mehldau che portano il loro talento sul palco."
+    },
+    {
+        "id": 170, 
+        "name":"POP & METAL NIGHT", 
+        "location": "Trento, Arena", 
+        "date": "18 luglio 2025, 19:30 – 23:30", 
+        "description": "Un incontro inaspettato tra il pop di Dua Lipa e la potenza metal di Slipknot in un evento che segnerà la storia della musica."
+    },
+    {
+        "id": 171, 
+        "name":"POP MEETS ROCK", 
+        "location": "Bolzano, Teatro Sociale", 
+        "date": "5 settembre 2025, 19:30 – 23:30", 
+        "description":	"Un incontro tra pop e rock con i grandi classici dei Beatles e l'energia di Taylor Swift."
+    },
+    {
+        "id": 172, 
+        "name":"ROCK LEGENDS LIVE", 
+        "location": "Trento, PalaTrento", 
+        "date": "12 luglio 2025, 20:30 – 23:30", 
+        "description": "Un evento che celebra le leggende del rock, con i successi immortali di The Beatles e Queen."
+    },
+    {
+        "id": 173, 
+        "name":"STADIUM ROCK NIGHT", 
+        "location": "Rovereto, Stadio Briamasco", 
+        "date": "18 agosto 2025, 21:00 – 23:30", 
+        "description":	"Un concerto che raccoglie i giganti del rock con The Rolling Stones e Led Zeppelin, per una notte memorabile."
+    },
+    {
+        "id": 174, 
+        "name":"THE CLASSIC ROCK FESTIVAL", 
+        "location": "Belluno, Stadio Comunale", 
+        "date": "25 luglio 2025, 19:30 – 22:30", 
+        "description":	"Un festival che celebra il rock classico con AC/DC e i leggendari Pink Floyd."
+    },
+    {
+        "id": 175, 
+        "name":"LEGENDARY ROCK SHOW", 
+        "location": "Cortina d'Ampezzo, Palazzetto dello Sport", 
+        "date": "10 agosto 2025, 21:00 – 23:30", 
+        "description":	"La potenza di Queen e l'energia di U2 per un evento indimenticabile sotto le Dolomiti."
+    },
+    {
+        "id": 176, 
+        "name":"ROCK NIGHTS UNDER THE STARS", 
+        "location": "Canazei, Parco della Madonnina", 
+        "date": "7 settembre 2025, 20:00 – 23:00", 
+        "description":	"Una serata di puro rock con Led Zeppelin e The Rolling Stones immersi nelle montagne."
+    },
+    {
+        "id": 177, 
+        "name":"ROCK REVOLUTION LIVE", 
+        "location": "Trento, Piazza Duomo", 
+        "date": "17 luglio 2025, 20:30 – 22:30", 
+        "description":	"Un incontro epico tra le sonorità psichedeliche di Pink Floyd e il rock potente di AC/DC."
+    },
+    {
+        "id": 178, 
+        "name":"ROCK CLASSICS TOUR", 
+        "location": "Bolzano, Arena Alto Adige", 
+        "date": "2 agosto 2025, 20:30 – 23:00", 
+        "description":	"Un viaggio nelle canzoni più iconiche con U2 e The Beatles, in un concerto che attraversa decadi di rock."
+    },
+    {
+        "id": 179, 
+        "name":"MODERN ROCK SESSIONS", 
+        "location": "Belluno, Palasport", 
+        "date": "14 luglio 2025, 20:00 – 22:00", 
+        "description":	"Un evento che unisce la freschezza di Greta Van Fleet e la potenza di Muse, per un concerto ad alta intensità."
+    },
+    {
+        "id": 180, 
+        "name":"ROCK VIBRATIONS", 
+        "location": "Rovereto, Arena di Rovereto", 
+        "date": "28 agosto 2025, 21:00 – 23:30", 
+        "description":	"Le sonorità alternative di Arctic Monkeys e il rock energico di Foo Fighters in una serata imperdibile."
+    },
+    {
+        "id": 181, 
+        "name":"ROCK'N'ROLL LEGENDS", 
+        "location": "Trento, Teatro Auditorium", 
+        "date": "4 settembre 2025, 21:00 – 23:00", 
+        "description":	"Un incontro tra le due leggende The Beatles e Led Zeppelin, per una serata che ripercorre le pietre miliari del rock."
+    },
+    {
+        "id": 182, 
+        "name":"INDIE ROCK EXPLOSION", 
+        "location": "Belluno, Palazzetto Sportivo", 
+        "date": "18 luglio 2025, 20:30 – 23:00", 
+        "description":	"Un evento dal cuore indie con The Strokes e Arctic Monkeys, per gli amanti del rock alternativo e della chitarra."
+    },
+    {
+        "id": 183, 
+        "name":"MELTED ROCK STAGE", 
+        "location": "Canazei, Arena Palazzetto", 
+        "date": "12 agosto 2025, 19:30 – 22:30", 
+        "description":	"Royal Blood e Muse si uniscono per un evento unico, con la potenza del rock moderno e la tecnica delle chitarre."
+    },
+    {
+        "id": 184, 
+        "name":"ROCK FUSION FESTIVAL", 
+        "location": "Cortina d'Ampezzo, Campo di Sport", 
+        "date": "8 settembre 2025, 21:00 – 23:30", 
+        "description":	"La freschezza del rock contemporaneo con Maneskin e la potenza di Foo Fighters."
+    },
+    {
+        "id": 185, 
+        "name":"ICONIC ROCK NIGHTS", 
+        "location": "Rovereto, Stadio Adige",
+        "date": "5 luglio 2025, 20:30 – 23:00", 
+        "description":	"Pink Floyd e U2 portano il loro sound senza tempo in un concerto che celebra il rock in tutte le sue sfumature."
+    },
+    {
+        "id": 186, 
+        "name":"ROCK REVIVAL LIVE", 
+        "location": "Belluno, Stadio Comunale", 
+        "date": "11 luglio 2025, 21:00 – 23:00", 
+        "description":	"Una notte di rock energico con i talentuosi Greta Van Fleet e The Black Keys per un evento ad alta energia."
+    },
+    {
+        "id": 187, 
+        "name":"YOUNG ROCK STARS", 
+        "location": "Trento, Arena di Trento", 
+        "date": "19 luglio 2025, 20:30 – 23:00", 
+        "description":	"I giovani rockers Maneskin e The Strokes si esibiscono insieme per una serata di puro rock."
+    },
+    {
+        "id": 188, 
+        "name":"ROCK & ELECTRO COLLISION", 
+        "location": "Madonna di Campiglio, Palaghiaccio", 
+        "date": "10 luglio 2025, 18:00 – 02:00", 
+        "description":	"Un'energia esplosiva che fonde rock alternativo e suoni elettronici con Muse e The Chainsmokers."
+    },
+    {
+        "id": 189, 
+        "name":"ROCK & FOLK FESTIVAL", 
+        "location": "Madonna di Campiglio, Arena", 
+        "date": "12 luglio 2025, 17:30 – 23:30", 
+        "description":	"Un matrimonio perfetto tra il rock dei Greta Van Fleet e il folk evocativo dei Mumford & Sons."
+    },
+    {
+
+        "id": 190, 
+        "name":"ROCK & METAL EVOLUTION", 
+        "location": "Trento, Stadio Briamasco", 
+        "date": "6 settembre 2025, 19:30 – 01:00", 
+        "description": "Led Zeppelin e Slipknot per una notte che segnerà un'epoca tra il rock classico e il metal più moderno."
+    }, 
+    {
+        "id": 191, 
+        "name":"ROCK 'n' POP ANTHEMS", 
+        "location": "Trento, Piazza Duomo", 
+        "date":"10 settembre 2025, 20:00 - 23:00", 
+        "description": "Un concerto che celebra le sonorità rock dei The Strokes e il pop alternativo di Billie Eilish."
     }
 ]

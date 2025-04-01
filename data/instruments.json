@@ -1,0 +1,11 @@
+[
+    {"name": "basso"},
+    {"name": "batteria"},
+    {"name": "chitarra"},
+    {"name": "clarinetto"},
+    {"name": "organo"},
+    {"name": "pianoforte"},
+    {"name": "tromba"},
+    {"name": "violino"},
+    {"name": "voce"}
+]
