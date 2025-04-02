@@ -1,11 +1,11 @@
 [
-    {"name": "basso"},
-    {"name": "batteria"},
-    {"name": "chitarra"},
-    {"name": "clarinetto"},
-    {"name": "organo"},
-    {"name": "pianoforte"},
-    {"name": "tromba"},
-    {"name": "violino"},
-    {"name": "voce"}
+    {"name": "Basso"},
+    {"name": "Batteria"},
+    {"name": "Chitarra"},
+    {"name": "Clarinetto"},
+    {"name": "Organo"},
+    {"name": "Pianoforte"},
+    {"name": "Tromba"},
+    {"name": "Violino"},
+    {"name": "Voce"}
 ]

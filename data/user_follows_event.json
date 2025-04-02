@@ -1,0 +1,215 @@
+[
+    {"user_id": 0, "event_id": 100},
+    {"user_id": 0, "event_id": 104},
+    {"user_id": 0, "event_id": 185},
+    
+    {"user_id": 1, "event_id": 100},
+    {"user_id": 1, "event_id": 101},
+    {"user_id": 1, "event_id": 140},
+    {"user_id": 1, "event_id": 164},
+    {"user_id": 1, "event_id": 175},
+
+    {"user_id": 2, "event_id": 105},
+    {"user_id": 2, "event_id": 115},
+    {"user_id": 2, "event_id": 118},
+    {"user_id": 2, "event_id": 127},
+    
+    {"user_id": 3, "event_id": 105},
+    {"user_id": 3, "event_id": 112},
+    
+    {"user_id": 4, "event_id": 105},
+    {"user_id": 4, "event_id": 110},
+    
+    {"user_id": 5, "event_id": 105},
+    {"user_id": 5, "event_id": 132},
+    
+    {"user_id": 6, "event_id": 105}, 
+    {"user_id": 6, "event_id": 116}, 
+    {"user_id": 6, "event_id": 120}, 
+    
+    {"user_id": 7, "event_id": 118},
+    {"user_id": 7, "event_id": 178},
+    
+    {"user_id": 8, "event_id": 109}, 
+    {"user_id": 8, "event_id": 110}, 
+    {"user_id": 8, "event_id": 107}, 
+    {"user_id": 8, "event_id": 121}, 
+    {"user_id": 8, "event_id": 140}, 
+    {"user_id": 8, "event_id": 153 }, 
+    
+    {"user_id": 9, "event_id": 105},
+    {"user_id": 9, "event_id": 107},
+    {"user_id": 9, "event_id": 108},
+    {"user_id": 9, "event_id": 112},
+    {"user_id": 9, "event_id": 114},
+    {"user_id": 9, "event_id": 133},
+    {"user_id": 9, "event_id": 147},
+    
+    {"user_id": 10, "event_id": 112},
+    {"user_id": 10, "event_id": 110},
+    {"user_id": 10, "event_id": 154},
+    
+    {"user_id": 11, "event_id": 110},
+    {"user_id": 11, "event_id": 132},
+    
+    {"user_id": 12, "event_id": 105},
+    {"user_id": 12, "event_id": 110},
+    
+    {"user_id": 13, "event_id": 121},
+    {"user_id": 13, "event_id": 149},
+    {"user_id": 13, "event_id": 171},
+    
+    {"user_id": 14, "event_id": 121},
+    {"user_id": 14, "event_id": 123},
+    {"user_id": 14, "event_id": 174},
+    {"user_id": 14, "event_id": 175},
+    
+    {"user_id": 15, "event_id": 127},
+    {"user_id": 15, "event_id": 177},
+    {"user_id": 15, "event_id": 155},
+    {"user_id": 15, "event_id": 106},
+    
+    {"user_id": 16, "event_id": 128},
+    {"user_id": 16, "event_id": 132},
+    {"user_id": 16, "event_id": 178},
+    
+    {"user_id": 17, "event_id": 127},
+    {"user_id": 17, "event_id": 129},
+    
+    {"user_id": 18, "event_id": 132},
+    {"user_id": 18, "event_id": 123},
+    
+    {"user_id": 19, "event_id": 126},
+    {"user_id": 19, "event_id": 154},
+    {"user_id": 19, "event_id": 164},
+    
+    {"user_id": 20, "event_id": 137},
+    {"user_id": 20, "event_id": 139},
+    {"user_id": 20, "event_id": 141},
+    
+    {"user_id": 21, "event_id": 111},
+    {"user_id": 21, "event_id": 138},
+    {"user_id": 21, "event_id": 139},
+    
+    {"user_id": 22, "event_id": 120},
+    {"user_id": 22, "event_id": 137},
+    {"user_id": 22, "event_id": 164},
+    {"user_id": 22, "event_id": 175},
+    
+    {"user_id": 23, "event_id": 138},
+    {"user_id": 23, "event_id": 140},
+    
+    {"user_id": 24, "event_id": 144},
+    {"user_id": 24, "event_id": 145},
+    {"user_id": 24, "event_id": 190},
+    
+    {"user_id": 25, "event_id": 144},
+    {"user_id": 25, "event_id": 156},
+    
+    {"user_id": 26, "event_id": 145},
+    {"user_id": 26, "event_id": 116},
+    
+    {"user_id": 27, "event_id": 123},
+    {"user_id": 27, "event_id": 137},
+    {"user_id": 27, "event_id": 140},
+    {"user_id": 27, "event_id": 154},
+    {"user_id": 27, "event_id": 155},
+    
+    {"user_id": 28, "event_id": 150},
+    {"user_id": 28, "event_id": 161},
+    
+    {"user_id": 29, "event_id": 154},
+    {"user_id": 29, "event_id": 176},
+    {"user_id": 29, "event_id": 181},
+    
+    {"user_id": 30, "event_id": 150},
+    {"user_id": 30, "event_id": 151},
+    {"user_id": 30, "event_id": 156},
+    
+    {"user_id": 31, "event_id": 110},
+    {"user_id": 31, "event_id": 152},
+    {"user_id": 31, "event_id": 159},
+    {"user_id": 31, "event_id": 175},
+    
+    {"user_id": 32, "event_id": 140},
+    {"user_id": 32, "event_id": 150},
+    {"user_id": 32, "event_id": 154},
+    
+    {"user_id": 33, "event_id": 162},
+    
+    {"user_id": 34, "event_id": 158},
+    {"user_id": 34, "event_id": 164},
+    {"user_id": 34, "event_id": 172},
+    
+    {"user_id": 35, "event_id": 150},
+    {"user_id": 35, "event_id": 154},
+    
+    {"user_id": 36, "event_id": 121},
+    {"user_id": 36, "event_id": 139},
+    {"user_id": 36, "event_id": 153},
+    {"user_id": 36, "event_id": 155},
+    
+    {"user_id": 37, "event_id": 150},
+    {"user_id": 37, "event_id": 153},
+    
+    {"user_id": 38, "event_id": 132},
+    {"user_id": 38, "event_id": 153},
+    {"user_id": 38, "event_id": 156},
+    
+    {"user_id": 39, "event_id": 102},
+    {"user_id": 39, "event_id": 103},
+    {"user_id": 39, "event_id": 176},
+    {"user_id": 39, "event_id": 179},
+    
+    {"user_id": 40, "event_id": 172},
+    {"user_id": 40, "event_id": 176},
+    {"user_id": 40, "event_id": 188},
+    
+    {"user_id": 41, "event_id": 123},
+    {"user_id": 41, "event_id": 172},
+    {"user_id": 41, "event_id": 184},
+    
+    {"user_id": 42, "event_id": 140},
+    {"user_id": 42, "event_id": 175},
+    {"user_id": 42, "event_id": 186},
+    
+    {"user_id": 43, "event_id": 144},
+    {"user_id": 43, "event_id": 177},
+    {"user_id": 43, "event_id": 181},
+    
+    {"user_id": 44, "event_id": 164},
+    {"user_id": 44, "event_id": 178},
+    {"user_id": 44, "event_id": 180},
+    
+    {"user_id": 45, "event_id": 160},
+    {"user_id": 45, "event_id": 171},
+    {"user_id": 45, "event_id": 181},
+
+    {"user_id": 46, "event_id": 100},
+    {"user_id": 46, "event_id": 132},
+    {"user_id": 46, "event_id": 150},
+    {"user_id": 46, "event_id": 175},
+    {"user_id": 46, "event_id": 181},
+    
+    {"user_id": 47, "event_id": 102},
+    {"user_id": 47, "event_id": 149},
+    {"user_id": 47, "event_id": 175},
+    {"user_id": 47, "event_id": 180},
+    
+    {"user_id": 48, "event_id": 127},
+    {"user_id": 48, "event_id": 171},
+    {"user_id": 48, "event_id": 174},
+    
+    {"user_id": 49, "event_id": 140},
+    {"user_id": 49, "event_id": 171},
+    {"user_id": 49, "event_id": 172},
+    
+    {"user_id": 50, "event_id": 101},
+    {"user_id": 50, "event_id": 140},
+    {"user_id": 50, "event_id": 178},
+    {"user_id": 50, "event_id": 182},
+    
+    {"user_id": 51, "event_id": 172},
+    {"user_id": 51, "event_id": 173}
+]
+

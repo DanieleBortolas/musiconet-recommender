@@ -1,0 +1,208 @@
+[
+    {"event_id": 100, "genre": "Blues"},
+
+    {"event_id": 101, "genre": "Blues"},
+
+    {"event_id": 102, "genre": "Blues"},
+
+    {"event_id": 103, "genre": "Blues"},
+    {"event_id": 103, "genre": "Rock"},
+
+    {"event_id": 104, "genre": "Blues"},
+    {"event_id": 104, "genre": "Rock"},
+
+    {"event_id": 105, "genre": "Classica"},
+
+    {"event_id": 106, "genre": "Classica"},
+
+    {"event_id": 107, "genre": "Classica"},
+
+    {"event_id": 108, "genre": "Classica"},
+
+    {"event_id": 109, "genre": "Classica"},
+
+    {"event_id": 110, "genre": "Classica"},
+
+    {"event_id": 111, "genre": "Classica"},
+
+    {"event_id": 112, "genre": "Classica"},
+
+    {"event_id": 113, "genre": "Classica"},
+
+    {"event_id": 114, "genre": "Classica"},
+
+    {"event_id": 115, "genre": "Classica"},
+
+    {"event_id": 116, "genre": "Classica"},
+
+    {"event_id": 117, "genre": "Classica"},
+
+    {"event_id": 118, "genre": "Classica"},
+
+    {"event_id": 119, "genre": "Classica"},
+
+    {"event_id": 120, "genre": "Classica"},
+    {"event_id": 120, "genre": "Pop"},
+
+    {"event_id": 121, "genre": "Elettronica"},
+
+    {"event_id": 122, "genre": "Elettronica"},
+
+    {"event_id": 123, "genre": "Elettronica"},
+
+    {"event_id": 124, "genre": "Elettronica"},
+    {"event_id": 124, "genre": "Blues"},
+
+    {"event_id": 125, "genre": "Elettronica"},
+    {"event_id": 125, "genre": "Funk"},
+
+    {"event_id": 126, "genre": "Elettronica"},
+    {"event_id": 126, "genre": "Jazz"},
+
+    {"event_id": 127, "genre": "Folk"},
+
+    {"event_id": 128, "genre": "Folk"},
+
+    {"event_id": 129, "genre": "Folk"},
+
+    {"event_id": 130, "genre": "Folk"},
+
+    {"event_id": 131, "genre": "Folk"},
+
+    {"event_id": 132, "genre": "Folk"},
+
+    {"event_id": 133, "genre": "Folk"},
+
+    {"event_id": 134, "genre": "Folk"},
+    {"event_id": 134, "genre": "Blues"},
+
+    {"event_id": 135, "genre": "Folk"},
+    {"event_id": 135, "genre": "Elettronica"},
+
+    {"event_id": 136, "genre": "Folk"},
+    {"event_id": 136, "genre": "Jazz"},
+
+    {"event_id": 137, "genre": "Jazz"},
+
+    {"event_id": 138, "genre": "Jazz"},
+
+    {"event_id": 139, "genre": "Jazz"},
+
+    {"event_id": 140, "genre": "Jazz"},
+
+    {"event_id": 141, "genre": "Jazz"},
+
+    {"event_id": 142, "genre": "Jazz"},
+    {"event_id": 142, "genre": "Blues"},
+
+    {"event_id": 143, "genre": "Jazz"},
+    {"event_id": 143, "genre": "Rock"},
+
+    {"event_id": 144, "genre": "Metal"},
+
+    {"event_id": 145, "genre": "Metal"},
+
+    {"event_id": 146, "genre": "Metal"},
+
+    {"event_id": 147, "genre": "Metal"},
+
+    {"event_id": 148, "genre": "Metal"},
+    {"event_id": 148, "genre": "Jazz"},
+
+    {"event_id": 149, "genre": "Metal"},
+    {"event_id": 149, "genre": "Rock"},
+
+    {"event_id": 150, "genre": "Pop"},
+
+    {"event_id": 151, "genre": "Pop"},
+
+    {"event_id": 152, "genre": "Pop"},
+
+    {"event_id": 153, "genre": "Pop"},
+
+    {"event_id": 154, "genre": "Pop"},
+
+    {"event_id": 155, "genre": "Pop"},
+
+    {"event_id": 156, "genre": "Pop"},
+
+    {"event_id": 157, "genre": "Pop"},
+
+    {"event_id": 158, "genre": "Pop"},
+
+    {"event_id": 159, "genre": "Pop"},
+
+    {"event_id": 160, "genre": "Pop"},
+
+    {"event_id": 161, "genre": "Pop"},
+
+    {"event_id": 162, "genre": "Pop"},
+
+    {"event_id": 163, "genre": "Pop"},
+
+    {"event_id": 164, "genre": "Pop"},
+
+    {"event_id": 165, "genre": "Pop"},
+
+    {"event_id": 166, "genre": "Pop"},
+
+    {"event_id": 167, "genre": "Pop"},
+    {"event_id": 167, "genre": "Elettronica"},
+
+    {"event_id": 168, "genre": "Pop"},
+    {"event_id": 168, "genre": "Rock"},
+
+    {"event_id": 169, "genre": "Pop"},
+    {"event_id": 169, "genre": "Jazz"},
+
+    {"event_id": 170, "genre": "Pop"},
+    {"event_id": 170, "genre": "Metal"},
+
+    {"event_id": 171, "genre": "Pop"},
+    {"event_id": 171, "genre": "Rock"},
+
+
+    {"event_id": 172, "genre": "Rock"},
+
+    {"event_id": 173, "genre": "Rock"},
+
+    {"event_id": 174, "genre": "Rock"},
+
+    {"event_id": 175, "genre": "Rock"},
+
+    {"event_id": 176, "genre": "Rock"},
+
+    {"event_id": 177, "genre": "Rock"},
+
+    {"event_id": 178, "genre": "Rock"},
+
+    {"event_id": 179, "genre": "Rock"},
+
+    {"event_id": 180, "genre": "Rock"},
+
+    {"event_id": 181, "genre": "Rock"},
+
+    {"event_id": 182, "genre": "Rock"},
+
+    {"event_id": 183, "genre": "Rock"},
+
+    {"event_id": 184, "genre": "Rock"},
+
+    {"event_id": 185, "genre": "Rock"},
+
+    {"event_id": 186, "genre": "Rock"},
+
+    {"event_id": 187, "genre": "Rock"},
+
+    {"event_id": 188, "genre": "Rock"},
+    {"event_id": 188, "genre": "Elettronica"},
+
+    {"event_id": 189, "genre": "Rock"},
+    {"event_id": 189, "genre": "Folk"},
+
+    {"event_id": 190, "genre": "Rock"},
+    {"event_id": 190, "genre": "Metal"},
+
+    {"event_id": 191, "genre": "Rock"},
+    {"event_id": 191, "genre": "Pop"}
+]

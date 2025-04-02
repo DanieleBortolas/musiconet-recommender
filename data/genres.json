@@ -1,10 +1,10 @@
 [
-    {"name": "rock"},
-    {"name": "pop"},
-    {"name": "classica"},
-    {"name": "blues"},
-    {"name": "elettronica"},
-    {"name": "folk"},
-    {"name": "jazz"},
-    {"name": "metal"}
+    {"name": "Rock"},
+    {"name": "Pop"},
+    {"name": "Classica"},
+    {"name": "Blues"},
+    {"name": "Elettronica"},
+    {"name": "Folk"},
+    {"name": "Jazz"},
+    {"name": "Metal"}
 ]
