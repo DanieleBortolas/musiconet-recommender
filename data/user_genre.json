@@ -1,0 +1,174 @@
+[
+    {"user_id": 0, "genre": "Blues"},
+    {"user_id": 0, "genre": "Rock"},
+ 
+    {"user_id": 1, "genre": "Blues"},
+    {"user_id": 1, "genre": "Rock"},
+    {"user_id": 1, "genre": "Pop"},
+    {"user_id": 1, "genre": "Jazz"},
+
+    {"user_id": 2, "genre": "Classica"},
+    {"user_id": 2, "genre": "Folk"},
+
+    {"user_id": 3, "genre": "Classica"},
+
+    {"user_id": 4, "genre": "Classica"},
+    
+    {"user_id": 5, "genre": "Classica"},
+    {"user_id": 5, "genre": "Folk"},
+
+    {"user_id": 6, "genre": "Classica"},
+    {"user_id": 6, "genre": "Pop"},
+
+    {"user_id": 7, "genre": "Classica"},
+    {"user_id": 7, "genre": "Rock"},
+
+    {"user_id": 8, "genre": "Classica"},
+    {"user_id": 8, "genre": "Pop"},
+    {"user_id": 8, "genre": "Jazz"},
+    {"user_id": 8, "genre": "Elettronica"},
+
+    {"user_id": 9, "genre": "Classica"},
+    {"user_id": 9, "genre": "Rock"},
+    {"user_id": 9, "genre": "Blues"},
+    {"user_id": 9, "genre": "Folk"},
+    {"user_id": 9, "genre": "Metal"},
+
+    {"user_id": 10, "genre": "Classica"},
+    {"user_id": 10, "genre": "Pop"},
+
+    {"user_id": 11, "genre": "Classica"},
+    {"user_id": 11, "genre": "Folk"},
+
+    {"user_id": 12, "genre": "Classica"},
+
+    {"user_id": 13, "genre": "Elettronica"},
+    {"user_id": 13, "genre": "Rock"},
+    {"user_id": 13, "genre": "Pop"},
+    {"user_id": 13, "genre": "Folk"},
+    {"user_id": 13, "genre": "Metal"},
+    
+    {"user_id": 14, "genre": "Elettronica"},
+    {"user_id": 14, "genre": "Rock"},
+
+    {"user_id": 15, "genre": "Folk"},
+    {"user_id": 15, "genre": "Rock"},
+    {"user_id": 15, "genre": "Pop"},
+    {"user_id": 15, "genre": "Classica"},
+
+    {"user_id": 16, "genre": "Folk"},
+    {"user_id": 16, "genre": "Rock"},
+
+    {"user_id": 17, "genre": "Folk"},
+
+    {"user_id": 18, "genre": "Folk"},
+    {"user_id": 18, "genre": "Elettronica"},
+
+    {"user_id": 19, "genre": "Folk"},
+    {"user_id": 19, "genre": "Pop"},
+
+    {"user_id": 20, "genre": "Jazz"},
+
+    {"user_id": 21, "genre": "Jazz"},
+    {"user_id": 21, "genre": "Classica"},
+
+    {"user_id": 22, "genre": "Jazz"},
+    {"user_id": 22, "genre": "Rock"},
+    {"user_id": 22, "genre": "Pop"},
+    {"user_id": 22, "genre": "Classica"},
+
+    {"user_id": 23, "genre": "Jazz"},
+    {"user_id": 23, "genre": "Blues"},
+
+    {"user_id": 24, "genre": "Metal"},
+    {"user_id": 24, "genre": "Rock"},
+
+    {"user_id": 25, "genre": "Metal"},
+    {"user_id": 25, "genre": "Pop"},
+
+    {"user_id": 26, "genre": "Metal"},
+    {"user_id": 26, "genre": "Classica"},
+
+    {"user_id": 27, "genre": "Pop"},
+    {"user_id": 27, "genre": "Jazz"},
+    {"user_id": 27, "genre": "Elettronica"},
+
+    {"user_id": 28, "genre": "Pop"},
+    
+    {"user_id": 29, "genre": "Pop"},
+    {"user_id": 29, "genre": "Rock"},
+
+    {"user_id": 30, "genre": "Pop"},
+    {"user_id": 30, "genre": ""},
+
+    {"user_id": 31, "genre": "Pop"},
+    {"user_id": 31, "genre": "Rock"},
+    {"user_id": 31, "genre": "Classica"},
+    
+    {"user_id": 32, "genre": "Pop"},
+    {"user_id": 32, "genre": "Jazz"},
+
+    {"user_id": 33, "genre": "Pop"},
+
+    {"user_id": 34, "genre": "Pop"},
+    {"user_id": 34, "genre": "Rock"},
+
+    {"user_id": 35, "genre": "Pop"},
+
+    {"user_id": 36, "genre": "Pop"},
+    {"user_id": 36, "genre": "Jazz"},
+    {"user_id": 36, "genre": "Elettronica"},
+    {"user_id": 36, "genre": "Blues"},
+
+    {"user_id": 37, "genre": "Pop"},
+
+    {"user_id": 38, "genre": "Pop"},
+    {"user_id": 38, "genre": "Folk"},
+    
+    {"user_id": 39, "genre": "Rock"},
+    {"user_id": 39, "genre": "Blues"},
+
+    {"user_id": 40, "genre": "Rock"},
+    {"user_id": 40, "genre": "Elettronica"},
+
+    {"user_id": 41, "genre": "Rock"},
+    {"user_id": 41, "genre": "Elettronica"},
+
+    {"user_id": 42, "genre": "Rock"},
+    {"user_id": 42, "genre": "Jazz"},
+
+    {"user_id": 43, "genre": "Rock"},
+    {"user_id": 43, "genre": "Metal"},
+
+    {"user_id": 44, "genre": "Rock"},
+    {"user_id": 44, "genre": "Pop"},
+
+    {"user_id": 45, "genre": "Rock"},
+    {"user_id": 45, "genre": "Pop"},
+
+    {"user_id": 46, "genre": "Rock"},
+    {"user_id": 46, "genre": "Pop"},
+    {"user_id": 46, "genre": "Blues"},
+    {"user_id": 46, "genre": "Folk"},
+
+    {"user_id": 47, "genre": "Rock"},
+    {"user_id": 47, "genre": "Pop"},
+    {"user_id": 47, "genre": "Blues"},
+    {"user_id": 47, "genre": "Metal"},
+
+    {"user_id": 48, "genre": "Rock"},
+    {"user_id": 48, "genre": "Pop"},
+    {"user_id": 48, "genre": "Folk"},
+
+    {"user_id": 49, "genre": "Rock"},
+    {"user_id": 49, "genre": "Pop"},
+    {"user_id": 49, "genre": "Jazz"},
+
+    {"user_id": 50, "genre": "Rock"},
+    {"user_id": 50, "genre": "Pop"},
+    {"user_id": 50, "genre": "Jazz"},
+    {"user_id": 50, "genre": "Blues"},
+
+    {"user_id": 51, "genre": "Rock"}
+
+]

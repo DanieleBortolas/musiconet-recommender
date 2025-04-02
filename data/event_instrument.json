@@ -1,0 +1,323 @@
+[
+    {"event_id": 100, "instrument": "Chitarra"},
+    {"event_id": 100, "instrument": "Voce"},
+    {"event_id": 100, "instrument": "Basso"},
+    {"event_id": 100, "instrument": "Batteria"},
+
+    {"event_id": 101, "instrument": "Chitarra"},
+    {"event_id": 101, "instrument": "Voce"},
+    {"event_id": 101, "instrument": "Basso"},
+    {"event_id": 101, "instrument": "Batteria"},
+
+    {"event_id": 102, "instrument": "Chitarra"},
+    {"event_id": 102, "instrument": "Voce"},
+    {"event_id": 102, "instrument": "Basso"},
+    {"event_id": 102, "instrument": "Batteria"},
+
+    {"event_id": 103, "instrument": "Chitarra"},
+    {"event_id": 103, "instrument": "Voce"},
+    {"event_id": 103, "instrument": "Basso"},
+    {"event_id": 103, "instrument": "Batteria"},
+
+    {"event_id": 104, "instrument": "Chitarra"},
+    {"event_id": 104, "instrument": "Voce"},
+    {"event_id": 104, "instrument": "Basso"},
+    {"event_id": 104, "instrument": "Batteria"},
+
+    {"event_id": 105, "instrument": "Pianoforte"},
+
+    {"event_id": 106, "instrument": "Violino"},
+    {"event_id": 106, "instrument": "Tromba"},
+    {"event_id": 106, "instrument": "Pianoforte"},
+
+    {"event_id": 107, "instrument": "Violino"},
+    {"event_id": 107, "instrument": "Tromba"},
+    {"event_id": 107, "instrument": "Pianoforte"},
+
+    {"event_id": 108, "instrument": "Pianoforte"},
+    {"event_id": 108, "instrument": "Violino"},
+
+    {"event_id": 109, "instrument": "Pianoforte"},
+    {"event_id": 109, "instrument": "Violino"},
+
+    {"event_id": 110, "instrument": "Violino"},
+    {"event_id": 110, "instrument": "Tromba"},
+    {"event_id": 110, "instrument": "Pianoforte"},
+
+    {"event_id": 111, "instrument": "Chitarra"},
+
+    {"event_id": 112, "instrument": "Pianoforte"},
+    {"event_id": 112, "instrument": "Violino"},
+
+    {"event_id": 113, "instrument": "Pianoforte"},
+
+    {"event_id": 114, "instrument": "Violino"},
+    {"event_id": 114, "instrument": "Pianoforte"},
+
+    {"event_id": 115, "instrument": "Violino"},
+    {"event_id": 115, "instrument": "Chitarra"},
+
+    {"event_id": 116, "instrument": "Violino"},
+    {"event_id": 116, "instrument": "Tromba"},
+    {"event_id": 116, "instrument": "Pianoforte"},
+
+    {"event_id": 117, "instrument": "Violino"},
+
+    {"event_id": 118, "instrument": "Pianoforte"},
+    {"event_id": 118, "instrument": "Violino"},
+    
+    {"event_id": 119, "instrument": "Violino"},
+    {"event_id": 119, "instrument": "Chitarra"},
+
+    {"event_id": 120, "instrument": "Pianoforte"},
+    {"event_id": 120, "instrument": "Voce"},
+
+    {"event_id": 121, "instrument": null},
+
+    {"event_id": 122, "instrument": null},
+
+    {"event_id": 123, "instrument": null},
+
+    {"event_id": 124, "instrument": "Chitarra"},
+    {"event_id": 124, "instrument": "Batteria"},
+
+    {"event_id": 125, "instrument": "Chitarra"},
+
+    {"event_id": 126, "instrument": "Pianoforte"},
+
+    {"event_id": 127, "instrument": "Chitarra"},
+    {"event_id": 127, "instrument": "Batteria"},
+    {"event_id": 127, "instrument": "Voce"},
+
+    {"event_id": 128, "instrument": "Chitarra"},
+    {"event_id": 128, "instrument": "Voce"},
+
+    {"event_id": 129, "instrument": "Chitarra"},
+    {"event_id": 129, "instrument": "Voce"},
+
+    {"event_id": 130, "instrument": "Chitarra"},
+    {"event_id": 130, "instrument": "Voce"},
+
+    {"event_id": 131, "instrument": "Chitarra"},
+    {"event_id": 131, "instrument": "Voce"},
+
+    {"event_id": 132, "instrument": "Chitarra"},
+    {"event_id": 132, "instrument": "Batteria"},
+    {"event_id": 132, "instrument": "Voce"},
+
+    {"event_id": 133, "instrument": "Chitarra"},
+    {"event_id": 133, "instrument": "Voce"},
+
+    {"event_id": 134, "instrument": "Chitarra"},
+    {"event_id": 134, "instrument": "Voce"},
+    {"event_id": 134, "instrument": "Basso"},
+    {"event_id": 134, "instrument": "Batteria"},
+
+    {"event_id": 135, "instrument": "Voce"},
+    {"event_id": 135, "instrument": "Chitarra"},
+
+    {"event_id": 136, "instrument": "Chitarra"},
+    {"event_id": 136, "instrument": "Violino"},
+    {"event_id": 136, "instrument": "Pianoforte"},
+
+    {"event_id": 137, "instrument": "Pianoforte"},
+    {"event_id": 137, "instrument": "Chitarra"},
+    {"event_id": 137, "instrument": "Basso"},
+    {"event_id": 137, "instrument": "Batteria"},
+
+    {"event_id": 138, "instrument": "Pianoforte"},
+    {"event_id": 138, "instrument": "Tromba"},
+
+    {"event_id": 139, "instrument": "Voce"},
+    {"event_id": 139, "instrument": "Chitarra"},
+    {"event_id": 139, "instrument": "Basso"},
+    {"event_id": 139, "instrument": "Batteria"},
+
+    {"event_id": 140, "instrument": "Pianoforte"},
+    {"event_id": 140, "instrument": "Tromba"},
+
+    {"event_id": 141, "instrument": "Pianoforte"},
+    {"event_id": 141, "instrument": "Voce"},
+
+    {"event_id": 142, "instrument": "Pianoforte"},
+    {"event_id": 142, "instrument": "Chitarra"},
+
+    {"event_id": 143, "instrument": "Pianoforte"},
+    {"event_id": 143, "instrument": "Batteria"},
+    {"event_id": 143, "instrument": "Chitarra"},
+
+    {"event_id": 144, "instrument": "Chitarra"},
+    {"event_id": 144, "instrument": "Basso"},
+    {"event_id": 144, "instrument": "Batteria"},
+    {"event_id": 144, "instrument": "Voce"},
+
+    {"event_id": 145, "instrument": "Chitarra"},
+    {"event_id": 145, "instrument": "Basso"},
+    {"event_id": 145, "instrument": "Batteria"},
+    {"event_id": 145, "instrument": "Voce"},
+
+    {"event_id": 146, "instrument": "Chitarra"},
+    {"event_id": 146, "instrument": "Basso"},
+    {"event_id": 146, "instrument": "Batteria"},
+    {"event_id": 146, "instrument": "Voce"},
+
+    {"event_id": 147, "instrument": "Chitarra"},
+    {"event_id": 147, "instrument": "Basso"},
+    {"event_id": 147, "instrument": "Batteria"},
+    {"event_id": 147, "instrument": "Voce"},
+
+    {"event_id": 148, "instrument": "Chitarra"},
+    {"event_id": 148, "instrument": "Piano"},
+    {"event_id": 148, "instrument": "Batteria"},
+
+    {"event_id": 149, "instrument": "Chitarra"},
+    {"event_id": 149, "instrument": "Batteria"},
+    {"event_id": 149, "instrument": "Voce"},
+
+    {"event_id": 150, "instrument": "Voce"},
+    {"event_id": 150, "instrument": "Chitarra"},
+    {"event_id": 150, "instrument": "Pianoforte"},
+
+    {"event_id": 151, "instrument": "Voce"},
+    {"event_id": 151, "instrument": "Pianoforte"},
+    {"event_id": 151, "instrument": "Chitarra"},
+
+    {"event_id": 152, "instrument": "Voce"},
+
+    {"event_id": 153, "instrument": "Voce"},
+    {"event_id": 153, "instrument": "Chitarra"},
+    {"event_id": 153, "instrument": "Pianoforte"},
+
+    {"event_id": 154, "instrument": "Voce"},
+    {"event_id": 154, "instrument": "Chitarra"},
+
+    {"event_id": 155, "instrument": "Voce"},
+    {"event_id": 155, "instrument": "Chitarra"},
+
+    {"event_id": 156, "instrument": "Voce"},
+
+    {"event_id": 157, "instrument": "Voce"},
+    {"event_id": 157, "instrument": "Chitarra"},
+
+    {"event_id": 158, "instrument": "Voce"},
+
+    {"event_id": 159, "instrument": "Voce"},
+    {"event_id": 159, "instrument": "Chitarra"},
+
+    {"event_id": 160, "instrument": "Voce"},
+    {"event_id": 160, "instrument": "Chitarra"},
+
+    {"event_id": 161, "instrument": "Voce"},
+    {"event_id": 161, "instrument": "Pianoforte"},
+
+    {"event_id": 162, "instrument": "Voce"},
+    {"event_id": 162, "instrument": "Chitarra"},
+
+    {"event_id": 163, "instrument": "Voce"},
+    {"event_id": 163, "instrument": "Pianoforte"},
+
+    {"event_id": 164, "instrument": "Voce"},
+    {"event_id": 164, "instrument": "Chitarra"},
+
+    {"event_id": 165, "instrument": "Voce"},
+    {"event_id": 165, "instrument": "Chitarra"},
+
+    {"event_id": 166, "instrument": "Voce"},
+    {"event_id": 166, "instrument": "Chitarra"},
+    {"event_id": 166, "instrument": "Pianoforte"},
+
+    {"event_id": 167, "instrument": "Pianoforte"},
+    {"event_id": 167, "instrument": "Voce"},
+    {"event_id": 167, "instrument": "Batteria"},
+
+    {"event_id": 168, "instrument": "Chitarra"},
+    {"event_id": 168, "instrument": "Voce"},
+    {"event_id": 168, "instrument": "Pianoforte"},
+
+    {"event_id": 169, "instrument": "Voce"},
+    {"event_id": 169, "instrument": "Pianoforte"},
+
+    {"event_id": 170, "instrument": "Voce"},
+    {"event_id": 170, "instrument": "Chitarra"},
+    {"event_id": 170, "instrument": "Batteria"},
+
+    {"event_id": 171, "instrument": "Chitarra"},
+    {"event_id": 171, "instrument": "Voce"},
+    {"event_id": 171, "instrument": "Batteria"},
+    {"event_id": 171, "instrument": "Pianoforte"},
+
+    {"event_id": 172, "instrument": "Voce"},
+    {"event_id": 172, "instrument": "Chitarra"},
+    {"event_id": 172, "instrument": "Batteria"},
+
+    {"event_id": 173, "instrument": "Voce"},
+    {"event_id": 173, "instrument": "Chitarra"},
+    {"event_id": 173, "instrument": "Batteria"},
+
+    {"event_id": 174, "instrument": "Voce"},
+    {"event_id": 174, "instrument": "Chitarra"},
+
+    {"event_id": 175, "instrument": "Voce"},
+    {"event_id": 175, "instrument": "Chitarra"},
+    {"event_id": 175, "instrument": "Pianoforte"},
+
+    {"event_id": 176, "instrument": "Voce"},
+    {"event_id": 176, "instrument": "Chitarra"},
+    {"event_id": 176, "instrument": "Batteria"},
+
+    {"event_id": 177, "instrument": "Voce"},
+    {"event_id": 177, "instrument": "Chitarra"},
+
+    {"event_id": 178, "instrument": "Voce"},
+    {"event_id": 178, "instrument": "Chitarra"},
+    {"event_id": 178, "instrument": "Pianoforte"},
+
+    {"event_id": 179, "instrument": "Voce"},
+    {"event_id": 179, "instrument": "Chitarra"},
+    {"event_id": 179, "instrument": "Batteria"},
+
+    {"event_id": 180, "instrument": "Voce"},
+    {"event_id": 180, "instrument": "Chitarra"},
+    {"event_id": 180, "instrument": "Batteria"},
+
+    {"event_id": 181, "instrument": "Voce"},
+    {"event_id": 181, "instrument": "Chitarra"},
+    {"event_id": 181, "instrument": "Batteria"},
+
+    {"event_id": 182, "instrument": "Voce"},
+    {"event_id": 182, "instrument": "Chitarra"},
+    {"event_id": 182, "instrument": "Batteria"},
+
+    {"event_id": 183, "instrument": "Voce"},
+    {"event_id": 183, "instrument": "Chitarra"},
+
+    {"event_id": 184, "instrument": "Voce"},
+    {"event_id": 184, "instrument": "Chitarra"},
+    {"event_id": 184, "instrument": "Batteria"},
+
+    {"event_id": 185, "instrument": "Voce"},
+    {"event_id": 185, "instrument": "Chitarra"},
+
+    {"event_id": 186, "instrument": "Voce"},
+    {"event_id": 186, "instrument": "Chitarra"},
+    {"event_id": 186, "instrument": "Batteria"},
+
+    {"event_id": 187, "instrument": "Voce"},
+    {"event_id": 187, "instrument": "Chitarra"},
+    {"event_id": 187, "instrument": "Batteria"},
+
+    {"event_id": 188, "instrument": "Chitarra"},
+    {"event_id": 188, "instrument": "Batteria"},
+
+    {"event_id": 189, "instrument": "Chitarra"},
+    {"event_id": 189, "instrument": "Voce"},
+    {"event_id": 189, "instrument": "Batteria"},
+
+    {"event_id": 190, "instrument": "Chitarra"},
+    {"event_id": 190, "instrument": "Batteria"},
+    {"event_id": 190, "instrument": "Voce"},
+
+    {"event_id": 191, "instrument": "Chitarra"},
+    {"event_id": 191, "instrument": "Voce"},
+    {"event_id": 191, "instrument": "Batteria"}
+]

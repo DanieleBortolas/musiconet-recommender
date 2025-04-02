@@ -1,0 +1,270 @@
+[
+    {"user_id": 0, "artist_id": 240},
+    {"user_id": 0, "artist_id": 241}, 
+    {"user_id": 0, "artist_id": 200}, 
+    {"user_id": 0, "artist_id": 205},
+
+    {"user_id": 1, "artist_id": 240},
+    {"user_id": 1, "artist_id": 242},  
+    {"user_id": 1, "artist_id": 201},
+    {"user_id": 1, "artist_id": 216}, 
+    {"user_id": 1, "artist_id": 254},
+
+    {"user_id": 2, "artist_id": 230},
+    {"user_id": 2, "artist_id": 232},
+    {"user_id": 2, "artist_id": 239},
+    {"user_id": 2, "artist_id": 249},
+    {"user_id": 2, "artist_id": 250},
+
+    {"user_id": 3, "artist_id": 230},
+
+    {"user_id": 4, "artist_id": 230},
+    {"user_id": 4, "artist_id": 231},
+
+    {"user_id": 5, "artist_id": 231 },
+    {"user_id": 5, "artist_id": 249},
+    {"user_id": 5, "artist_id": 251},
+
+    {"user_id": 6, "artist_id": 230},
+    {"user_id": 6, "artist_id": 233},
+    {"user_id": 6, "artist_id": 235},
+    {"user_id": 6, "artist_id": 215},
+    {"user_id": 6, "artist_id": 219},
+
+    {"user_id": 7, "artist_id": 230},
+    {"user_id": 7, "artist_id": 233},
+    {"user_id": 7, "artist_id": 238},
+    {"user_id": 7, "artist_id": 201},
+    {"user_id": 7, "artist_id": 206},
+
+    {"user_id": 8, "artist_id": 231},
+    {"user_id": 8, "artist_id": 236},
+    {"user_id": 8, "artist_id": 215},
+    {"user_id": 8, "artist_id": 254},
+    {"user_id": 8, "artist_id": 245},
+    
+    {"user_id": 9, "artist_id": 230},
+    {"user_id": 9, "artist_id": 231},
+    {"user_id": 9, "artist_id": 232},
+    {"user_id": 9, "artist_id": 234},
+    {"user_id": 9, "artist_id": 237},
+    {"user_id": 9, "artist_id": 201},
+    {"user_id": 9, "artist_id": 240},
+    {"user_id": 9, "artist_id": 250},
+    {"user_id": 9, "artist_id": 259},
+
+    {"user_id": 10, "artist_id": 230},
+    {"user_id": 10, "artist_id": 231},
+    {"user_id": 10, "artist_id": 232},
+    {"user_id": 10, "artist_id": 233},
+    {"user_id": 10, "artist_id": 216},
+
+    {"user_id": 11, "artist_id": 231},
+    {"user_id": 11, "artist_id": 233},
+    {"user_id": 11, "artist_id": 249},
+
+    {"user_id": 12, "artist_id": 231},
+
+    {"user_id": 13, "artist_id": 244},
+    {"user_id": 13, "artist_id": 245},
+    {"user_id": 13, "artist_id": 248},
+    {"user_id": 13, "artist_id": 200},
+    {"user_id": 13, "artist_id": 215},
+    {"user_id": 13, "artist_id": 249},
+    {"user_id": 13, "artist_id": 259},
+
+    {"user_id": 14, "artist_id": 244},
+    {"user_id": 14, "artist_id": 201},
+    {"user_id": 14, "artist_id": 204},
+    
+    {"user_id": 15, "artist_id": 249},
+    {"user_id": 15, "artist_id": 200},
+    {"user_id": 15, "artist_id": 205},
+    {"user_id": 15, "artist_id": 217},
+    {"user_id": 15, "artist_id": 233},
+
+    {"user_id": 16, "artist_id": 249},
+    {"user_id": 16, "artist_id": 251},
+    {"user_id": 16, "artist_id": 253 },
+    {"user_id": 16, "artist_id": 200},
+    {"user_id": 16, "artist_id": 201},
+
+    {"user_id": 17, "artist_id": 249},
+    {"user_id": 17, "artist_id": 250},
+    {"user_id": 17, "artist_id": 252},
+
+    {"user_id": 18, "artist_id": 249},
+    {"user_id": 18, "artist_id": 251},
+    {"user_id": 18, "artist_id": 244},
+
+    {"user_id": 19, "artist_id": 250},
+    {"user_id": 19, "artist_id": 216},
+
+    {"user_id": 20, "artist_id": 254},
+    {"user_id": 20, "artist_id": 255},
+    {"user_id": 20, "artist_id": 257},
+
+    {"user_id": 21, "artist_id": 255},
+    {"user_id": 21, "artist_id": 256},
+    {"user_id": 21, "artist_id": 239},
+
+    {"user_id": 22, "artist_id": 254},
+    {"user_id": 22, "artist_id": 256},
+    {"user_id": 22, "artist_id": 201},
+    {"user_id": 22, "artist_id": 216},
+    {"user_id": 22, "artist_id": 230},
+
+    {"user_id": 23, "artist_id": 254},
+    {"user_id": 23, "artist_id": 258},
+    {"user_id": 23, "artist_id": 240},
+
+    {"user_id": 24, "artist_id": 259},
+    {"user_id": 24, "artist_id": 260},
+    {"user_id": 24, "artist_id": 262},
+    {"user_id": 24, "artist_id": 203},
+    {"user_id": 24, "artist_id": 204},
+
+    {"user_id": 25, "artist_id": 259},
+    {"user_id": 25, "artist_id": 261},
+    {"user_id": 25, "artist_id": 219},
+
+    {"user_id": 26, "artist_id": 260},
+    {"user_id": 26, "artist_id": 263},
+    {"user_id": 26, "artist_id": 230},
+    {"user_id": 26, "artist_id": 233},
+
+    {"user_id": 27, "artist_id": 216},
+    {"user_id": 27, "artist_id": 220},
+    {"user_id": 27, "artist_id": 227},
+    {"user_id": 27, "artist_id": 254},
+    {"user_id": 27, "artist_id": 256},
+    {"user_id": 27, "artist_id": 244},
+
+    {"user_id": 28, "artist_id": 215},
+    {"user_id": 28, "artist_id": 226},
+
+    {"user_id": 29, "artist_id": 216},
+    {"user_id": 29, "artist_id": 219},
+    {"user_id": 29, "artist_id": 200},
+    {"user_id": 29, "artist_id": 202},
+
+    {"user_id": 30, "artist_id": 215},
+    {"user_id": 30, "artist_id": 217},
+    {"user_id": 30, "artist_id": 218},
+    {"user_id": 30, "artist_id": 222},
+    {"user_id": 30, "artist_id": 225},
+
+    {"user_id": 31, "artist_id": 216},
+    {"user_id": 31, "artist_id": 218},
+    {"user_id": 31, "artist_id": 229},
+    {"user_id": 31, "artist_id": 201},
+    {"user_id": 31, "artist_id": 231},
+
+    {"user_id": 32, "artist_id": 215},
+    {"user_id": 32, "artist_id": 219},
+    {"user_id": 32, "artist_id": 254},
+
+    {"user_id": 33, "artist_id": 217},
+    {"user_id": 33, "artist_id": 221},
+    {"user_id": 33, "artist_id": 228},
+
+    {"user_id": 34, "artist_id": 216},
+    {"user_id": 34, "artist_id": 223},
+    {"user_id": 34, "artist_id": 201},
+    {"user_id": 34, "artist_id": 200},
+
+    {"user_id": 35, "artist_id": 215},
+    {"user_id": 35, "artist_id": 216},
+    {"user_id": 35, "artist_id": 224},
+
+    {"user_id": 36, "artist_id": 215},
+    {"user_id": 36, "artist_id": 217},
+    {"user_id": 36, "artist_id": 257},
+    {"user_id": 36, "artist_id": 245},
+    {"user_id": 36, "artist_id": 240},
+
+    {"user_id": 37, "artist_id": 215},
+    {"user_id": 37, "artist_id": 216},
+    {"user_id": 37, "artist_id": 218},
+
+    {"user_id": 38, "artist_id": 215},
+    {"user_id": 38, "artist_id": 219},
+    {"user_id": 38, "artist_id": 249},
+
+    {"user_id": 39, "artist_id": 203},
+    {"user_id": 39, "artist_id": 204},
+    {"user_id": 39, "artist_id": 207},
+    {"user_id": 39, "artist_id": 213},
+    {"user_id": 39, "artist_id": 240},
+    {"user_id": 39, "artist_id": 241},
+
+    {"user_id": 40, "artist_id": 201},
+    {"user_id": 40, "artist_id": 202},
+    {"user_id": 40, "artist_id": 244},
+    {"user_id": 40, "artist_id": 245},
+
+    {"user_id": 41, "artist_id": 200},
+    {"user_id": 41, "artist_id": 201},
+    {"user_id": 41, "artist_id": 205},
+    {"user_id": 41, "artist_id": 210},
+    {"user_id": 41, "artist_id": 244},
+
+    {"user_id": 42, "artist_id": 201},
+    {"user_id": 42, "artist_id": 206},
+    {"user_id": 42, "artist_id": 208},
+    {"user_id": 42, "artist_id": 254},
+
+    {"user_id": 43, "artist_id": 200},
+    {"user_id": 43, "artist_id": 204},
+    {"user_id": 43, "artist_id": 259},
+
+    {"user_id": 44, "artist_id": 200},
+    {"user_id": 44, "artist_id": 206},
+    {"user_id": 44, "artist_id": 212},
+    {"user_id": 44, "artist_id": 216},
+    {"user_id": 44, "artist_id": 219},
+
+    {"user_id": 45, "artist_id": 200},
+    {"user_id": 45, "artist_id": 202},
+    {"user_id": 45, "artist_id": 215},
+    {"user_id": 45, "artist_id": 218},
+
+    {"user_id": 46, "artist_id": 201},
+    {"user_id": 46, "artist_id": 203},
+    {"user_id": 46, "artist_id": 205},
+    {"user_id": 46, "artist_id": 215},
+    {"user_id": 46, "artist_id": 216},
+    {"user_id": 46, "artist_id": 240},
+    {"user_id": 46, "artist_id": 249},
+
+    {"user_id": 47, "artist_id": 201},
+    {"user_id": 47, "artist_id": 203},
+    {"user_id": 47, "artist_id": 209},
+    {"user_id": 47, "artist_id": 241},
+    {"user_id": 47, "artist_id": 259},
+
+    {"user_id": 48, "artist_id": 204},
+    {"user_id": 48, "artist_id": 205},
+    {"user_id": 48, "artist_id": 215},
+    {"user_id": 48, "artist_id": 249},
+    
+    {"user_id": 49, "artist_id": 200},    
+    {"user_id": 49, "artist_id": 201},
+    {"user_id": 49, "artist_id": 216},
+    {"user_id": 49, "artist_id": 215},
+    {"user_id": 49, "artist_id": 218},
+    {"user_id": 49, "artist_id": 254},
+    
+    {"user_id": 50, "artist_id": 200},
+    {"user_id": 50, "artist_id": 206},
+    {"user_id": 50, "artist_id": 211},
+    {"user_id": 50, "artist_id": 214},
+    {"user_id": 50, "artist_id": 216},
+    {"user_id": 50, "artist_id": 242},
+    {"user_id": 50, "artist_id": 254},
+
+
+    {"user_id": 51, "artist_id": 200},
+    {"user_id": 51, "artist_id": 202}
+
+]

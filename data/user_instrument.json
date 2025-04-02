@@ -1,0 +1,105 @@
+[
+    {"user_id": 0, "instrument": "Batteria"},
+    
+    {"user_id": 1, "instrument": "Chitarra"},
+    
+    {"user_id": 2, "instrument": "Chitarra"},
+    
+    {"user_id": 3, "instrument": "Clarinetto"},
+    
+    {"user_id": 4, "instrument": "Organo"},
+    
+    {"user_id": 5, "instrument": "Organo"},
+    
+    {"user_id": 6, "instrument": "Pianoforte"},
+    
+    {"user_id": 7, "instrument": "Pianoforte"},
+    
+    {"user_id": 8, "instrument": "Tromba"},
+    
+    {"user_id": 9, "instrument": "Violino"},
+    
+    {"user_id": 10, "instrument": "Violino"},
+    
+    {"user_id": 11, "instrument": "Voce"},
+    
+    {"user_id": 12, "instrument": "Voce"},
+    
+    {"user_id": 13, "instrument": "Batteria"},
+    
+    {"user_id": 14, "instrument": "Batteria"},
+    
+    {"user_id": 15, "instrument": "Chitarra"},
+    
+    {"user_id": 16, "instrument": "Chitarra"},
+    
+    {"user_id": 17, "instrument": "Violino"},
+    
+    {"user_id": 18, "instrument": "Violino"},
+    
+    {"user_id": 19, "instrument": "Voce"},
+    
+    {"user_id": 20, "instrument": "Basso"},
+    
+    {"user_id": 21, "instrument": "Chitarra"},
+    
+    {"user_id": 22, "instrument": "Pianoforte"},
+    
+    {"user_id": 23, "instrument": "Tromba"},
+    
+    {"user_id": 24, "instrument": "Batteria"},
+    
+    {"user_id": 25, "instrument": "Chitarra"},
+    
+    {"user_id": 26, "instrument": "Pianoforte"},
+    
+    {"user_id": 27, "instrument": "Batteria"},
+    
+    {"user_id": 28, "instrument": "Batteria"},
+    
+    {"user_id": 29, "instrument": "Batteria"},
+    
+    {"user_id": 30, "instrument": "Chitarra"},
+    
+    {"user_id": 31, "instrument": "Chitarra"},
+    
+    {"user_id": 32, "instrument": "Chitarra"},
+    
+    {"user_id": 33, "instrument": "Clarinetto"},
+    
+    {"user_id": 34, "instrument": "Pianoforte"},
+    
+    {"user_id": 35, "instrument": "Voce"},
+    
+    {"user_id": 36, "instrument": "Voce"},
+    
+    {"user_id": 37, "instrument": "Voce"},
+    
+    {"user_id": 38, "instrument": "Voce"},
+    
+    {"user_id": 39, "instrument": "Chitarra"},
+    
+    {"user_id": 40, "instrument": "Batteria"},
+    
+    {"user_id": 41, "instrument": "Voce"},
+    
+    {"user_id": 42, "instrument": "Batteria"},
+    
+    {"user_id": 43, "instrument": "Basso"},
+    
+    {"user_id": 44, "instrument": "Batteria"},
+    
+    {"user_id": 45, "instrument": "Chitarra"},
+    
+    {"user_id": 46, "instrument": "Chitarra"},
+    
+    {"user_id": 47, "instrument": "Basso"},
+    
+    {"user_id": 48, "instrument": "Batteria"},
+    
+    {"user_id": 49, "instrument": "Pianoforte"},
+    
+    {"user_id": 50, "instrument": "Batteria"},
+    
+    {"user_id": 51, "instrument": "Chitarra"}
+]

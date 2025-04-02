@@ -1,4 +1,10 @@
 "use strict";
+/*
+    Questo file è il punto di ingresso dell'applicazione.
+    Qui viene aperto il database, viene creata la tabella se non esiste e vengono eseguite le query.
+    Per compilare il file, eseguire il comando `tsc`
+    Per eseguire il file, eseguire il comando `node dist/index.js`
+*/
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -17,15 +23,28 @@ function main() {
     return __awaiter(this, void 0, void 0, function* () {
         const db = db_operations_1.default.openDatabase();
         yield db_operations_1.default.createTable(db);
+        yield db_operations_1.default.populate(db);
+        //const events = await db_op.getEvents(db)
+        //console.log(events)
+        const userEvents = yield db_operations_1.default.executeQuery(db, "SELECT COUNT(*) as count FROM user_event");
+        console.log(userEvents[0].count);
+        const genre = yield db_operations_1.default.executeQuery(db, "SELECT COUNT(*) as count FROM event_genre");
+        console.log(genre[0].count);
+        const instrument = yield db_operations_1.default.executeQuery(db, "SELECT COUNT(*) as count FROM event_instrument");
+        console.log(instrument[0].count);
+        const artist = yield db_operations_1.default.executeQuery(db, "SELECT COUNT(*) as count FROM event_artist");
+        console.log(artist[0].count);
+        /*
         //Conto il numero di utenti nel database
-        const result = yield db_operations_1.default.executeQuery(db, 'SELECT COUNT(*) as count FROM users');
-        if (result[0].count == 0) {
+        const result = await db_op.executeQuery(db, 'SELECT COUNT(*) as count FROM users')
+        if(result[0].count == 0){
             //Popolo il database se è vuoto
-            yield db_operations_1.default.populate(db);
-            console.log('Database popolato con successo');
+            await db_op.populate(db)
+            console.log('Database popolato con successo')
         }
-        const users = yield db_operations_1.default.getUsers(db);
-        console.log('Utenti:', users);
+        const users = await db_op.getUsers(db)
+        console.log('Utenti:', users)
+        */
         yield db_operations_1.default.closedDatabase(db);
     });
 }

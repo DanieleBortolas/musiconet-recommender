@@ -24,7 +24,8 @@
         "id": 103, 
         "name":"Blues Night Live",          
         "location": "Rovereto, Teatro Zandonai", 	                   
-        "date": "22 settembre 2025, 21:00 – 00:00", "description": "Una serata che celebra il blues in tutte le sue forme, con le leggendarie chitarre di Buddy Guy e The Black Keys."
+        "date": "22 settembre 2025, 21:00 – 00:00", 
+        "description": "Una serata che celebra il blues in tutte le sue forme, con le leggendarie chitarre di Buddy Guy e The Black Keys."
     },
     {
         "id": 104, 

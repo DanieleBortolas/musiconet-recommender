@@ -9,8 +9,26 @@ import db_op from './db_operations'
 
 async function main(){
     const db = db_op.openDatabase()
-    await db_op.createTable(db)
     
+    await db_op.createTable(db)
+    await db_op.populate(db)
+
+    //const events = await db_op.getEvents(db)
+    //console.log(events)
+
+    const userEvents = await db_op.executeQuery(db, "SELECT COUNT(*) as count FROM user_event")
+    console.log(userEvents[0].count)
+
+    const genre = await db_op.executeQuery(db, "SELECT COUNT(*) as count FROM event_genre")
+    console.log(genre[0].count)
+
+    const instrument = await db_op.executeQuery(db, "SELECT COUNT(*) as count FROM event_instrument")
+    console.log(instrument[0].count)
+
+    const artist = await db_op.executeQuery(db, "SELECT COUNT(*) as count FROM event_artist")
+    console.log(artist[0].count)
+
+    /*
     //Conto il numero di utenti nel database
     const result = await db_op.executeQuery(db, 'SELECT COUNT(*) as count FROM users')
     if(result[0].count == 0){
@@ -20,6 +38,7 @@ async function main(){
     }
     const users = await db_op.getUsers(db)
     console.log('Utenti:', users)
+    */
     await db_op.closedDatabase(db)
 }
 
