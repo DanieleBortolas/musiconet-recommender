@@ -31,3 +31,5 @@ async function getCounts() {
 
 getCounts();
 ```
+
+Provare a risistemare la funzione buildFeatureMaps in content_based in modo tale che creai una sola mappa

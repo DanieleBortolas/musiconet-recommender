@@ -35,13 +35,13 @@ function handleDBCallBack(err, resolve, reject, success_data, control_message) {
 // Aprire il database
 function openDatabase() {
     return new Promise((resolve, reject) => {
-        const db = new sqlite3_1.Database(`musiconet.db`, (err) => handleDBCallBack(err, resolve, reject, db, "DB aperto correttamente"));
+        const db = new sqlite3_1.Database(`musiconet.db`, (err) => handleDBCallBack(err, resolve, reject, db, "Database aperto correttamente"));
     });
 }
 // Chiudere il database
 function closeDatabase(db) {
     return new Promise((resolve, reject) => {
-        db.close((err) => handleDBCallBack(err, resolve, reject, undefined, "DB chiuso correttamente"));
+        db.close((err) => handleDBCallBack(err, resolve, reject, undefined, "Database chiuso correttamente"));
     });
 }
 // Esegue un 
@@ -296,6 +296,51 @@ function getEvents(db) {
         return results.map(row => new models_js_1.Event(row.id, row.name, row.genres ? row.genres.split(",") : [], row.instruments ? row.instruments.split(",") : [], row.artists ? row.artists.split(",") : [], row.location, row.date, row.description));
     });
 }
+// Ottenere i nomi di tutti i generi musicali
+function getAllGenresName(db) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const results = yield executeQuery(db, 'SELECT name FROM genre');
+        return results.map(row => row.name);
+    });
+}
+// Ottenere i nomi di tutti gli strumenti
+function getAllInstrumentsName(db) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const results = yield executeQuery(db, 'SELECT name FROM instrument');
+        return results.map(row => row.name);
+    });
+}
+// Ottenere gli id di tutti gli artisti
+function getAllArtistsId(db) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const results = yield executeQuery(db, 'SELECT id FROM artist');
+        return results.map(row => row.id);
+    });
+}
+// Ottenere i generi preferiti di un utente
+function getGenresByUserId(db, user_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const results = yield executeQuery(db, `SELECT genre FROM user_genre WHERE user_id = ${user_id}`);
+        return results.map(row => row.genre);
+    });
+}
+// Ottenere gli strumenti suonati da un utente
+function getInstrumentsByUserId(db, user_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const result = yield executeQuery(db, `SELECT instrument FROM user_instrument WHERE user_id = ${user_id}`);
+        return result.map(row => row.instrument);
+    });
+}
+// Ottenere gli artisti seguiti da un utente
+function getArtistsByUserId(db, user_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const result = yield executeQuery(db, `SELECT artist_id FROM user_artist WHERE user_id = ${user_id}`);
+        return result.map(row => row.artist_id);
+    });
+}
+// TODO Recupera gli eventi a cui è interessato (user_event) e, per ciascuno di questi eventi, 
+//      recupera i relativi generi (event_genre) e artisti (event_artist). 
+//      Questo arricchisce il profilo utente con interessi dimostrati
 /* Da sistemare nel caso servisse
 // Ottenere gli eventi di un utente dal database
 async function getUserEvents(db: Database, user_id: number): Promise<any[]>{
@@ -408,4 +453,6 @@ async function printData(): Promise<void>{
     //printData()
     */
 exports.default = { openDatabase, closeDatabase, createTable, insertUser, insertEvent, insertUserEvent,
-    executeQuery, getUsers, getEvents, /*getUserEvents,*/ isDatabasePopulated, populate };
+    executeQuery, getUsers, getEvents, /*getUserEvents,*/ getAllGenresName, getAllInstrumentsName,
+    getAllArtistsId, getGenresByUserId, getInstrumentsByUserId, getArtistsByUserId, isDatabasePopulated,
+    populate };

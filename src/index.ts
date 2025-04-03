@@ -5,6 +5,7 @@
 
 import db_op from './db_operations'
 import {User, Event} from './models.js'
+import cb from './content_based.js'
 
 async function main(){
     const db = await db_op.openDatabase()
@@ -16,6 +17,12 @@ async function main(){
         await db_op.populate(db)
         console.log('Database popolato con successo')
     }
+
+    const {genreMap, instrumentMap, artistMap, n_feature} = await cb.buildFeatureMaps(db)
+
+    const vec = await cb.createUserVector(db, 0, genreMap, instrumentMap, artistMap, n_feature)
+
+    console.log(vec)
 
     await db_op.closeDatabase(db)
 }

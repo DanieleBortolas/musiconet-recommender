@@ -286,6 +286,49 @@ async function getEvents(db: Database): Promise<any[]>{
     )
 }
 
+// Ottenere i nomi di tutti i generi musicali
+async function getAllGenresName(db: Database): Promise<string[]>{
+    const results = await executeQuery(db, 'SELECT name FROM genre')
+    return results.map(row => row.name)
+}
+
+// Ottenere i nomi di tutti gli strumenti
+async function getAllInstrumentsName(db: Database): Promise<string[]>{
+    const results = await executeQuery(db, 'SELECT name FROM instrument')
+    return results.map(row => row.name)
+}
+
+// Ottenere gli id di tutti gli artisti
+async function getAllArtistsId(db: Database): Promise<number[]>{
+    const results = await executeQuery(db, 'SELECT id FROM artist')
+    return results.map(row => row.id)
+}
+
+// Ottenere i generi preferiti di un utente
+async function getGenresByUserId(db: Database, user_id: number): Promise<string[]>{
+    const results = await executeQuery(db, `SELECT genre FROM user_genre WHERE user_id = ${user_id}`)
+    return results.map(row => row.genre)
+}
+
+// Ottenere gli strumenti suonati da un utente
+async function getInstrumentsByUserId(db: Database, user_id: number): Promise<string[]>{
+    const result = await executeQuery(db, `SELECT instrument FROM user_instrument WHERE user_id = ${user_id}`)
+    return result.map(row => row.instrument)
+}
+
+// Ottenere gli artisti seguiti da un utente
+async function getArtistsByUserId(db: Database, user_id: number): Promise<number[]>{
+    const result = await executeQuery(db, `SELECT artist_id FROM user_artist WHERE user_id = ${user_id}`)
+    return result.map(row => row.artist_id)
+}
+
+// TODO Recupera gli eventi a cui è interessato (user_event) e, per ciascuno di questi eventi, 
+//      recupera i relativi generi (event_genre) e artisti (event_artist). 
+//      Questo arricchisce il profilo utente con interessi dimostrati
+
+
+
+
 /* Da sistemare nel caso servisse
 // Ottenere gli eventi di un utente dal database
 async function getUserEvents(db: Database, user_id: number): Promise<any[]>{
@@ -409,4 +452,6 @@ async function printData(): Promise<void>{
     */
 
 export default {openDatabase, closeDatabase, createTable, insertUser, insertEvent, insertUserEvent, 
-                executeQuery, getUsers, getEvents, /*getUserEvents,*/ isDatabasePopulated, populate}
+                executeQuery, getUsers, getEvents, /*getUserEvents,*/ getAllGenresName, getAllInstrumentsName,
+                getAllArtistsId, getGenresByUserId, getInstrumentsByUserId, getArtistsByUserId, isDatabasePopulated, 
+                populate}

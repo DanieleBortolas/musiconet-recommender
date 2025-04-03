@@ -17,17 +17,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_operations_1 = __importDefault(require("./db_operations"));
+const content_based_js_1 = __importDefault(require("./content_based.js"));
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         const db = yield db_operations_1.default.openDatabase();
         yield db_operations_1.default.createTable(db);
-        console.log(`Controllo popolamento del database`);
         //Conto il numero di utenti nel database
         if (!(yield db_operations_1.default.isDatabasePopulated(db))) {
             //Popolo il database se è vuoto
             yield db_operations_1.default.populate(db);
             console.log('Database popolato con successo');
         }
+        const { genreMap, instrumentMap, artistMap, n_feature } = yield content_based_js_1.default.buildFeatureMaps(db);
+        const vec = yield content_based_js_1.default.createUserVector(db, 0, genreMap, instrumentMap, artistMap, n_feature);
+        console.log(vec);
         yield db_operations_1.default.closeDatabase(db);
     });
 }
