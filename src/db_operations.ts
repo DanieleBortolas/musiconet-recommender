@@ -1,12 +1,13 @@
 import {Database} from 'sqlite3'
 import fs from 'fs'
+import {User, Event} from './models.js'
 
 //Funzione di errore per inserimento: stampa l'errore oppure un messaggio di controllo 
 function handleError(err: Error | null, control_message: string){
     if(err){
         console.log(err.message)
     }else{
-        console.log(control_message)
+        //console.log(control_message)
     }
 }
 //Funzione di errore per query: stampa l'errore oppure un messaggio di controllo
@@ -150,6 +151,7 @@ async function insertUser(db: Database, id: number, name: string, surname: strin
     )
 }
 
+
 // Inserire un evento nel database
 async function insertEvent(db: Database, id: number, name: string, location: string, date: string, description: string): Promise<void>{
     db.run(`INSERT INTO event (id, name, location, date, description) VALUES (?, ?, ?, ?, ?)`,
@@ -235,13 +237,52 @@ async function executeQuery(db: Database, query: string, params: any[] = []): Pr
 }
 
 // Ottenere gli utenti dal database
-async function getUsers(db: Database): Promise<any[]>{
-    return executeQuery(db, `SELECT * FROM user`)
+async function getUsers(db: Database): Promise<User[]>{
+    const results = await executeQuery(db, `
+        SELECT u.id, u.name, u.surname, u.age, u.city, 
+               GROUP_CONCAT(DISTINCT g.name) AS genres,
+               GROUP_CONCAT(DISTINCT i.name) AS instrument,
+               GROUP_CONCAT(DISTINCT a.name) AS artists
+        FROM user u
+        LEFT JOIN user_instrument ui ON u.id = ui.user_id
+        LEFT JOIN instrument i ON ui.instrument = i.name
+        LEFT JOIN user_genre ug ON u.id = ug.user_id
+        LEFT JOIN genre g ON ug.genre = g.name
+        LEFT JOIN user_artist ua ON u.id = ua.user_id
+        LEFT JOIN artist a ON ua.artist_id = a.id
+        GROUP BY u.id`)
+    return results.map(row => 
+        new User(row.id, row.name, row.surname, row.age, row.city, 
+                row.genres ? row.genres.split(",") : [], 
+                row.instrument !== null ? row.instrument : "Nessuno", 
+                row.artists ? row.artists.split(",") : []
+            )
+    )
 }
 
 // Ottenere gli eventi dal database
 async function getEvents(db: Database): Promise<any[]>{
-    return executeQuery(db, `SELECT * FROM event`)
+    const results = await executeQuery(db, `
+        SELECT e.id, e.name, e.location, e.date, e.description, 
+               GROUP_CONCAT(DISTINCT g.name) AS genres,
+               GROUP_CONCAT(DISTINCT i.name) AS instruments,
+               GROUP_CONCAT(DISTINCT a.name) AS artists
+        FROM event e
+        LEFT JOIN event_instrument ei ON e.id = ei.event_id
+        LEFT JOIN instrument i ON ei.instrument = i.name
+        LEFT JOIN event_genre eg ON e.id = eg.event_id
+        LEFT JOIN genre g ON eg.genre = g.name
+        LEFT JOIN event_artist ea ON e.id = ea.event_id
+        LEFT JOIN artist a ON ea.artist_id = a.id
+        GROUP BY e.id`)
+    return results.map(row => 
+        new Event(row.id, row.name, 
+                row.genres ? row.genres.split(",") : [], 
+                row.instruments ? row.instruments.split(",") : [], 
+                row.artists ? row.artists.split(",") : [],
+                row.location, row.date, row.description
+            )
+    )
 }
 
 // Ottenere gli eventi di un utente dal database

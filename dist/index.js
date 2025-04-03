@@ -23,17 +23,28 @@ function main() {
     return __awaiter(this, void 0, void 0, function* () {
         const db = db_operations_1.default.openDatabase();
         yield db_operations_1.default.createTable(db);
-        yield db_operations_1.default.populate(db);
+        //await db_op.populate(db)
+        const users = yield db_operations_1.default.getUsers(db);
+        users.forEach(user => { user.printInfo(); });
+        const events = yield db_operations_1.default.getEvents(db);
+        events.forEach(event => { event.printInfo(); });
+        // const result = await db_op.executeQuery(db, `SELECT a.name FROM artist a JOIN user_artist ua ON a.id = ua.artist_id WHERE ua.user_id = 2`)
+        //console.log(result)
         //const events = await db_op.getEvents(db)
         //console.log(events)
-        const userEvents = yield db_operations_1.default.executeQuery(db, "SELECT COUNT(*) as count FROM user_event");
-        console.log(userEvents[0].count);
-        const genre = yield db_operations_1.default.executeQuery(db, "SELECT COUNT(*) as count FROM event_genre");
-        console.log(genre[0].count);
-        const instrument = yield db_operations_1.default.executeQuery(db, "SELECT COUNT(*) as count FROM event_instrument");
-        console.log(instrument[0].count);
-        const artist = yield db_operations_1.default.executeQuery(db, "SELECT COUNT(*) as count FROM event_artist");
-        console.log(artist[0].count);
+        /*
+        const userEvents = await db_op.executeQuery(db, "SELECT COUNT(*) as count FROM user_event")
+        console.log(userEvents[0].count)
+    
+        const genre = await db_op.executeQuery(db, "SELECT COUNT(*) as count FROM event_genre")
+        console.log(genre[0].count)
+    
+        const instrument = await db_op.executeQuery(db, "SELECT COUNT(*) as count FROM event_instrument")
+        console.log(instrument[0].count)
+    
+        const artist = await db_op.executeQuery(db, "SELECT COUNT(*) as count FROM event_artist")
+        console.log(artist[0].count)
+        
         /*
         //Conto il numero di utenti nel database
         const result = await db_op.executeQuery(db, 'SELECT COUNT(*) as count FROM users')
