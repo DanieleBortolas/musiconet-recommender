@@ -1,24 +1,8 @@
+// Funzioni necessarie per creare, inserire dati e interrogare il database
+
 import {Database} from 'sqlite3'
 import fs from 'fs'
 import {User, Event} from './models.js'
-
-//Funzione di errore per inserimento: stampa l'errore oppure un messaggio di controllo 
-function handleError(err: Error | null, control_message: string){
-    if(err){
-        console.log(err.message)
-    }else{
-        //console.log(control_message)
-    }
-}
-//Funzione di errore per query: stampa l'errore oppure un messaggio di controllo
-function handleQuery<T>(err: Error | null, rows: T| PromiseLike<any[]>, resolve: (value: T | PromiseLike<any[]>) => void, reject: (error: Error) => void){
-    if(err){
-        console.log(err.message)
-        reject(err)
-    }else{
-        resolve(rows)
-    }
-}
 
 // Caricare i dati da un file JSON
 function loadDataFromFile(path: string): Promise<any[]>{
@@ -26,57 +10,72 @@ function loadDataFromFile(path: string): Promise<any[]>{
     return JSON.parse(data)
 }
 
+// Gestire le CallBack nelle varie operazioni al Database
+function handleDBCallBack<T = void>(err: Error | null, resolve: (value?: any) => void, 
+                                    reject: (reason?: any) => void, success_data?: T, control_message?: string
+                                    ): void{
+    if(err){
+        console.error(err.message)
+        reject(err)
+    } else{
+        control_message? console.error(control_message): null
+        resolve(success_data)
+    }
+}
+
 // Aprire il database
-function openDatabase(): Database{
-    const db = new Database('musiconet.db', (err) => handleError(err, 'Database aperto correttamente'))
-    return db
+function openDatabase(): Promise<Database>{
+    return new Promise((resolve, reject) =>{
+        const db = new Database(`musiconet.db`, (err) => handleDBCallBack(err, resolve, reject, db, "Database aperto correttamente"))
+    })
 }
 
 // Chiudere il database
-function closedDatabase(db: Database): Promise<boolean>{
+function closeDatabase(db: Database): Promise<void>{
     return new Promise((resolve, reject) => {
-        db.close((err) => handleError(err, 'Database chiuso correttamente'))
+        db.close((err) => handleDBCallBack(err, resolve, reject, undefined, "Database chiuso correttamente"))
+    })
+}
+
+// Esegue un 
+async function runAsync(db: Database, sql: string, params: any[] = []): Promise<void>{
+    return new Promise((resolve, reject) => {
+        db.run(sql, params, (err) => handleDBCallBack(err, resolve, reject)) 
     })
 }
 
 // Creare le tabelle nel database
 async function createTable(db: Database): Promise<void>{
-    db.serialize(() => {
-        db.run(`
-            CREATE TABLE IF NOT EXISTS user (
-                id INTEGER PRIMARY KEY,
-                name TEXT NOT NULL,
-                surname TEXT NOT NULL,
-                age INTEGER,
-                city TEXT
-            )
-        `);
-        db.run(`
-            CREATE TABLE IF NOT EXISTS event (
-                id INTEGER PRIMARY KEY,
-                name TEXT NOT NULL,
-                location TEXT,
-                date TEXT,
-                description TEXT
-            )
-        `);
-        db.run(`
-            CREATE TABLE IF NOT EXISTS genre (
-                name TEXT PRIMARY KEY
-            )
-        `);
-        db.run(`
-            CREATE TABLE IF NOT EXISTS instrument (
-                name TEXT PRIMARY KEY
-            )
-        `);
-        db.run(`
-            CREATE TABLE IF NOT EXISTS artist (
-                id TEXT PRIMARY KEY,
-                name TEXT
-            )
-        `);
-        db.run(`
+    const run = (sql: string) => runAsync(db, sql)      //Creazione di un alias più corto
+    
+    try{
+        await run(`
+    	    CREATE TABLE IF NOT EXISTS user (
+    	        id INTEGER PRIMARY KEY,
+    	        name TEXT NOT NULL,
+    	        surname TEXT NOT NULL,
+    	        age INTEGER,
+    	        city TEXT
+    	    )
+    	`)
+        await run(`
+    	    CREATE TABLE IF NOT EXISTS event (
+    	        id INTEGER PRIMARY KEY,
+    	        name TEXT NOT NULL,
+    	        location TEXT,
+    	        date TEXT,
+    	        description TEXT
+    	    )
+    	`)
+    	await run(`CREATE TABLE IF NOT EXISTS genre (name TEXT PRIMARY KEY)`);
+    	await run(`CREATE TABLE IF NOT EXISTS instrument (name TEXT PRIMARY KEY)`);
+    	await run(`
+    	    CREATE TABLE IF NOT EXISTS artist (
+    	        id INTEGER PRIMARY KEY,
+    	        name TEXT
+    	    )
+    	`);
+    	await run(`
             CREATE TABLE IF NOT EXISTS user_event (
                 user_id INTEGER,
                 event_id INTEGER,
@@ -85,7 +84,7 @@ async function createTable(db: Database): Promise<void>{
                 FOREIGN KEY(event_id) REFERENCES event(id)
             )
         `);
-        db.run(`
+        await run(`
             CREATE TABLE IF NOT EXISTS user_genre (
                 user_id INTEGER,
                 genre TEXT,
@@ -94,145 +93,147 @@ async function createTable(db: Database): Promise<void>{
                 FOREIGN KEY(genre) REFERENCES genre(name)
             )
         `)
-        db.run(`
-            CREATE TABLE IF NOT EXISTS user_instrument (
-                user_id INTEGER,
-                instrument TEXT,
-                PRIMARY KEY(user_id, instrument),
-                FOREIGN KEY(user_id) REFERENCES user(id),
-                FOREIGN KEY(instrument) REFERENCES instrument(name)
-            )
-        `)
-        db.run(`
-            CREATE TABLE IF NOT EXISTS user_artist (
-                user_id INTEGER,
-                artist_id TEXT,
-                PRIMARY KEY(user_id, artist_id),
-                FOREIGN KEY(user_id) REFERENCES user(id),
-                FOREIGN KEY(artist_id) REFERENCES artist(id)
-            )
-        `)
-        db.run(`
-            CREATE TABLE IF NOT EXISTS event_genre (
-                event_id INTEGER,
-                genre TEXT,
-                PRIMARY KEY(event_id, genre),
-                FOREIGN KEY(event_id) REFERENCES event(id),
-                FOREIGN KEY(genre) REFERENCES genre(name)
-            )
-        `)
-        db.run(`
-            CREATE TABLE IF NOT EXISTS event_instrument (
-                event_id INTEGER,
-                instrument TEXT,
-                PRIMARY KEY(event_id, instrument),
-                FOREIGN KEY(event_id) REFERENCES event(id),
-                FOREIGN KEY(instrument) REFERENCES instrument(name)
-            )
-        `)
-        db.run(`
-            CREATE TABLE IF NOT EXISTS event_artist (
-                event_id INTEGER,
-                artist_id TEXT,
-                PRIMARY KEY(event_id, artist_id),
-                FOREIGN KEY(event_id) REFERENCES event(id),
-                FOREIGN KEY(artist_id) REFERENCES artist(id)
-            )
-        `)
-        
-    })
-    console.log('Tabelle create correttamente')
+    	await run(`
+    	    CREATE TABLE IF NOT EXISTS user_instrument (
+    	        user_id INTEGER,
+    	        instrument TEXT,
+    	        PRIMARY KEY(user_id, instrument),
+    	        FOREIGN KEY(user_id) REFERENCES user(id),
+    	        FOREIGN KEY(instrument) REFERENCES instrument(name)
+    	    )
+    	`)
+    	await run(`
+    	    CREATE TABLE IF NOT EXISTS user_artist (
+    	        user_id INTEGER,
+    	        artist_id INTEGER,
+    	        PRIMARY KEY(user_id, artist_id),
+    	        FOREIGN KEY(user_id) REFERENCES user(id),
+    	        FOREIGN KEY(artist_id) REFERENCES artist(id)
+    	    )
+    	`)
+    	await run(`
+    	    CREATE TABLE IF NOT EXISTS event_genre (
+    	        event_id INTEGER,
+    	        genre TEXT,
+    	        PRIMARY KEY(event_id, genre),
+    	        FOREIGN KEY(event_id) REFERENCES event(id),
+    	        FOREIGN KEY(genre) REFERENCES genre(name)
+    	    )
+    	`)
+    	await run(`
+    	    CREATE TABLE IF NOT EXISTS event_instrument (
+    	        event_id INTEGER,
+    	        instrument TEXT,
+    	        PRIMARY KEY(event_id, instrument),
+    	        FOREIGN KEY(event_id) REFERENCES event(id),
+    	        FOREIGN KEY(instrument) REFERENCES instrument(name)
+    	    )
+    	`)
+    	await run(`
+    	    CREATE TABLE IF NOT EXISTS event_artist (
+    	        event_id INTEGER,
+    	        artist_id INTEGER,
+    	        PRIMARY KEY(event_id, artist_id),
+    	        FOREIGN KEY(event_id) REFERENCES event(id),
+    	        FOREIGN KEY(artist_id) REFERENCES artist(id)
+    	    )
+    	`)
+        console.log(`Tabelle create correttamente`)
+    
+    }catch (err: any){
+        console.error(err.message)
+        throw err;
+    }
 }
 
 // Inserire un utente nel database
 async function insertUser(db: Database, id: number, name: string, surname: string, age: number, city: string): Promise<void>{
-    db.run(`INSERT INTO user (id, name, surname, age, city) VALUES (?, ?, ?, ?, ?)`, 
-        [id, name, surname, age, city], (err) => handleError(err, `User ${name} inserito correttamente`)
-    )
+    const sql = `INSERT INTO user (id, name, surname, age, city) VALUES (?, ?, ?, ?, ?)`
+    const params = [id, name, surname, age, city]
+    return runAsync(db, sql, params)
 }
-
 
 // Inserire un evento nel database
 async function insertEvent(db: Database, id: number, name: string, location: string, date: string, description: string): Promise<void>{
-    db.run(`INSERT INTO event (id, name, location, date, description) VALUES (?, ?, ?, ?, ?)`,
-        [id, name, location, date, description], (err) => handleError(err, `Evento ${name} inserito correttamente`)
-    )
+    const sql = `INSERT INTO event (id, name, location, date, description) VALUES (?, ?, ?, ?, ?)`
+    const params = [id, name, location, date, description]
+    return runAsync(db, sql, params)
 }
 
 //Inserire un genere nel database
 async function insertGenre(db: Database, name: string): Promise<void>{
-    db.run(`INSERT INTO genre (name) VALUES (?)`, 
-        [name], (err) => handleError(err, `Genere ${name} inserito correttamente`)
-    )
+    const sql = `INSERT INTO genre (name) VALUES (?)`
+    const params = [name]
+    return runAsync(db, sql, params)
 }
 
 //Inserire uno strumento nel database
 async function insertInstrument(db: Database, name: string): Promise<void>{
-    db.run(`INSERT INTO instrument (name) VALUES (?)`,
-        [name], (err) => handleError(err, `Strumento ${name} inserito correttamente`)
-    )
+    const sql = `INSERT INTO instrument (name) VALUES (?)`
+    const params = [name]
+    return runAsync(db, sql, params)
 }
 
 //Inserire un artista nel database
 async function insertArtist(db: Database, id: number, name: string): Promise<void>{
-    db.run(`INSERT INTO artist (id, name) VALUES (?, ?)`,
-        [id, name], (err) => handleError(err, `Artista ${name} inserito correttamente`)
-        )
+    const sql = `INSERT INTO artist (id, name) VALUES (?, ?)`
+    const params = [id, name]
+    return runAsync(db, sql, params)
 }
 
 // Inserire una relazione tra utente ed evento nel database
 async function insertUserEvent(db: Database, user_id: number, event_id: number): Promise<void>{
-    db.run(`INSERT INTO user_event (user_id, event_id) VALUES (?, ?)`,
-        [user_id, event_id], (err) => handleError(err, `Relazione tra utente ${user_id} e evento ${event_id} inserita correttamente` )
-    )
+    const sql = `INSERT INTO user_event (user_id, event_id) VALUES (?, ?)`
+    const params = [user_id, event_id]
+    return runAsync(db, sql, params)
 }
 
 //Inserire una relazione tra utente e genere nel database
 async function insertUserGenre(db: Database, user_id: number, genre: string): Promise<void>{
-    db.run(`INSERT INTO user_genre (user_id, genre) VALUES (?, ?)`,
-        [user_id, genre], (err) => handleError(err, `Relazione tra utente ${user_id} e genere ${genre} inserita correttamente`)
-    )
+    const sql = `INSERT INTO user_genre (user_id, genre) VALUES (?, ?)`
+    const params = [user_id, genre]
+    return runAsync(db, sql, params)
 }
 
 // Inserire una relazione tra utente e strumento nel database
 async function insertUserInstrument(db: Database, user_id: number, instrument: string): Promise<void>{
-    db.run(`INSERT INTO user_instrument (user_id, instrument) VALUES (?, ?)`,
-        [user_id, instrument], (err) => handleError(err, `Relazione tra utente ${user_id} e strumento ${instrument} inserita correttamente`)
-    )
+    const sql = `INSERT INTO user_instrument (user_id, instrument) VALUES (?, ?)`
+    const params = [user_id, instrument]
+    return runAsync(db, sql, params)
 }
 
 // Inserire una relazione tra utente e artista nel database
 async function insertUserArtist(db: Database, user_id: number, artist_id: number): Promise<void>{
-    db.run(`INSERT INTO user_artist (user_id, artist_id) VALUES (?, ?)`,
-        [user_id, artist_id], (err) => handleError(err, `Relazione tra utente ${user_id} e artista ${artist_id} inserita correttamente`)
-    )
+    const sql = `INSERT INTO user_artist (user_id, artist_id) VALUES (?, ?)`
+    const params = [user_id, artist_id]
+    return runAsync(db, sql, params)
 }
 
 //Inserire una relazione tra evento e genere nel database
 async function insertEventGenre(db: Database, event_id: number, genre: string): Promise<void>{
-    db.run(`INSERT INTO event_genre (event_id, genre) VALUES (?, ?)`,
-        [event_id, genre], (err) => handleError(err, `Relazione tra evento ${event_id} e genere ${genre} inserita correttamente`)
-    )
+    const sql = `INSERT INTO event_genre (event_id, genre) VALUES (?, ?)`
+    const params = [event_id, genre]
+    return runAsync(db, sql, params)
 }
 
 // Inserire una relazione tra evento e strumento nel database
 async function insertEventInstrument(db: Database, event_id: number, instrument: string): Promise<void>{
-    db.run(`INSERT INTO event_instrument (event_id, instrument) VALUES (?, ?)`,
-        [event_id, instrument], (err) => handleError(err, `Relazione tra evento ${event_id} e strumento ${instrument} inserita correttamente`)
-    )
+    const sql = `INSERT INTO event_instrument (event_id, instrument) VALUES (?, ?)`
+    const params = [event_id, instrument]
+    return runAsync(db, sql, params)
 }
 
 // Inserire una relazione tra evento e artista nel database
 async function insertEventArtist(db: Database, event_id: number, artist_id: number): Promise<void>{
-    db.run(`INSERT INTO event_artist (event_id, artist_id) VALUES (?, ?)`,
-        [event_id, artist_id], (err) => handleError(err, `Relazione tra evento ${event_id} e artista ${artist_id} inserita correttamente`)
-    )
+    const sql = `INSERT INTO event_artist (event_id, artist_id) VALUES (?, ?)`
+    const params = [event_id, artist_id]
+    return runAsync(db, sql, params)
 }
 
 // Eseguire una query sul database
 async function executeQuery(db: Database, query: string, params: any[] = []): Promise<any[]>{
     return new Promise((resolve, reject) => {
-        db.all(query, params, (err, rows) => handleQuery(err, rows, resolve, reject))
+        db.all(query, params, (err, rows) => handleDBCallBack(err, resolve, reject, rows))
     })
 }
 
@@ -285,11 +286,18 @@ async function getEvents(db: Database): Promise<any[]>{
     )
 }
 
+/* Da sistemare nel caso servisse
 // Ottenere gli eventi di un utente dal database
 async function getUserEvents(db: Database, user_id: number): Promise<any[]>{
     return executeQuery(db, 
         `SELECT * FROM event WHERE event_id IN (SELECT event_id FROM user_event_relation WHERE user_id = ?)`, 
         [user_id]) 
+}
+*/
+
+async function isDatabasePopulated(db: Database): Promise<boolean>{
+    const result = await executeQuery(db, 'SELECT COUNT(*) as count FROM user')
+    return result[0].count > 0
 }
 
 // Popolare il database con i dati iniziali
@@ -374,6 +382,8 @@ async function populate(db: Database): Promise<void>{
         console.error("Errore in populate: " + err)
     }
 }
+
+/*
 // Test per stampare i dati
 async function printData(): Promise<void>{
     const db = openDatabase();
@@ -391,10 +401,12 @@ async function printData(): Promise<void>{
     }catch(err){
         console.error("Errore in printData: " + err)
     }finally{
-        await closedDatabase(db)
+        await closeDatabase(db)
     }
-}
+    }
+    
+    //printData()
+    */
 
-//printData()
-
-export default {openDatabase, closedDatabase, createTable, insertUser, insertEvent, insertUserEvent, executeQuery, getUsers, getEvents, getUserEvents, populate}
+export default {openDatabase, closeDatabase, createTable, insertUser, insertEvent, insertUserEvent, 
+                executeQuery, getUsers, getEvents, /*getUserEvents,*/ isDatabasePopulated, populate}

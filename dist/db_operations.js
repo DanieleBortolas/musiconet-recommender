@@ -1,4 +1,5 @@
 "use strict";
+// Funzioni necessarie per creare, inserire dati e interrogare il database
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -15,80 +16,74 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sqlite3_1 = require("sqlite3");
 const fs_1 = __importDefault(require("fs"));
 const models_js_1 = require("./models.js");
-//Funzione di errore per inserimento: stampa l'errore oppure un messaggio di controllo 
-function handleError(err, control_message) {
-    if (err) {
-        console.log(err.message);
-    }
-    else {
-        //console.log(control_message)
-    }
-}
-//Funzione di errore per query: stampa l'errore oppure un messaggio di controllo
-function handleQuery(err, rows, resolve, reject) {
-    if (err) {
-        console.log(err.message);
-        reject(err);
-    }
-    else {
-        resolve(rows);
-    }
-}
 // Caricare i dati da un file JSON
 function loadDataFromFile(path) {
     const data = fs_1.default.readFileSync(path, 'utf-8');
     return JSON.parse(data);
 }
+// Gestire le CallBack nelle varie operazioni al Database
+function handleDBCallBack(err, resolve, reject, success_data, control_message) {
+    if (err) {
+        console.error(err.message);
+        reject(err);
+    }
+    else {
+        control_message ? console.error(control_message) : null;
+        resolve(success_data);
+    }
+}
 // Aprire il database
 function openDatabase() {
-    const db = new sqlite3_1.Database('musiconet.db', (err) => handleError(err, 'Database aperto correttamente'));
-    return db;
+    return new Promise((resolve, reject) => {
+        const db = new sqlite3_1.Database(`musiconet.db`, (err) => handleDBCallBack(err, resolve, reject, db, "DB aperto correttamente"));
+    });
 }
 // Chiudere il database
-function closedDatabase(db) {
+function closeDatabase(db) {
     return new Promise((resolve, reject) => {
-        db.close((err) => handleError(err, 'Database chiuso correttamente'));
+        db.close((err) => handleDBCallBack(err, resolve, reject, undefined, "DB chiuso correttamente"));
+    });
+}
+// Esegue un 
+function runAsync(db_1, sql_1) {
+    return __awaiter(this, arguments, void 0, function* (db, sql, params = []) {
+        return new Promise((resolve, reject) => {
+            db.run(sql, params, (err) => handleDBCallBack(err, resolve, reject));
+        });
     });
 }
 // Creare le tabelle nel database
 function createTable(db) {
     return __awaiter(this, void 0, void 0, function* () {
-        db.serialize(() => {
-            db.run(`
-            CREATE TABLE IF NOT EXISTS user (
-                id INTEGER PRIMARY KEY,
-                name TEXT NOT NULL,
-                surname TEXT NOT NULL,
-                age INTEGER,
-                city TEXT
-            )
-        `);
-            db.run(`
-            CREATE TABLE IF NOT EXISTS event (
-                id INTEGER PRIMARY KEY,
-                name TEXT NOT NULL,
-                location TEXT,
-                date TEXT,
-                description TEXT
-            )
-        `);
-            db.run(`
-            CREATE TABLE IF NOT EXISTS genre (
-                name TEXT PRIMARY KEY
-            )
-        `);
-            db.run(`
-            CREATE TABLE IF NOT EXISTS instrument (
-                name TEXT PRIMARY KEY
-            )
-        `);
-            db.run(`
-            CREATE TABLE IF NOT EXISTS artist (
-                id TEXT PRIMARY KEY,
-                name TEXT
-            )
-        `);
-            db.run(`
+        const run = (sql) => runAsync(db, sql); //Creazione di un alias più corto
+        try {
+            yield run(`
+    	    CREATE TABLE IF NOT EXISTS user (
+    	        id INTEGER PRIMARY KEY,
+    	        name TEXT NOT NULL,
+    	        surname TEXT NOT NULL,
+    	        age INTEGER,
+    	        city TEXT
+    	    )
+    	`);
+            yield run(`
+    	    CREATE TABLE IF NOT EXISTS event (
+    	        id INTEGER PRIMARY KEY,
+    	        name TEXT NOT NULL,
+    	        location TEXT,
+    	        date TEXT,
+    	        description TEXT
+    	    )
+    	`);
+            yield run(`CREATE TABLE IF NOT EXISTS genre (name TEXT PRIMARY KEY)`);
+            yield run(`CREATE TABLE IF NOT EXISTS instrument (name TEXT PRIMARY KEY)`);
+            yield run(`
+    	    CREATE TABLE IF NOT EXISTS artist (
+    	        id INTEGER PRIMARY KEY,
+    	        name TEXT
+    	    )
+    	`);
+            yield run(`
             CREATE TABLE IF NOT EXISTS user_event (
                 user_id INTEGER,
                 event_id INTEGER,
@@ -97,7 +92,7 @@ function createTable(db) {
                 FOREIGN KEY(event_id) REFERENCES event(id)
             )
         `);
-            db.run(`
+            yield run(`
             CREATE TABLE IF NOT EXISTS user_genre (
                 user_id INTEGER,
                 genre TEXT,
@@ -106,132 +101,160 @@ function createTable(db) {
                 FOREIGN KEY(genre) REFERENCES genre(name)
             )
         `);
-            db.run(`
-            CREATE TABLE IF NOT EXISTS user_instrument (
-                user_id INTEGER,
-                instrument TEXT,
-                PRIMARY KEY(user_id, instrument),
-                FOREIGN KEY(user_id) REFERENCES user(id),
-                FOREIGN KEY(instrument) REFERENCES instrument(name)
-            )
-        `);
-            db.run(`
-            CREATE TABLE IF NOT EXISTS user_artist (
-                user_id INTEGER,
-                artist_id TEXT,
-                PRIMARY KEY(user_id, artist_id),
-                FOREIGN KEY(user_id) REFERENCES user(id),
-                FOREIGN KEY(artist_id) REFERENCES artist(id)
-            )
-        `);
-            db.run(`
-            CREATE TABLE IF NOT EXISTS event_genre (
-                event_id INTEGER,
-                genre TEXT,
-                PRIMARY KEY(event_id, genre),
-                FOREIGN KEY(event_id) REFERENCES event(id),
-                FOREIGN KEY(genre) REFERENCES genre(name)
-            )
-        `);
-            db.run(`
-            CREATE TABLE IF NOT EXISTS event_instrument (
-                event_id INTEGER,
-                instrument TEXT,
-                PRIMARY KEY(event_id, instrument),
-                FOREIGN KEY(event_id) REFERENCES event(id),
-                FOREIGN KEY(instrument) REFERENCES instrument(name)
-            )
-        `);
-            db.run(`
-            CREATE TABLE IF NOT EXISTS event_artist (
-                event_id INTEGER,
-                artist_id TEXT,
-                PRIMARY KEY(event_id, artist_id),
-                FOREIGN KEY(event_id) REFERENCES event(id),
-                FOREIGN KEY(artist_id) REFERENCES artist(id)
-            )
-        `);
-        });
-        console.log('Tabelle create correttamente');
+            yield run(`
+    	    CREATE TABLE IF NOT EXISTS user_instrument (
+    	        user_id INTEGER,
+    	        instrument TEXT,
+    	        PRIMARY KEY(user_id, instrument),
+    	        FOREIGN KEY(user_id) REFERENCES user(id),
+    	        FOREIGN KEY(instrument) REFERENCES instrument(name)
+    	    )
+    	`);
+            yield run(`
+    	    CREATE TABLE IF NOT EXISTS user_artist (
+    	        user_id INTEGER,
+    	        artist_id INTEGER,
+    	        PRIMARY KEY(user_id, artist_id),
+    	        FOREIGN KEY(user_id) REFERENCES user(id),
+    	        FOREIGN KEY(artist_id) REFERENCES artist(id)
+    	    )
+    	`);
+            yield run(`
+    	    CREATE TABLE IF NOT EXISTS event_genre (
+    	        event_id INTEGER,
+    	        genre TEXT,
+    	        PRIMARY KEY(event_id, genre),
+    	        FOREIGN KEY(event_id) REFERENCES event(id),
+    	        FOREIGN KEY(genre) REFERENCES genre(name)
+    	    )
+    	`);
+            yield run(`
+    	    CREATE TABLE IF NOT EXISTS event_instrument (
+    	        event_id INTEGER,
+    	        instrument TEXT,
+    	        PRIMARY KEY(event_id, instrument),
+    	        FOREIGN KEY(event_id) REFERENCES event(id),
+    	        FOREIGN KEY(instrument) REFERENCES instrument(name)
+    	    )
+    	`);
+            yield run(`
+    	    CREATE TABLE IF NOT EXISTS event_artist (
+    	        event_id INTEGER,
+    	        artist_id INTEGER,
+    	        PRIMARY KEY(event_id, artist_id),
+    	        FOREIGN KEY(event_id) REFERENCES event(id),
+    	        FOREIGN KEY(artist_id) REFERENCES artist(id)
+    	    )
+    	`);
+            console.log(`Tabelle create correttamente`);
+        }
+        catch (err) {
+            console.error(err.message);
+            throw err;
+        }
     });
 }
 // Inserire un utente nel database
 function insertUser(db, id, name, surname, age, city) {
     return __awaiter(this, void 0, void 0, function* () {
-        db.run(`INSERT INTO user (id, name, surname, age, city) VALUES (?, ?, ?, ?, ?)`, [id, name, surname, age, city], (err) => handleError(err, `User ${name} inserito correttamente`));
+        const sql = `INSERT INTO user (id, name, surname, age, city) VALUES (?, ?, ?, ?, ?)`;
+        const params = [id, name, surname, age, city];
+        return runAsync(db, sql, params);
     });
 }
 // Inserire un evento nel database
 function insertEvent(db, id, name, location, date, description) {
     return __awaiter(this, void 0, void 0, function* () {
-        db.run(`INSERT INTO event (id, name, location, date, description) VALUES (?, ?, ?, ?, ?)`, [id, name, location, date, description], (err) => handleError(err, `Evento ${name} inserito correttamente`));
+        const sql = `INSERT INTO event (id, name, location, date, description) VALUES (?, ?, ?, ?, ?)`;
+        const params = [id, name, location, date, description];
+        return runAsync(db, sql, params);
     });
 }
 //Inserire un genere nel database
 function insertGenre(db, name) {
     return __awaiter(this, void 0, void 0, function* () {
-        db.run(`INSERT INTO genre (name) VALUES (?)`, [name], (err) => handleError(err, `Genere ${name} inserito correttamente`));
+        const sql = `INSERT INTO genre (name) VALUES (?)`;
+        const params = [name];
+        return runAsync(db, sql, params);
     });
 }
 //Inserire uno strumento nel database
 function insertInstrument(db, name) {
     return __awaiter(this, void 0, void 0, function* () {
-        db.run(`INSERT INTO instrument (name) VALUES (?)`, [name], (err) => handleError(err, `Strumento ${name} inserito correttamente`));
+        const sql = `INSERT INTO instrument (name) VALUES (?)`;
+        const params = [name];
+        return runAsync(db, sql, params);
     });
 }
 //Inserire un artista nel database
 function insertArtist(db, id, name) {
     return __awaiter(this, void 0, void 0, function* () {
-        db.run(`INSERT INTO artist (id, name) VALUES (?, ?)`, [id, name], (err) => handleError(err, `Artista ${name} inserito correttamente`));
+        const sql = `INSERT INTO artist (id, name) VALUES (?, ?)`;
+        const params = [id, name];
+        return runAsync(db, sql, params);
     });
 }
 // Inserire una relazione tra utente ed evento nel database
 function insertUserEvent(db, user_id, event_id) {
     return __awaiter(this, void 0, void 0, function* () {
-        db.run(`INSERT INTO user_event (user_id, event_id) VALUES (?, ?)`, [user_id, event_id], (err) => handleError(err, `Relazione tra utente ${user_id} e evento ${event_id} inserita correttamente`));
+        const sql = `INSERT INTO user_event (user_id, event_id) VALUES (?, ?)`;
+        const params = [user_id, event_id];
+        return runAsync(db, sql, params);
     });
 }
 //Inserire una relazione tra utente e genere nel database
 function insertUserGenre(db, user_id, genre) {
     return __awaiter(this, void 0, void 0, function* () {
-        db.run(`INSERT INTO user_genre (user_id, genre) VALUES (?, ?)`, [user_id, genre], (err) => handleError(err, `Relazione tra utente ${user_id} e genere ${genre} inserita correttamente`));
+        const sql = `INSERT INTO user_genre (user_id, genre) VALUES (?, ?)`;
+        const params = [user_id, genre];
+        return runAsync(db, sql, params);
     });
 }
 // Inserire una relazione tra utente e strumento nel database
 function insertUserInstrument(db, user_id, instrument) {
     return __awaiter(this, void 0, void 0, function* () {
-        db.run(`INSERT INTO user_instrument (user_id, instrument) VALUES (?, ?)`, [user_id, instrument], (err) => handleError(err, `Relazione tra utente ${user_id} e strumento ${instrument} inserita correttamente`));
+        const sql = `INSERT INTO user_instrument (user_id, instrument) VALUES (?, ?)`;
+        const params = [user_id, instrument];
+        return runAsync(db, sql, params);
     });
 }
 // Inserire una relazione tra utente e artista nel database
 function insertUserArtist(db, user_id, artist_id) {
     return __awaiter(this, void 0, void 0, function* () {
-        db.run(`INSERT INTO user_artist (user_id, artist_id) VALUES (?, ?)`, [user_id, artist_id], (err) => handleError(err, `Relazione tra utente ${user_id} e artista ${artist_id} inserita correttamente`));
+        const sql = `INSERT INTO user_artist (user_id, artist_id) VALUES (?, ?)`;
+        const params = [user_id, artist_id];
+        return runAsync(db, sql, params);
     });
 }
 //Inserire una relazione tra evento e genere nel database
 function insertEventGenre(db, event_id, genre) {
     return __awaiter(this, void 0, void 0, function* () {
-        db.run(`INSERT INTO event_genre (event_id, genre) VALUES (?, ?)`, [event_id, genre], (err) => handleError(err, `Relazione tra evento ${event_id} e genere ${genre} inserita correttamente`));
+        const sql = `INSERT INTO event_genre (event_id, genre) VALUES (?, ?)`;
+        const params = [event_id, genre];
+        return runAsync(db, sql, params);
     });
 }
 // Inserire una relazione tra evento e strumento nel database
 function insertEventInstrument(db, event_id, instrument) {
     return __awaiter(this, void 0, void 0, function* () {
-        db.run(`INSERT INTO event_instrument (event_id, instrument) VALUES (?, ?)`, [event_id, instrument], (err) => handleError(err, `Relazione tra evento ${event_id} e strumento ${instrument} inserita correttamente`));
+        const sql = `INSERT INTO event_instrument (event_id, instrument) VALUES (?, ?)`;
+        const params = [event_id, instrument];
+        return runAsync(db, sql, params);
     });
 }
 // Inserire una relazione tra evento e artista nel database
 function insertEventArtist(db, event_id, artist_id) {
     return __awaiter(this, void 0, void 0, function* () {
-        db.run(`INSERT INTO event_artist (event_id, artist_id) VALUES (?, ?)`, [event_id, artist_id], (err) => handleError(err, `Relazione tra evento ${event_id} e artista ${artist_id} inserita correttamente`));
+        const sql = `INSERT INTO event_artist (event_id, artist_id) VALUES (?, ?)`;
+        const params = [event_id, artist_id];
+        return runAsync(db, sql, params);
     });
 }
 // Eseguire una query sul database
 function executeQuery(db_1, query_1) {
     return __awaiter(this, arguments, void 0, function* (db, query, params = []) {
         return new Promise((resolve, reject) => {
-            db.all(query, params, (err, rows) => handleQuery(err, rows, resolve, reject));
+            db.all(query, params, (err, rows) => handleDBCallBack(err, resolve, reject, rows));
         });
     });
 }
@@ -273,10 +296,18 @@ function getEvents(db) {
         return results.map(row => new models_js_1.Event(row.id, row.name, row.genres ? row.genres.split(",") : [], row.instruments ? row.instruments.split(",") : [], row.artists ? row.artists.split(",") : [], row.location, row.date, row.description));
     });
 }
+/* Da sistemare nel caso servisse
 // Ottenere gli eventi di un utente dal database
-function getUserEvents(db, user_id) {
+async function getUserEvents(db: Database, user_id: number): Promise<any[]>{
+    return executeQuery(db,
+        `SELECT * FROM event WHERE event_id IN (SELECT event_id FROM user_event_relation WHERE user_id = ?)`,
+        [user_id])
+}
+*/
+function isDatabasePopulated(db) {
     return __awaiter(this, void 0, void 0, function* () {
-        return executeQuery(db, `SELECT * FROM event WHERE event_id IN (SELECT event_id FROM user_event_relation WHERE user_id = ?)`, [user_id]);
+        const result = yield executeQuery(db, 'SELECT COUNT(*) as count FROM user');
+        return result[0].count > 0;
     });
 }
 // Popolare il database con i dati iniziali
@@ -352,27 +383,29 @@ function populate(db) {
         }
     });
 }
+/*
 // Test per stampare i dati
-function printData() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const db = openDatabase();
-        try {
-            //await createTable(db)
-            //await populate(db)
-            const users = yield getUsers(db);
-            console.log(users);
-            const events = yield getEvents(db);
-            console.log(events);
-            const userEvents = yield getUserEvents(db, 1);
-            console.log(userEvents);
-        }
-        catch (err) {
-            console.error("Errore in printData: " + err);
-        }
-        finally {
-            yield closedDatabase(db);
-        }
-    });
-}
-//printData()
-exports.default = { openDatabase, closedDatabase, createTable, insertUser, insertEvent, insertUserEvent, executeQuery, getUsers, getEvents, getUserEvents, populate };
+async function printData(): Promise<void>{
+    const db = openDatabase();
+    try{
+        //await createTable(db)
+        //await populate(db)
+    
+        const users = await getUsers(db)
+        console.log(users)
+        const events = await getEvents(db)
+        console.log(events)
+        const userEvents = await getUserEvents(db, 1)
+        console.log(userEvents)
+
+    }catch(err){
+        console.error("Errore in printData: " + err)
+    }finally{
+        await closeDatabase(db)
+    }
+    }
+    
+    //printData()
+    */
+exports.default = { openDatabase, closeDatabase, createTable, insertUser, insertEvent, insertUserEvent,
+    executeQuery, getUsers, getEvents, /*getUserEvents,*/ isDatabasePopulated, populate };
