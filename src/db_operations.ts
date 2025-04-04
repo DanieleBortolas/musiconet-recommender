@@ -37,7 +37,7 @@ function closeDatabase(db: Database): Promise<void>{
     })
 }
 
-// Esegue un 
+// Utilizzato pre eseguire query di tipo INSERT, CREATE
 async function runAsync(db: Database, sql: string, params: any[] = []): Promise<void>{
     return new Promise((resolve, reject) => {
         db.run(sql, params, (err) => handleDBCallBack(err, resolve, reject)) 
@@ -262,7 +262,7 @@ async function getUsers(db: Database): Promise<User[]>{
 }
 
 // Ottenere gli eventi dal database
-async function getEvents(db: Database): Promise<any[]>{
+async function getEvents(db: Database): Promise<Event[]>{
     const results = await executeQuery(db, `
         SELECT e.id, e.name, e.location, e.date, e.description, 
                GROUP_CONCAT(DISTINCT g.name) AS genres,
@@ -286,6 +286,16 @@ async function getEvents(db: Database): Promise<any[]>{
     )
 }
 
+async function getEventsId(db: Database): Promise<number[]>{
+    const results = await executeQuery(db, 'SELECT id FROM event')
+    return results.map(row => row.id)
+}
+
+async function getEventsIdByUserId(db: Database, user_id: number): Promise<number[]>{
+    const results = await executeQuery(db, 'SELECT event_id FROM user_event WHERE user_id = ?', [user_id])
+    return results.map(row => row.event_id)
+}
+
 // Ottenere i nomi di tutti i generi musicali
 async function getAllGenresName(db: Database): Promise<string[]>{
     const results = await executeQuery(db, 'SELECT name FROM genre')
@@ -305,19 +315,19 @@ async function getAllArtistsId(db: Database): Promise<number[]>{
 }
 
 // Ottenere i generi preferiti di un utente
-async function getGenresByUserId(db: Database, user_id: number): Promise<string[]>{
+async function getGenresNameByUserId(db: Database, user_id: number): Promise<string[]>{
     const results = await executeQuery(db, `SELECT genre FROM user_genre WHERE user_id = ${user_id}`)
     return results.map(row => row.genre)
 }
 
 // Ottenere gli strumenti suonati da un utente
-async function getInstrumentsByUserId(db: Database, user_id: number): Promise<string[]>{
+async function getInstrumentsNameByUserId(db: Database, user_id: number): Promise<string[]>{
     const result = await executeQuery(db, `SELECT instrument FROM user_instrument WHERE user_id = ${user_id}`)
     return result.map(row => row.instrument)
 }
 
 // Ottenere gli artisti seguiti da un utente
-async function getArtistsByUserId(db: Database, user_id: number): Promise<number[]>{
+async function getArtistsIdByUserId(db: Database, user_id: number): Promise<number[]>{
     const result = await executeQuery(db, `SELECT artist_id FROM user_artist WHERE user_id = ${user_id}`)
     return result.map(row => row.artist_id)
 }
@@ -326,8 +336,23 @@ async function getArtistsByUserId(db: Database, user_id: number): Promise<number
 //      recupera i relativi generi (event_genre) e artisti (event_artist). 
 //      Questo arricchisce il profilo utente con interessi dimostrati
 
+// Ottenere i generi di un evento
+async function getGenresNameByEventId(db: Database, event_id: number): Promise<string[]>{
+    const results = await executeQuery(db, `SELECT genre FROM event_genre WHERE event_id = ${event_id}`)
+    return results.map(row => row.genre)
+}
 
+// Ottenere gli strumenti di un evento
+async function getInstrumentsNameByEventId(db: Database, event_id: number): Promise<string[]>{
+    const results = await executeQuery(db, `SELECT instrument FROM event_instrument WHERE event_id = ${event_id}`)
+    return results.map(row => row.instrument)
+}
 
+// Ottenere gli artisti di un evento
+async function getArtistsIdByEventId(db: Database, event_id: number): Promise<number[]>{
+    const results = await executeQuery(db, `SELECT artist_id FROM event_artist WHERE event_id = ${event_id}`)
+    return results.map(row => row.artist_id)
+}
 
 /* Da sistemare nel caso servisse
 // Ottenere gli eventi di un utente dal database
@@ -452,6 +477,6 @@ async function printData(): Promise<void>{
     */
 
 export default {openDatabase, closeDatabase, createTable, insertUser, insertEvent, insertUserEvent, 
-                executeQuery, getUsers, getEvents, /*getUserEvents,*/ getAllGenresName, getAllInstrumentsName,
-                getAllArtistsId, getGenresByUserId, getInstrumentsByUserId, getArtistsByUserId, isDatabasePopulated, 
-                populate}
+                executeQuery, getUsers, getEvents, getEventsId, getEventsIdByUserId, /*getUserEvents,*/ getAllGenresName, getAllInstrumentsName,
+                getAllArtistsId, getGenresNameByUserId, getInstrumentsNameByUserId, getArtistsIdByUserId, getGenresNameByEventId,
+                getInstrumentsNameByEventId, getArtistsIdByEventId, isDatabasePopulated, populate}

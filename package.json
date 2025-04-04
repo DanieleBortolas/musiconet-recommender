@@ -20,6 +20,7 @@
   "homepage": "https://github.com/DanieleBortolas/musiconet-recommender#readme",
   "dependencies": {
     "@types/sqlite3": "^5.1.0",
+    "ml-distance": "^4.0.1",
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {

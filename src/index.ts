@@ -3,28 +3,28 @@
 // Per compilare il file, eseguire il comando `tsc`
 // Per eseguire il file, eseguire il comando `node dist/index.js`
 
-import db_op from './db_operations'
+import dbOp from './db_operations'
 import {User, Event} from './models.js'
 import cb from './content_based.js'
 
 async function main(){
-    const db = await db_op.openDatabase()
-    await db_op.createTable(db)
+    const db = await dbOp.openDatabase()
+    await dbOp.createTable(db)
     
     //Conto il numero di utenti nel database
-    if(!(await db_op.isDatabasePopulated(db))){
+    if(!(await dbOp.isDatabasePopulated(db))){
         //Popolo il database se è vuoto
-        await db_op.populate(db)
+        await dbOp.populate(db)
         console.log('Database popolato con successo')
     }
 
-    const {genreMap, instrumentMap, artistMap, n_feature} = await cb.buildFeatureMaps(db)
+    const cbResults = await cb.getContentBasedRecommendations(db, 0)
+    for(const event_id of cbResults){
+        //const event: Event = await dbOp.getEventById(db, event_id)    //TODO
+    }
+    console.log(cbResults)
 
-    const vec = await cb.createUserVector(db, 0, genreMap, instrumentMap, artistMap, n_feature)
-
-    console.log(vec)
-
-    await db_op.closeDatabase(db)
+    await dbOp.closeDatabase(db)
 }
 
 main()

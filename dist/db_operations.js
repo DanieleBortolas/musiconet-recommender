@@ -44,7 +44,7 @@ function closeDatabase(db) {
         db.close((err) => handleDBCallBack(err, resolve, reject, undefined, "Database chiuso correttamente"));
     });
 }
-// Esegue un 
+// Utilizzato pre eseguire query di tipo INSERT, CREATE
 function runAsync(db_1, sql_1) {
     return __awaiter(this, arguments, void 0, function* (db, sql, params = []) {
         return new Promise((resolve, reject) => {
@@ -296,6 +296,18 @@ function getEvents(db) {
         return results.map(row => new models_js_1.Event(row.id, row.name, row.genres ? row.genres.split(",") : [], row.instruments ? row.instruments.split(",") : [], row.artists ? row.artists.split(",") : [], row.location, row.date, row.description));
     });
 }
+function getEventsId(db) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const results = yield executeQuery(db, 'SELECT id FROM event');
+        return results.map(row => row.id);
+    });
+}
+function getEventsIdByUserId(db, user_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const results = yield executeQuery(db, 'SELECT event_id FROM user_event WHERE user_id = ?', [user_id]);
+        return results.map(row => row.event_id);
+    });
+}
 // Ottenere i nomi di tutti i generi musicali
 function getAllGenresName(db) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -318,21 +330,21 @@ function getAllArtistsId(db) {
     });
 }
 // Ottenere i generi preferiti di un utente
-function getGenresByUserId(db, user_id) {
+function getGenresNameByUserId(db, user_id) {
     return __awaiter(this, void 0, void 0, function* () {
         const results = yield executeQuery(db, `SELECT genre FROM user_genre WHERE user_id = ${user_id}`);
         return results.map(row => row.genre);
     });
 }
 // Ottenere gli strumenti suonati da un utente
-function getInstrumentsByUserId(db, user_id) {
+function getInstrumentsNameByUserId(db, user_id) {
     return __awaiter(this, void 0, void 0, function* () {
         const result = yield executeQuery(db, `SELECT instrument FROM user_instrument WHERE user_id = ${user_id}`);
         return result.map(row => row.instrument);
     });
 }
 // Ottenere gli artisti seguiti da un utente
-function getArtistsByUserId(db, user_id) {
+function getArtistsIdByUserId(db, user_id) {
     return __awaiter(this, void 0, void 0, function* () {
         const result = yield executeQuery(db, `SELECT artist_id FROM user_artist WHERE user_id = ${user_id}`);
         return result.map(row => row.artist_id);
@@ -341,6 +353,27 @@ function getArtistsByUserId(db, user_id) {
 // TODO Recupera gli eventi a cui è interessato (user_event) e, per ciascuno di questi eventi, 
 //      recupera i relativi generi (event_genre) e artisti (event_artist). 
 //      Questo arricchisce il profilo utente con interessi dimostrati
+// Ottenere i generi di un evento
+function getGenresNameByEventId(db, event_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const results = yield executeQuery(db, `SELECT genre FROM event_genre WHERE event_id = ${event_id}`);
+        return results.map(row => row.genre);
+    });
+}
+// Ottenere gli strumenti di un evento
+function getInstrumentsNameByEventId(db, event_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const results = yield executeQuery(db, `SELECT instrument FROM event_instrument WHERE event_id = ${event_id}`);
+        return results.map(row => row.instrument);
+    });
+}
+// Ottenere gli artisti di un evento
+function getArtistsIdByEventId(db, event_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const results = yield executeQuery(db, `SELECT artist_id FROM event_artist WHERE event_id = ${event_id}`);
+        return results.map(row => row.artist_id);
+    });
+}
 /* Da sistemare nel caso servisse
 // Ottenere gli eventi di un utente dal database
 async function getUserEvents(db: Database, user_id: number): Promise<any[]>{
@@ -453,6 +486,6 @@ async function printData(): Promise<void>{
     //printData()
     */
 exports.default = { openDatabase, closeDatabase, createTable, insertUser, insertEvent, insertUserEvent,
-    executeQuery, getUsers, getEvents, /*getUserEvents,*/ getAllGenresName, getAllInstrumentsName,
-    getAllArtistsId, getGenresByUserId, getInstrumentsByUserId, getArtistsByUserId, isDatabasePopulated,
-    populate };
+    executeQuery, getUsers, getEvents, getEventsId, getEventsIdByUserId, /*getUserEvents,*/ getAllGenresName, getAllInstrumentsName,
+    getAllArtistsId, getGenresNameByUserId, getInstrumentsNameByUserId, getArtistsIdByUserId, getGenresNameByEventId,
+    getInstrumentsNameByEventId, getArtistsIdByEventId, isDatabasePopulated, populate };

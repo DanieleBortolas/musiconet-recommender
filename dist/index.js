@@ -28,9 +28,8 @@ function main() {
             yield db_operations_1.default.populate(db);
             console.log('Database popolato con successo');
         }
-        const { genreMap, instrumentMap, artistMap, n_feature } = yield content_based_js_1.default.buildFeatureMaps(db);
-        const vec = yield content_based_js_1.default.createUserVector(db, 0, genreMap, instrumentMap, artistMap, n_feature);
-        console.log(vec);
+        const cbResults = yield content_based_js_1.default.getContentBasedRecommendations(db, 0);
+        console.log(cbResults);
         yield db_operations_1.default.closeDatabase(db);
     });
 }

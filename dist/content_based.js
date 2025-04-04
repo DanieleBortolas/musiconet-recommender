@@ -13,58 +13,44 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_operations_1 = __importDefault(require("./db_operations"));
-function buildFeatureMaps(db) {
+const ml_distance_1 = require("ml-distance");
+function buildFeatureMap(db) {
     return __awaiter(this, void 0, void 0, function* () {
         //1. Ottenere tutti i generi, strumenti e id artisti
         const genres = yield db_operations_1.default.getAllGenresName(db);
         const instruments = yield db_operations_1.default.getAllInstrumentsName(db);
         const artists = yield db_operations_1.default.getAllArtistsId(db);
-        //2. Creare mappa per genere, strumento e artista
-        const genreMap = new Map();
-        let index = 0;
+        //2. Creare unica mappa per genere, strumento e artista
+        const featureMap = new Map();
+        let i = 0;
         for (const genre of genres) {
-            genreMap.set(genre, index++);
+            featureMap.set(genre, i++);
         }
-        const instrumentMap = new Map();
         for (const instrument of instruments) {
-            instrumentMap.set(instrument, index++);
+            featureMap.set(instrument, i++);
         }
-        const artistMap = new Map();
         for (const artist of artists) {
-            artistMap.set(artist, index++);
+            featureMap.set(artist, i++);
         }
-        //console.log(`Mappe caratteristiche create: ${genreMap.size} generi, ${instrumentMap.size} strumenti, ${artistMap.size} artisti`)
-        console.log(genreMap);
-        console.log(instrumentMap);
-        console.log(artistMap);
-        return { genreMap, instrumentMap, artistMap, n_feature: index };
+        console.log(`Mappa caratteristiche creata con ${featureMap.size} caratteristiche`);
+        return featureMap;
     });
 }
-function createUserVector(db, user_id, genreMap, instrumentMap, artistMap, n_feature) {
+function createUserVector(db, user_id, featureMap) {
     return __awaiter(this, void 0, void 0, function* () {
-        // 1. Recuperare generi, strumenti e artisti preferiti
-        const userGenres = yield db_operations_1.default.getGenresByUserId(db, user_id);
-        const userInstruments = yield db_operations_1.default.getInstrumentsByUserId(db, user_id);
-        const userArtists = yield db_operations_1.default.getArtistsByUserId(db, user_id);
+        // 1. Recuperare generi, strumenti e artisti preferiti dall'utente
+        const userGenres = yield db_operations_1.default.getGenresNameByUserId(db, user_id);
+        const userInstruments = yield db_operations_1.default.getInstrumentsNameByUserId(db, user_id);
+        const userArtists = yield db_operations_1.default.getArtistsIdByUserId(db, user_id);
         //const interestedEvents ...
         const userFeatures = new Set(); // Set per generi (string), strumenti (string) e id artisti (number)
         userGenres.forEach(g => userFeatures.add(g));
         userInstruments.forEach(i => userFeatures.add(i));
         userArtists.forEach(a => userFeatures.add(a));
-        console.log(userFeatures);
         // 2. Costruire il vettore binario
-        const vec = new Array(n_feature).fill(0);
+        const vec = new Array(featureMap.size).fill(0);
         for (const uf of userFeatures) {
-            let i; //Indice può essere un numero o indefinito
-            if (typeof uf == 'string') { //Se uf è tipo stringa, può essere un genere o uno strumento
-                i = genreMap.get(uf);
-                if (i == undefined) { //Se i è undefined, uf è uno strumento
-                    i = instrumentMap.get(uf);
-                }
-            }
-            else {
-                i = artistMap.get(uf); //Se uf non è tipo stringa, è un artista
-            }
+            let i = featureMap.get(uf); //Indice può essere un numero o indefinito
             if (i != undefined) {
                 vec[i] = 1;
             }
@@ -75,4 +61,53 @@ function createUserVector(db, user_id, genreMap, instrumentMap, artistMap, n_fea
         return vec;
     });
 }
-exports.default = { buildFeatureMaps, createUserVector };
+function createEventVector(db, event_id, featureMap) {
+    return __awaiter(this, void 0, void 0, function* () {
+        // 1. Recuperare generi, strumenti e artisti presenti nell'evento
+        const eventGenres = yield db_operations_1.default.getGenresNameByEventId(db, event_id);
+        const eventInstruments = yield db_operations_1.default.getInstrumentsNameByEventId(db, event_id);
+        const eventArtists = yield db_operations_1.default.getArtistsIdByEventId(db, event_id);
+        const eventFeatures = new Set(); // Set per generi (string), strumenti (string) e id artisti (number)
+        eventGenres.forEach(g => eventFeatures.add(g));
+        eventInstruments.forEach(i => eventFeatures.add(i));
+        eventArtists.forEach(a => eventFeatures.add(a));
+        // 2. Costruire il vettore binario
+        const vec = new Array(featureMap.size).fill(0);
+        for (const uf of eventFeatures) {
+            let i = featureMap.get(uf); //Indice può essere un numero o indefinito
+            if (i != undefined) {
+                vec[i] = 1;
+            }
+            else {
+                console.error(`Caratteristica ${uf} non trovata`); //Se i è undefined, uf non trovata nelle mappe
+            }
+        }
+        return vec;
+    });
+}
+function getContentBasedRecommendations(db, user_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        // 1. Creare mappa caratteristiche, vettore utente, prelevare tutti gli eventi ed eventi dell'utente 
+        const featureMap = yield buildFeatureMap(db);
+        const userVector = yield createUserVector(db, user_id, featureMap);
+        const allEventsId = yield db_operations_1.default.getEventsId(db);
+        const userEvents = yield db_operations_1.default.getEventsIdByUserId(db, user_id);
+        //TODO: Gestire se utente è nuovo (cold start)
+        // 2. Creare vettore evento e calcolare similarità coseno
+        const results = [];
+        for (const event_id of allEventsId) {
+            if (!userEvents.includes(event_id)) { // Se l'evento non è già seguito dall'utente
+                const eventVector = yield createEventVector(db, event_id, featureMap);
+                const cosSim = ml_distance_1.similarity.cosine(userVector, eventVector);
+                //console.log(`Cosine similarity tra utente ${user_id} e evento ${event_id}: ${cosSim}`)
+                if (cosSim > 0) { // Se la similarità è maggiore di 0, aggiungi alla lista dei risultati
+                    results.push({ event_id, cosSim });
+                }
+            }
+        }
+        results.sort((a, b) => b.cosSim - a.cosSim); // Ordina in ordine decrescente
+        // 3. Restituire i primi 10 eventi
+        return results.slice(0, 10); // Restituisce i primi 10 eventi
+    });
+}
+exports.default = { buildFeatureMap, createUserVector, createEventVector, getContentBasedRecommendations };

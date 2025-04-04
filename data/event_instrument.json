@@ -72,11 +72,11 @@
     {"event_id": 120, "instrument": "Pianoforte"},
     {"event_id": 120, "instrument": "Voce"},
 
-    {"event_id": 121, "instrument": null},
+    {"event_id": 121, "instrument": "Voce"},
 
-    {"event_id": 122, "instrument": null},
+    {"event_id": 122, "instrument": "Voce"},
 
-    {"event_id": 123, "instrument": null},
+    {"event_id": 123, "instrument": "Voce"},
 
     {"event_id": 124, "instrument": "Chitarra"},
     {"event_id": 124, "instrument": "Batteria"},
@@ -167,7 +167,7 @@
     {"event_id": 147, "instrument": "Voce"},
 
     {"event_id": 148, "instrument": "Chitarra"},
-    {"event_id": 148, "instrument": "Piano"},
+    {"event_id": 148, "instrument": "Pianoforte"},
     {"event_id": 148, "instrument": "Batteria"},
 
     {"event_id": 149, "instrument": "Chitarra"},
