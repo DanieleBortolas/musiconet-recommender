@@ -28,8 +28,10 @@ function main() {
             yield db_operations_1.default.populate(db);
             console.log('Database popolato con successo');
         }
-        const cbResults = yield content_based_js_1.default.getContentBasedRecommendations(db, 0);
-        console.log(cbResults);
+        const cbResults = yield content_based_js_1.default.getContentBasedRecommendations(db, 4);
+        const events = yield db_operations_1.default.getEventsInfoById(db, cbResults); //TODO
+        events.forEach(e => e.printInfo());
+        //console.log(cbResults)
         yield db_operations_1.default.closeDatabase(db);
     });
 }

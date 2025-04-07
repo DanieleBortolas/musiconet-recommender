@@ -278,9 +278,9 @@ function getUsers(db) {
     });
 }
 // Ottenere gli eventi dal database
-function getEvents(db) {
+function getEvent(db, event_id) {
     return __awaiter(this, void 0, void 0, function* () {
-        const results = yield executeQuery(db, `
+        const result = yield executeQuery(db, `
         SELECT e.id, e.name, e.location, e.date, e.description, 
                GROUP_CONCAT(DISTINCT g.name) AS genres,
                GROUP_CONCAT(DISTINCT i.name) AS instruments,
@@ -292,8 +292,19 @@ function getEvents(db) {
         LEFT JOIN genre g ON eg.genre = g.name
         LEFT JOIN event_artist ea ON e.id = ea.event_id
         LEFT JOIN artist a ON ea.artist_id = a.id
-        GROUP BY e.id`);
-        return results.map(row => new models_js_1.Event(row.id, row.name, row.genres ? row.genres.split(",") : [], row.instruments ? row.instruments.split(",") : [], row.artists ? row.artists.split(",") : [], row.location, row.date, row.description));
+        WHERE e.id = ? 
+        GROUP BY e.id`, [event_id]);
+        const row = result[0];
+        return new models_js_1.Event(row.id, row.name, row.genres ? row.genres.split(",") : [], row.instruments ? row.instruments.split(",") : [], row.artists ? row.artists.split(",") : [], row.location, row.date, row.description);
+    });
+}
+function getEventsInfoById(db, eventsMap) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const events = [];
+        for (const i of eventsMap) {
+            events.push(yield getEvent(db, i.event_id));
+        }
+        return events;
     });
 }
 function getEventsId(db) {
@@ -485,7 +496,8 @@ async function printData(): Promise<void>{
     
     //printData()
     */
-exports.default = { openDatabase, closeDatabase, createTable, insertUser, insertEvent, insertUserEvent,
-    executeQuery, getUsers, getEvents, getEventsId, getEventsIdByUserId, /*getUserEvents,*/ getAllGenresName, getAllInstrumentsName,
+exports.default = { openDatabase, closeDatabase, createTable, /*insertUser, insertEvent, insertUserEvent,
+                    executeQuery, getUsers, getEvents,*/
+    getEventsInfoById, getEventsId, getEventsIdByUserId, /*getUserEvents,*/ getAllGenresName, getAllInstrumentsName,
     getAllArtistsId, getGenresNameByUserId, getInstrumentsNameByUserId, getArtistsIdByUserId, getGenresNameByEventId,
     getInstrumentsNameByEventId, getArtistsIdByEventId, isDatabasePopulated, populate };

@@ -28,6 +28,23 @@ async function buildFeatureMap(db: Database): Promise<Map <string | number, numb
     return featureMap
 }
 
+// Funzione per calcolare quanto le caratteristiche di un utente sono coperte da un evento (POSSIBILE APPROCCIO IBRIDO)
+function coverageScore(userVec: number[], eventVec: number[]) {
+    let intersection = 0;
+    let userFeatureCount = 0;
+  
+    for (let i = 0; i < userVec.length; i++) {
+      if (userVec[i] === 1) {
+        userFeatureCount++;
+        if (eventVec[i] === 1) {
+          intersection++;
+        }
+      }
+    }
+  
+    return userFeatureCount === 0 ? 0 : intersection / userFeatureCount;
+  }
+
 async function createUserVector(db: Database, user_id: number, featureMap: Map<string | number, number>): Promise<number[]>{
     // 1. Recuperare generi, strumenti e artisti preferiti dall'utente
     const userGenres = await dbOp.getGenresNameByUserId(db, user_id)
@@ -83,7 +100,7 @@ async function getContentBasedRecommendations(db: Database, user_id: number): Pr
     const featureMap: Map <string | number, number> = await buildFeatureMap(db)
     const userVector: number[] = await createUserVector(db, user_id, featureMap)
     const allEventsId: number[] = await dbOp.getEventsId(db)
-    const userEvents: number[] = await dbOp.getEventsIdByUserId(db, user_id)
+    const userEvents = new Set(await dbOp.getEventsIdByUserId(db, user_id)) // Converto in Set così .has ha complessità O(1)
 
     //TODO: Gestire se utente è nuovo (cold start)
 
@@ -91,9 +108,13 @@ async function getContentBasedRecommendations(db: Database, user_id: number): Pr
     const results: {event_id: number, cosSim: number}[] = []
 
     for(const event_id of allEventsId){
-        if(!userEvents.includes(event_id)){             // Se l'evento non è già seguito dall'utente
+        if(!userEvents.has(event_id)){             // Se l'evento non è già seguito dall'utente
             const eventVector: number[] = await createEventVector(db, event_id, featureMap)
             const cosSim = similarity.cosine(userVector, eventVector)
+            
+            //const alpha = 0.6; // peso da assegnare alla cosine similarity
+            //const cosSim = alpha * similarity.cosine(userVector, eventVector) + (1 - alpha) * coverageScore(userVector, eventVector);
+            
             //console.log(`Cosine similarity tra utente ${user_id} e evento ${event_id}: ${cosSim}`)
             if(cosSim > 0){                             // Se la similarità è maggiore di 0, aggiungi alla lista dei risultati
                 results.push({event_id, cosSim})
@@ -106,4 +127,4 @@ async function getContentBasedRecommendations(db: Database, user_id: number): Pr
     return results.slice(0, 10)                         // Restituisce i primi 10 eventi
 }
 
-export default {buildFeatureMap, createUserVector, createEventVector, getContentBasedRecommendations}
+export default {getContentBasedRecommendations} 
