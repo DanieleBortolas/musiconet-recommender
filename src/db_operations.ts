@@ -261,7 +261,7 @@ async function getUsers(db: Database): Promise<User[]>{
     )
 }
 
-// Ottenere gli eventi dal database
+// Ottenere le informazioni di un evento dal database
 async function getEvent(db: Database, event_id: number): Promise<Event>{
     const result = await executeQuery(db, `
         SELECT e.id, e.name, e.location, e.date, e.description, 
@@ -286,6 +286,8 @@ async function getEvent(db: Database, event_id: number): Promise<Event>{
                 row.location, row.date, row.description
             )
 }
+
+// Ottenere le informazioni di più eventi da un array di id
 async function getEventsInfoById(db: Database, eventsMap:{event_id: number, cosSim: number}[]): Promise<Event[]>{
     const events: Event[] = []
     for (const i of eventsMap) {
@@ -301,6 +303,11 @@ async function getEventsId(db: Database): Promise<number[]>{
 
 async function getEventsIdByUserId(db: Database, user_id: number): Promise<number[]>{
     const results = await executeQuery(db, 'SELECT event_id FROM user_event WHERE user_id = ?', [user_id])
+    return results.map(row => row.event_id)
+}
+
+async function getPopularEventsId(db: Database): Promise<number[]>{
+    const results = await executeQuery(db, `SELECT event_id FROM user_event GROUP BY event_id ORDER BY COUNT(user_id) DESC`)
     return results.map(row => row.event_id)
 }
 
@@ -485,6 +492,6 @@ async function printData(): Promise<void>{
     */
 
 export default {openDatabase, closeDatabase, createTable, /*insertUser, insertEvent, insertUserEvent, 
-                executeQuery, getUsers, getEvents,*/getEventsInfoById, getEventsId, getEventsIdByUserId, /*getUserEvents,*/ getAllGenresName, getAllInstrumentsName,
+                executeQuery, getUsers, getEvents,*/getEventsInfoById, getEventsId, getEventsIdByUserId, getPopularEventsId, /*getUserEvents,*/ getAllGenresName, getAllInstrumentsName,
                 getAllArtistsId, getGenresNameByUserId, getInstrumentsNameByUserId, getArtistsIdByUserId, getGenresNameByEventId,
                 getInstrumentsNameByEventId, getArtistsIdByEventId, isDatabasePopulated, populate}

@@ -18,10 +18,10 @@ async function main(){
         console.log('Database popolato con successo')
     }
 
-    const cbResults = await cb.getContentBasedRecommendations(db, 4)
-    const events: Event[] = await dbOp.getEventsInfoById(db, cbResults)
-    events.forEach(e => e.printInfo())
-    //console.log(cbResults)
+    const cbResults = await cb.getContentBasedRecommendations(db, 52)
+    //const events: Event[] = await dbOp.getEventsInfoById(db, cbResults)
+    //events.forEach(e => e.printInfo())
+    console.log(cbResults)
 
     await dbOp.closeDatabase(db)
 }
