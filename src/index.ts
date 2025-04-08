@@ -6,6 +6,8 @@
 import dbOp from './db_operations'
 import {User, Event} from './models.js'
 import cb from './content_based.js'
+import cf from './collaborative_filtering.js'
+import {distance} from 'ml-distance'
 
 async function main(){
     const db = await dbOp.openDatabase()
@@ -18,10 +20,17 @@ async function main(){
         console.log('Database popolato con successo')
     }
 
-    const cbResults = await cb.getContentBasedRecommendations(db, 52)
+    //const cbResults = await cb.getContentBasedRecommendations(db, 52)
     //const events: Event[] = await dbOp.getEventsInfoById(db, cbResults)
     //events.forEach(e => e.printInfo())
-    console.log(cbResults)
+    //console.log(cbResults)
+
+    //const map = await dbOp.getAllUsersEvents(db)
+    //const neighbors = await cf.findNearestNeighbors(3, map)
+    //console.log(neighbors)
+
+    const test = 1 - distance.jaccard([99, 980, 780], [101, 102, 103])
+    console.log(test)
 
     await dbOp.closeDatabase(db)
 }

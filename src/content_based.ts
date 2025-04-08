@@ -1,9 +1,12 @@
-// Creare mapping caratteristiche -> indice
-import {Database} from 'sqlite3'
-import {User, Event} from './models'
-import dbOp from './db_operations'
-import {similarity, distance} from 'ml-distance'
+// Logica per il content-based filtering
+// Utilizza la similarità coseno (dalla libreria ml-distance) per calcolare la similarità tra le caratteristiche 
+// dell'utente e quelle degli eventi
 
+import {Database} from 'sqlite3'
+import dbOp from './db_operations'
+import {similarity as mlSimilarity} from 'ml-distance'
+
+// Creare mapping caratteristiche -> indice
 async function buildFeatureMap(db: Database): Promise<Map <string | number, number>>{   // il primo number è l'ID artista
     //1. Ottenere tutti i generi, strumenti e id artisti
     const genres = await dbOp.getAllGenresName(db)
@@ -12,18 +15,12 @@ async function buildFeatureMap(db: Database): Promise<Map <string | number, numb
 
     //2. Creare unica mappa per genere, strumento e artista
     const featureMap = new Map<string | number, number>()
-    let i = 0
-    for(const genre of genres){
-        featureMap.set(genre, i++)
-    }
-    for(const instrument of instruments){
-        featureMap.set(instrument, i++)
-    }
-    for(const artist of artists){
-        featureMap.set(artist, i++)
-    }
+    let j = 0
+    genres.forEach(g => featureMap.set(g, j++))         // Aggiungo generi alla mappa
+    instruments.forEach(i => featureMap.set(i, j++))    // Aggiungo strumenti alla mappa
+    artists.forEach(a => featureMap.set(a, j++))        // Aggiungo artisti alla mappa
 
-    console.log(`Mappa caratteristiche creata con ${featureMap.size} caratteristiche`)
+    //console.log(`Mappa caratteristiche creata con ${featureMap.size} caratteristiche`)
     
     return featureMap
 }
@@ -45,6 +42,7 @@ function coverageScore(userVec: number[], eventVec: number[]) {
     return userFeatureCount === 0 ? 0 : intersection / userFeatureCount;
 }
 
+// Funzione per creare il vettore pesato dell'utente
 async function createUserVector(db: Database, user_id: number, featureMap: Map<string | number, number>): Promise<number[]>{
     // 1. Recuperare generi, strumenti e artisti preferiti dall'utente
     const userGenres = await dbOp.getGenresNameByUserId(db, user_id)
@@ -52,21 +50,21 @@ async function createUserVector(db: Database, user_id: number, featureMap: Map<s
     const userArtists = await dbOp.getArtistsIdByUserId(db, user_id)
 
     const userFeatures = new Set<string | number>()     // Set per generi (string), strumenti (string) e id artisti (number)
-    userGenres.forEach(g => userFeatures.add(g))
-    userInstruments.forEach(i => userFeatures.add(i))
-    userArtists.forEach(a => userFeatures.add(a))
+    userGenres.forEach(g => userFeatures.add(g))        // Aggiungo generi al set
+    userInstruments.forEach(i => userFeatures.add(i))   // Aggiungo strumenti al set
+    userArtists.forEach(a => userFeatures.add(a))       // Aggiungo artisti al set
 
     // 2. Recuperare generi, strumenti e artisti dagli eventi seguiti dall'utente
     const followedEvents = await dbOp.getEventsIdByUserId(db, user_id)  // Eventi seguiti dall'utente
     const userEventsFeatures = new Set<string | number>()               // Secondo set pesato diversamente nella costruzione del vettore
     for(const e of followedEvents){
-        const eventGenres = await dbOp.getGenresNameByEventId(db, e)
+        const eventGenres = await dbOp.getGenresNameByEventId(db, e)            
         const eventInstruments = await dbOp.getInstrumentsNameByEventId(db, e)
         const eventArtists = await dbOp.getArtistsIdByEventId(db, e)
 
-        eventGenres.forEach(g => userEventsFeatures.add(g))
-        eventInstruments.forEach(i => userEventsFeatures.add(i))
-        eventArtists.forEach(a => userEventsFeatures.add(a))
+        eventGenres.forEach(g => userEventsFeatures.add(g))             // Aggiungo generi al secondo set
+        eventInstruments.forEach(i => userEventsFeatures.add(i))        // Aggiungo strumenti al secondo set
+        eventArtists.forEach(a => userEventsFeatures.add(a))            // Aggiungo artisti al secondo set
     }
     
     // 3. Costruire il vettore pesato
@@ -76,7 +74,7 @@ async function createUserVector(db: Database, user_id: number, featureMap: Map<s
         if(i != undefined){
             vec[i] = 1                                          // Caratteristiche degli eventi seguiti dall'utente pesate 1
         }else{
-            console.error(`Caratteristica ${uef} non trovata`)  //Se i è undefined, uf non trovata nelle mappe
+            console.error(`Caratteristica ${uef} non trovata`)  //Se i è undefined, uf non trovata nella mappa
         }
     }
     for(const uf of userFeatures){
@@ -90,66 +88,69 @@ async function createUserVector(db: Database, user_id: number, featureMap: Map<s
     return vec
 }
 
+// Funzione per creare il vettore binario dell'evento
 async function createEventVector(db: Database, event_id: number, featureMap: Map<string | number, number>): Promise<number[]>{
     // 1. Recuperare generi, strumenti e artisti presenti nell'evento
     const eventGenres = await dbOp.getGenresNameByEventId(db, event_id)
     const eventInstruments = await dbOp.getInstrumentsNameByEventId(db, event_id)
     const eventArtists = await dbOp.getArtistsIdByEventId(db, event_id)
 
-    const eventFeatures = new Set<string | number>()     // Set per generi (tipo string), strumenti (tipo string) e id artisti (tipo number)
-    eventGenres.forEach(g => eventFeatures.add(g))
-    eventInstruments.forEach(i => eventFeatures.add(i))
-    eventArtists.forEach(a => eventFeatures.add(a))
+    const eventFeatures = new Set<string | number>()        // Set per generi (tipo string), strumenti (tipo string) e id artisti (tipo number)
+    eventGenres.forEach(g => eventFeatures.add(g))          // Aggiungo generi al set
+    eventInstruments.forEach(i => eventFeatures.add(i))     // Aggiungo strumenti al set
+    eventArtists.forEach(a => eventFeatures.add(a))         // Aggiungo artisti al set
     
     // 2. Costruire il vettore binario
     const vec = new Array(featureMap.size).fill(0)
     for(const uf of eventFeatures){
-        let i: number | undefined = featureMap.get(uf)           //Indice può essere un numero o indefinito
+        let i: number | undefined = featureMap.get(uf)          //Indice può essere un numero o indefinito
         if(i != undefined){
-            vec[i] = 1
+            vec[i] = 1                                          // Caratteristiche dell'evento pesate 1
         }else{
-            console.error(`Caratteristica ${uf} non trovata`)       //Se i è undefined, uf non trovata nelle mappe
+            console.error(`Caratteristica ${uf} non trovata`)   //Se i è undefined, uf non trovata nella mappa
         }
     }
     return vec
 }
 
-async function getContentBasedRecommendations(db: Database, user_id: number, nEvents: number = 10): Promise<{event_id: number, cosSim: number}[]>{
+// Funzione principale per ottenere le raccomandazioni content-based
+async function getContentBasedRecommendations(db: Database, user_id: number, nEvents: number = 10): Promise<{event_id: number, similarity: number}[]>{
     // 1. Creare mappa caratteristiche, vettore utente, prelevare tutti gli eventi ed eventi dell'utente 
-    const featureMap: Map <string | number, number> = await buildFeatureMap(db)
-    const userVector: number[] = await createUserVector(db, user_id, featureMap)
-    const allEventsId: number[] = await dbOp.getEventsId(db)
-    const userEvents = new Set(await dbOp.getEventsIdByUserId(db, user_id)) // Converto in Set così .has ha complessità O(1)
-    const results: {event_id: number, cosSim: number}[] = []
+    const featureMap: Map <string | number, number> = await buildFeatureMap(db)         // Mappa caratteristiche
+    const userVector: number[] = await createUserVector(db, user_id, featureMap)        // Vettore utente
+    const allEventsId: number[] = await dbOp.getEventsId(db)                            // Tutti gli eventi
+    const userEvents = new Set(await dbOp.getEventsIdByUserId(db, user_id))             // Eventi seguiti dall'utente
+    const results: {event_id: number, similarity: number}[] = []
 
     //2. Gestire se utente è nuovo (cold start)
-    if(userVector.every(v => v == 0)){ // Se l'utente non ha preferenze, restituisco gli eventi più popolari
+    if(userVector.every(v => v == 0)){                  // Se l'utente non ha preferenze, restituisco gli eventi più popolari
         const popularEvent = await dbOp.getPopularEventsId(db)
-        
         for(const e of popularEvent){
-            results.push({event_id: e, cosSim: 0}) // cosSim = 0 perché non c'è similarità
+            results.push({event_id: e, similarity: 0})      // similarity = 0 perché non c'è similarità
         }
-        return results.slice(0, nEvents)             // Restituisco i primi 10 eventi più popolari
+        return results.slice(0, nEvents)                // Restituisco i primi nEvents eventi più popolari
     }
 
     // 3. Per ogni evento, creare vettore e calcolare similarità coseno
     for(const id of allEventsId){
-        if(!userEvents.has(id)){             // Se l'evento non è già seguito dall'utente
+        if(!userEvents.has(id)){                        // Se l'evento non è già seguito dall'utente (Set: complessità O(n))
             const eventVector: number[] = await createEventVector(db, id, featureMap)
-            const cosSim = similarity.cosine(userVector, eventVector)
+            const similarity = mlSimilarity.cosine(userVector, eventVector)            // Cosine similarity tra vettore utente e vettore evento
             
-            //const alpha = 0.6; // peso da assegnare alla cosine similarity
-            //const cosSim = alpha * similarity.cosine(userVector, eventVector) + (1 - alpha) * coverageScore(userVector, eventVector);
+            /*
+            const alpha = 0.6; // peso da assegnare alla cosine similarity
+            const similarity = alpha * similarity.cosine(userVector, eventVector) + (1 - alpha) * coverageScore(userVector, eventVector);
+            */
             
-            if(cosSim > 0){                             // Se la similarità è maggiore di 0, aggiungi alla lista dei risultati
-                results.push({event_id: id, cosSim})
+            if(similarity > 0){                             // Se la similarità è maggiore di 0, aggiungi alla lista dei risultati
+                results.push({event_id: id, similarity})
             }
         }
     }
-    results.sort((a, b) => b.cosSim - a.cosSim)         // Ordina in ordine decrescente
+    results.sort((a, b) => b.similarity - a.similarity)         // Ordina in ordine decrescente
 
     // 4. Restituire i primi 10 eventi
-    return results.slice(0, nEvents)                         // Restituisce i primi 10 eventi
+    return results.slice(0, nEvents)                    // Restituisce i primi nEvents eventi
 }
 
 export default {getContentBasedRecommendations}

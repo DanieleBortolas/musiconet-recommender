@@ -17,7 +17,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_operations_1 = __importDefault(require("./db_operations"));
-const content_based_js_1 = __importDefault(require("./content_based.js"));
+const ml_distance_1 = require("ml-distance");
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         const db = yield db_operations_1.default.openDatabase();
@@ -28,10 +28,15 @@ function main() {
             yield db_operations_1.default.populate(db);
             console.log('Database popolato con successo');
         }
-        const cbResults = yield content_based_js_1.default.getContentBasedRecommendations(db, 52);
+        //const cbResults = await cb.getContentBasedRecommendations(db, 52)
         //const events: Event[] = await dbOp.getEventsInfoById(db, cbResults)
         //events.forEach(e => e.printInfo())
-        console.log(cbResults);
+        //console.log(cbResults)
+        //const map = await dbOp.getAllUsersEvents(db)
+        //const neighbors = await cf.findNearestNeighbors(3, map)
+        //console.log(neighbors)
+        const test = 1 - ml_distance_1.distance.jaccard([99, 980, 780], [101, 102, 103]);
+        console.log(test);
         yield db_operations_1.default.closeDatabase(db);
     });
 }

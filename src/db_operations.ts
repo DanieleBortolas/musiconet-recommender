@@ -261,6 +261,16 @@ async function getUsers(db: Database): Promise<User[]>{
     )
 }
 
+// Ottenere tutti gli id utenti e gli id eventi seguiti da ciascuno
+async function getAllUsersEvents(db: Database): Promise<Map<number, Set<number>>>{
+    const results = await executeQuery(db, `SELECT user_id, GROUP_CONCAT(event_id) AS events FROM user_event GROUP BY user_id`)
+    const map: Map<number, Set<number>> = new Map<number, Set<number>>()
+    for(const row of results){
+        map.set(row.user_id, new Set<number>(row.events.split(",").map(Number)))
+    }
+    return map
+}
+
 // Ottenere le informazioni di un evento dal database
 async function getEvent(db: Database, event_id: number): Promise<Event>{
     const result = await executeQuery(db, `
@@ -296,16 +306,19 @@ async function getEventsInfoById(db: Database, eventsMap:{event_id: number, cosS
     return events
 }
 
+// Ottenere gli id degli eventi dal database
 async function getEventsId(db: Database): Promise<number[]>{
     const results = await executeQuery(db, 'SELECT id FROM event')
     return results.map(row => row.id)
 }
 
+// Ottenere gli id degli eventi seguiti da un utente
 async function getEventsIdByUserId(db: Database, user_id: number): Promise<number[]>{
     const results = await executeQuery(db, 'SELECT event_id FROM user_event WHERE user_id = ?', [user_id])
     return results.map(row => row.event_id)
 }
 
+// Ottenere gli id degli eventi più popolari (ordinati per numero di utenti che li seguono)
 async function getPopularEventsId(db: Database): Promise<number[]>{
     const results = await executeQuery(db, `SELECT event_id FROM user_event GROUP BY event_id ORDER BY COUNT(user_id) DESC`)
     return results.map(row => row.event_id)
@@ -492,6 +505,6 @@ async function printData(): Promise<void>{
     */
 
 export default {openDatabase, closeDatabase, createTable, /*insertUser, insertEvent, insertUserEvent, 
-                executeQuery, getUsers, getEvents,*/getEventsInfoById, getEventsId, getEventsIdByUserId, getPopularEventsId, /*getUserEvents,*/ getAllGenresName, getAllInstrumentsName,
+                executeQuery, getUsers, getEvents,*/getAllUsersEvents, getEventsInfoById, getEventsId, getEventsIdByUserId, getPopularEventsId, /*getUserEvents,*/ getAllGenresName, getAllInstrumentsName,
                 getAllArtistsId, getGenresNameByUserId, getInstrumentsNameByUserId, getArtistsIdByUserId, getGenresNameByEventId,
                 getInstrumentsNameByEventId, getArtistsIdByEventId, isDatabasePopulated, populate}

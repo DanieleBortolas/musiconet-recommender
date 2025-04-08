@@ -277,6 +277,17 @@ function getUsers(db) {
         return results.map(row => new models_js_1.User(row.id, row.name, row.surname, row.age, row.city, row.genres ? row.genres.split(",") : [], row.instrument !== null ? row.instrument : "Nessuno", row.artists ? row.artists.split(",") : []));
     });
 }
+// Ottenere tutti gli id utenti e gli id eventi seguiti da ciascuno
+function getAllUsersEvents(db) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const results = yield executeQuery(db, `SELECT user_id, GROUP_CONCAT(event_id) AS events FROM user_event GROUP BY user_id`);
+        const map = new Map();
+        for (const row of results) {
+            map.set(row.user_id, new Set(row.events.split(",").map(Number)));
+        }
+        return map;
+    });
+}
 // Ottenere le informazioni di un evento dal database
 function getEvent(db, event_id) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -308,18 +319,21 @@ function getEventsInfoById(db, eventsMap) {
         return events;
     });
 }
+// Ottenere gli id degli eventi dal database
 function getEventsId(db) {
     return __awaiter(this, void 0, void 0, function* () {
         const results = yield executeQuery(db, 'SELECT id FROM event');
         return results.map(row => row.id);
     });
 }
+// Ottenere gli id degli eventi seguiti da un utente
 function getEventsIdByUserId(db, user_id) {
     return __awaiter(this, void 0, void 0, function* () {
         const results = yield executeQuery(db, 'SELECT event_id FROM user_event WHERE user_id = ?', [user_id]);
         return results.map(row => row.event_id);
     });
 }
+// Ottenere gli id degli eventi più popolari (ordinati per numero di utenti che li seguono)
 function getPopularEventsId(db) {
     return __awaiter(this, void 0, void 0, function* () {
         const results = yield executeQuery(db, `SELECT event_id FROM user_event GROUP BY event_id ORDER BY COUNT(user_id) DESC`);
@@ -505,6 +519,6 @@ async function printData(): Promise<void>{
     */
 exports.default = { openDatabase, closeDatabase, createTable, /*insertUser, insertEvent, insertUserEvent,
                     executeQuery, getUsers, getEvents,*/
-    getEventsInfoById, getEventsId, getEventsIdByUserId, getPopularEventsId, /*getUserEvents,*/ getAllGenresName, getAllInstrumentsName,
+    getAllUsersEvents, getEventsInfoById, getEventsId, getEventsIdByUserId, getPopularEventsId, /*getUserEvents,*/ getAllGenresName, getAllInstrumentsName,
     getAllArtistsId, getGenresNameByUserId, getInstrumentsNameByUserId, getArtistsIdByUserId, getGenresNameByEventId,
     getInstrumentsNameByEventId, getArtistsIdByEventId, isDatabasePopulated, populate };
