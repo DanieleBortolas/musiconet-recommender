@@ -149,9 +149,10 @@ function getContentBasedRecommendations(db_1, user_id_1) {
                 }
             }
         }
-        results.sort((a, b) => b.similarity - a.similarity); // Ordina in ordine decrescente
-        // 4. Restituire i primi 10 eventi
-        return results.slice(0, nEvents); // Restituisce i primi nEvents eventi
+        // 4. Ordinare i risultati in base alla similarità decrescente 
+        results.sort((a, b) => b.similarity - a.similarity);
+        // 5. Restituire i primi nEvents eventi
+        return results.slice(0, nEvents);
     });
 }
 exports.default = { getContentBasedRecommendations };

@@ -17,7 +17,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_operations_1 = __importDefault(require("./db_operations"));
-const ml_distance_1 = require("ml-distance");
+const collaborative_filtering_js_1 = __importDefault(require("./collaborative_filtering.js"));
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         const db = yield db_operations_1.default.openDatabase();
@@ -32,11 +32,8 @@ function main() {
         //const events: Event[] = await dbOp.getEventsInfoById(db, cbResults)
         //events.forEach(e => e.printInfo())
         //console.log(cbResults)
-        //const map = await dbOp.getAllUsersEvents(db)
-        //const neighbors = await cf.findNearestNeighbors(3, map)
-        //console.log(neighbors)
-        const test = 1 - ml_distance_1.distance.jaccard([99, 980, 780], [101, 102, 103]);
-        console.log(test);
+        const cfResults = yield collaborative_filtering_js_1.default.getCollaborativeFilteringRecommendations(db, 24);
+        console.log(cfResults);
         yield db_operations_1.default.closeDatabase(db);
     });
 }

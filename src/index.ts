@@ -25,12 +25,8 @@ async function main(){
     //events.forEach(e => e.printInfo())
     //console.log(cbResults)
 
-    //const map = await dbOp.getAllUsersEvents(db)
-    //const neighbors = await cf.findNearestNeighbors(3, map)
-    //console.log(neighbors)
-
-    const test = 1 - distance.jaccard([99, 980, 780], [101, 102, 103])
-    console.log(test)
+    const cfResults = await cf.getCollaborativeFilteringRecommendations(db, 24)
+    console.log(cfResults)
 
     await dbOp.closeDatabase(db)
 }
