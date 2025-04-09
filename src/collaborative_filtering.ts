@@ -2,6 +2,7 @@
 
 import {Database} from 'sqlite3'
 import dbOp from './db_operations'
+import {Recommendation, UserSimilarity} from './models'
 
 // Funzione per calcolare la similarità di Jaccard tra due set di eventi
 function jaccardSimilarity(setA: Set<number>, setB: Set<number>): number{
@@ -17,8 +18,8 @@ function jaccardSimilarity(setA: Set<number>, setB: Set<number>): number{
 }
 
 // Funzione per trovare i k vicini più simili ad un utente target
-async function findNearestNeighbors(userTarget: number, usersMap: Map<number, Set<number>>, kNeighbors: number = 20): Promise<{user_id: number; similarity: number}[]>{
-    const neighbors: { user_id: number; similarity: number}[] = []  // Vicini dell'utente target
+async function findNearestNeighbors(userTarget: number, usersMap: Map<number, Set<number>>, kNeighbors: number = 20): Promise<UserSimilarity[]>{
+    const neighbors: UserSimilarity[] = []  // Vicini dell'utente target
     const userTargetEvents = usersMap.get(userTarget)   // Eventi seguiti dall'utente target
 
     // 1. Controllare se l'utente target è presente nella mappa e se ha eventi seguiti
@@ -44,7 +45,7 @@ async function findNearestNeighbors(userTarget: number, usersMap: Map<number, Se
     return neighbors.slice(0, kNeighbors)
 }
 
-async function getCollaborativeFilteringRecommendations(db: Database, user_id: number, kNeighbors: number = 20, nEvents: number = 10): Promise<{event_id: number, score: number}[]>{
+async function getCollaborativeFilteringRecommendations(db: Database, user_id: number, kNeighbors: number = 20, nEvents: number = 10): Promise<Recommendation[]>{
     // 1. Creare mappa utenti e eventi seguiti
     const allUsersEvents = await dbOp.getAllUsersEvents(db)                                 
 
@@ -76,7 +77,7 @@ async function getCollaborativeFilteringRecommendations(db: Database, user_id: n
     }
 
     // 6. Convertire la mappa in un vettore e ordinare in base al punteggio
-    const results: {event_id: number, score: number}[] = Array.from(recommendedEvents.entries()).map(([event_id, score]) => ({event_id, score}))
+    const results: Recommendation[] = Array.from(recommendedEvents.entries()).map(([event_id, score]) => ({event_id, score}))
     results.sort((a, b) => b.score - a.score)       // Ordina in base al punteggio decrescente
 
     // 7. Restituire i primi nEvents eventi

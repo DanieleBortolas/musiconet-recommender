@@ -1,4 +1,4 @@
-// Classi User ed Event
+// Classi e interfacce per la gestione degli utenti, degli eventi e delle raccomandazioni
 
 //Classe User
 export class User {
@@ -12,21 +12,6 @@ export class User {
         public instrument: string, 
         public artists: string[]
     ){}
-
-    // Metodo per aggiungere un nuovo genere
-    addGenre(genres: string): void{
-        this.genres.push(genres)
-    }
-
-    // Metodo per aggiungere un nuovo strumento
-    addInstrument(instrument: string): void{
-        this.instrument = instrument
-    }
-
-    // Metodo per aggiungere un nuovo artista
-    addArtist(artists: string): void{
-        this.artists.push(artists)
-    }
 
     // Metodo per stampare le info dell'utente
     printInfo(): void{
@@ -47,23 +32,21 @@ export class Event{
         public description: string,     
     ){}
 
-    // Metodo per aggiungere un nuovo genere
-    addGenre(genres: string): void{
-        this.genres.push(genres)
-    }
-
-    // Metodo per aggiungere un nuovo strumento
-    addInstrument(instrument: string): void{
-        this.instrument.push(instrument)
-    }
-
-    // Metodo per aggiungere un nuovo artista
-    addArtist(artists: string): void{
-        this.artists.push(artists)
-    }
-
     // Metodo per stampare le info dell'evento
     printInfo(): void{
         console.log(`Nome: ${this.name}, Genere: ${this.genres.join(', ')}, Strumenti: ${this.instrument.join(', ')}, Artista: ${this.artists.join(', ')}, Luogo: ${this.location}, Data: ${this.date}, Descrizione: ${this.description}`)
     }
+}
+
+// Interfaccia per la similarità degli utenti
+export interface UserSimilarity{
+    user_id: number
+    similarity: number
+}
+
+// Interfaccia per le raccomandazioni
+export interface Recommendation{
+    event_id: number
+    score: number
+    normScore?: number  // Punteggio normalizzato (opzionale) utilizzato per l'ibrido
 }

@@ -4,6 +4,7 @@
 
 import {Database} from 'sqlite3'
 import dbOp from './db_operations'
+import {Recommendation} from './models'
 import {similarity as mlSimilarity} from 'ml-distance'
 
 // Creare mapping caratteristiche -> indice
@@ -114,19 +115,19 @@ async function createEventVector(db: Database, event_id: number, featureMap: Map
 }
 
 // Funzione principale per ottenere le raccomandazioni content-based
-async function getContentBasedRecommendations(db: Database, user_id: number, nEvents: number = 10): Promise<{event_id: number, similarity: number}[]>{
+async function getContentBasedRecommendations(db: Database, user_id: number, nEvents: number = 10): Promise<Recommendation[]>{
     // 1. Creare mappa caratteristiche, vettore utente, prelevare tutti gli eventi ed eventi dell'utente 
     const featureMap: Map <string | number, number> = await buildFeatureMap(db)         // Mappa caratteristiche
     const userVector: number[] = await createUserVector(db, user_id, featureMap)        // Vettore utente
     const allEventsId: number[] = await dbOp.getEventsId(db)                            // Tutti gli eventi
     const userEvents = new Set(await dbOp.getEventsIdByUserId(db, user_id))             // Eventi seguiti dall'utente
-    const results: {event_id: number, similarity: number}[] = []
+    const results: Recommendation[] = []
 
     //2. Gestire se utente è nuovo (cold start)
     if(userVector.every(v => v == 0)){                  // Se l'utente non ha preferenze, restituisco gli eventi più popolari
         const popularEvent = await dbOp.getPopularEventsId(db)
         for(const e of popularEvent){
-            results.push({event_id: e, similarity: 0})      // similarity = 0 perché non c'è similarità
+            results.push({event_id: e, score: 0})      // similarity = 0 perché non c'è similarità
         }
         return results.slice(0, nEvents)                // Restituisco i primi nEvents eventi più popolari
     }
@@ -143,13 +144,13 @@ async function getContentBasedRecommendations(db: Database, user_id: number, nEv
             */
             
             if(similarity > 0){                             // Se la similarità è maggiore di 0, aggiungi alla lista dei risultati
-                results.push({event_id: id, similarity})
+                results.push({event_id: id, score: similarity})
             }
         }
     }
 
     // 4. Ordinare i risultati in base alla similarità decrescente 
-    results.sort((a, b) => b.similarity - a.similarity)
+    results.sort((a, b) => b.score - a.score)
 
     // 5. Restituire i primi nEvents eventi
     return results.slice(0, nEvents)
