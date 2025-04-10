@@ -1,53 +1,46 @@
+// Logica per l'approccio ibrido
+// Utilizza sia il content-based filtering che il collaborative filtering per generare raccomandazioni
+
 import cb from './content_based.js'
 import cf from './collaborative_filtering.js'
 import {Database} from 'sqlite3'
-import dbOp from './db_operations.js'
 import {Recommendation} from './models.js'
 
-function normalizeScore(scores: Recommendation[]): void{
-    if(scores.length == 0) return
-    let maxScore = scores[0].score
-    let minScore = scores[0].score
-
-    for(const s of scores){
-        if(s.score > maxScore) maxScore = s.score
-        if(s.score < minScore) minScore = s.score
-    }
-    const range = maxScore - minScore
-    if(range == 0) return
-    for(const s of scores){
-        s.normScore = (s.score - minScore) / range
-    }
-}
-
-//TODO: aggiungere commenti e TESTARE
+// Funzione principale per ottenere le raccomandazioni ibride
 async function getHybridRecommendations(db: Database, user_id: number, kNeighbors: number = 20, nEvents: number = 10, alpha: number = 0.5): Promise<Recommendation[]>{
-    const cbResults = await cb.getContentBasedRecommendations(db, user_id)
-    const cfResults = await cf.getCollaborativeFilteringRecommendations(db, user_id, kNeighbors)
+    // 1. Ottenere le raccomandazioni content-based e collaborative filtering
+    const cbResults = await cb.getContentBasedRecommendations(db, user_id, nEvents*2)
+    const cfResults = await cf.getCollaborativeFilteringRecommendations(db, user_id, kNeighbors, nEvents*2)
     
-    normalizeScore(cbResults)
-    normalizeScore(cfResults)
+    //console.log('Risultati CB: \n', cbResults)
+    //console.log('Risultati CF: \n', cfResults)
 
-    const combinedScores = new Map<number, {cbScore?: number, cfScore?: number}>()
+    // 2. Mappare i punteggi delle raccomandazioni per ogni evento presente in almeno una lista
+    const mapEventScores = new Map<number, {cbScore?: number, cfScore?: number}>()
     for(const cb of cbResults){
-        combinedScores.set(cb.event_id, {cbScore: cb.normScore})
+        mapEventScores.set(cb.event_id, {cbScore: cb.score})        // Aggiungi il punteggio content-based
     }
     for(const cf of cfResults){
-        if(combinedScores.has(cf.event_id)){
-            combinedScores.get(cf.event_id)!.cfScore = cf.normScore
+        if(mapEventScores.has(cf.event_id)){                            
+            mapEventScores.get(cf.event_id)!.cfScore = cf.normScore     // Aggiorna il punteggio collaborative filtering
         }
         else{
-            combinedScores.set(cf.event_id, {cfScore: cf.normScore})
+            mapEventScores.set(cf.event_id, {cfScore: cf.normScore})    // Aggiungi il punteggio collaborative filtering
         }
     }
-    const hybridResults: Recommendation[] = []
     
-    for(const [event_id, scores] of combinedScores.entries()){
+    // 3. Calcolare il punteggio finale per ogni evento
+    const hybridResults: Recommendation[] = []
+    for(const [event_id, scores] of mapEventScores.entries()){
         const finalScore = (alpha * (scores.cbScore || 0)) + ((1 - alpha) * (scores.cfScore || 0))
         hybridResults.push({event_id, score: finalScore}) 
     }
 
+    // 4. Ordinare i risultati in base al punteggio finale 
     hybridResults.sort((a, b) => b.score - a.score)
 
+    // 5. Restituire i primi nEvents eventi
     return hybridResults.slice(0, nEvents)
 }
+
+export default {getHybridRecommendations}

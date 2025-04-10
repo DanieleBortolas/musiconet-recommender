@@ -1,5 +1,5 @@
 "use strict";
-// Classi User ed Event
+// Classi e interfacce per la gestione degli utenti, degli eventi e delle raccomandazioni
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Event = exports.User = void 0;
 //Classe User
@@ -13,18 +13,6 @@ class User {
         this.genres = genres;
         this.instrument = instrument;
         this.artists = artists;
-    }
-    // Metodo per aggiungere un nuovo genere
-    addGenre(genres) {
-        this.genres.push(genres);
-    }
-    // Metodo per aggiungere un nuovo strumento
-    addInstrument(instrument) {
-        this.instrument = instrument;
-    }
-    // Metodo per aggiungere un nuovo artista
-    addArtist(artists) {
-        this.artists.push(artists);
     }
     // Metodo per stampare le info dell'utente
     printInfo() {
@@ -43,18 +31,6 @@ class Event {
         this.location = location;
         this.date = date;
         this.description = description;
-    }
-    // Metodo per aggiungere un nuovo genere
-    addGenre(genres) {
-        this.genres.push(genres);
-    }
-    // Metodo per aggiungere un nuovo strumento
-    addInstrument(instrument) {
-        this.instrument.push(instrument);
-    }
-    // Metodo per aggiungere un nuovo artista
-    addArtist(artists) {
-        this.artists.push(artists);
     }
     // Metodo per stampare le info dell'evento
     printInfo() {

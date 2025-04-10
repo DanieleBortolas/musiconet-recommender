@@ -1,10 +1,11 @@
 // Logica per il collaborative filtering
+// Utilizza la similarità di Jaccard per calcolare la similarità tra gli eventi seguiti dagli utenti
 
 import {Database} from 'sqlite3'
 import dbOp from './db_operations'
 import {Recommendation, UserSimilarity} from './models'
 
-// Funzione per calcolare la similarità di Jaccard tra due set di eventi
+// Calcolare la similarità di Jaccard tra due set di eventi
 function jaccardSimilarity(setA: Set<number>, setB: Set<number>): number{
     const intersection = new Set<number>()                      // Intersezione tra i due set
     for(const a of setA){
@@ -17,8 +18,8 @@ function jaccardSimilarity(setA: Set<number>, setB: Set<number>): number{
     return intersection.size / union                            // Similarità di Jaccard
 }
 
-// Funzione per trovare i k vicini più simili ad un utente target
-async function findNearestNeighbors(userTarget: number, usersMap: Map<number, Set<number>>, kNeighbors: number = 20): Promise<UserSimilarity[]>{
+// Trovare i k vicini più simili ad un utente target
+async function findNearestNeighbors(userTarget: number, usersMap: Map<number, Set<number>>, kNeighbors: number): Promise<UserSimilarity[]>{
     const neighbors: UserSimilarity[] = []  // Vicini dell'utente target
     const userTargetEvents = usersMap.get(userTarget)   // Eventi seguiti dall'utente target
 
@@ -45,6 +46,17 @@ async function findNearestNeighbors(userTarget: number, usersMap: Map<number, Se
     return neighbors.slice(0, kNeighbors)
 }
 
+function normalizeScore(scores: Recommendation[], k: number): void{
+    // Controlla se ci sono punteggi da normalizzare
+    if(scores.length == 0 || k <= 0) return                       // Se non ci sono punteggi, non fare nulla
+    
+    // Normalizza i punteggi
+    for(const s of scores){
+        s.normScore = s.score / k
+    }
+}
+
+// Funzione principale per ottenere le raccomandazioni collaborative filtering
 async function getCollaborativeFilteringRecommendations(db: Database, user_id: number, kNeighbors: number = 20, nEvents: number = 10): Promise<Recommendation[]>{
     // 1. Creare mappa utenti e eventi seguiti
     const allUsersEvents = await dbOp.getAllUsersEvents(db)                                 
@@ -55,7 +67,7 @@ async function getCollaborativeFilteringRecommendations(db: Database, user_id: n
         console.log(`Nessun vicino trovato per l'utente ${user_id}`)        // Se non ci sono vicini, restituisco un array vuoto
         return []
     }
-    console.log(neighbors)
+    //console.log(neighbors)
 
     // 3. Ottenere gli eventi seguiti dall'utente target
     const userEvents = allUsersEvents.get(user_id) || new Set<number>()
@@ -76,8 +88,9 @@ async function getCollaborativeFilteringRecommendations(db: Database, user_id: n
         }
     }
 
-    // 6. Convertire la mappa in un vettore e ordinare in base al punteggio
+    // 6. Convertire la mappa in un vettore, normalizzare i risultati e ordinare in base al punteggio
     const results: Recommendation[] = Array.from(recommendedEvents.entries()).map(([event_id, score]) => ({event_id, score}))
+    normalizeScore(results, neighbors.length)             // Normalizza i punteggi in base al numero di vicini trovati
     results.sort((a, b) => b.score - a.score)       // Ordina in base al punteggio decrescente
 
     // 7. Restituire i primi nEvents eventi

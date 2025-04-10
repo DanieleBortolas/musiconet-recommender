@@ -26,7 +26,7 @@ async function buildFeatureMap(db: Database): Promise<Map <string | number, numb
     return featureMap
 }
 
-// Funzione per calcolare quanto le caratteristiche di un utente sono coperte da un evento (POSSIBILE APPROCCIO IBRIDO)
+// Calcolare quanto le caratteristiche di un utente sono coperte da un evento (POSSIBILE APPROCCIO IBRIDO)
 function coverageScore(userVec: number[], eventVec: number[]) {
     let intersection = 0;
     let userFeatureCount = 0;
@@ -43,7 +43,7 @@ function coverageScore(userVec: number[], eventVec: number[]) {
     return userFeatureCount === 0 ? 0 : intersection / userFeatureCount;
 }
 
-// Funzione per creare il vettore pesato dell'utente
+// Creare il vettore pesato dell'utente
 async function createUserVector(db: Database, user_id: number, featureMap: Map<string | number, number>): Promise<number[]>{
     // 1. Recuperare generi, strumenti e artisti preferiti dall'utente
     const userGenres = await dbOp.getGenresNameByUserId(db, user_id)
@@ -89,7 +89,7 @@ async function createUserVector(db: Database, user_id: number, featureMap: Map<s
     return vec
 }
 
-// Funzione per creare il vettore binario dell'evento
+// Creare il vettore binario dell'evento
 async function createEventVector(db: Database, event_id: number, featureMap: Map<string | number, number>): Promise<number[]>{
     // 1. Recuperare generi, strumenti e artisti presenti nell'evento
     const eventGenres = await dbOp.getGenresNameByEventId(db, event_id)

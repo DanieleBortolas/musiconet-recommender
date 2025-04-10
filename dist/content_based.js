@@ -34,7 +34,7 @@ function buildFeatureMap(db) {
         return featureMap;
     });
 }
-// Funzione per calcolare quanto le caratteristiche di un utente sono coperte da un evento (POSSIBILE APPROCCIO IBRIDO)
+// Calcolare quanto le caratteristiche di un utente sono coperte da un evento (POSSIBILE APPROCCIO IBRIDO)
 function coverageScore(userVec, eventVec) {
     let intersection = 0;
     let userFeatureCount = 0;
@@ -48,7 +48,7 @@ function coverageScore(userVec, eventVec) {
     }
     return userFeatureCount === 0 ? 0 : intersection / userFeatureCount;
 }
-// Funzione per creare il vettore pesato dell'utente
+// Creare il vettore pesato dell'utente
 function createUserVector(db, user_id, featureMap) {
     return __awaiter(this, void 0, void 0, function* () {
         // 1. Recuperare generi, strumenti e artisti preferiti dall'utente
@@ -93,7 +93,7 @@ function createUserVector(db, user_id, featureMap) {
         return vec;
     });
 }
-// Funzione per creare il vettore binario dell'evento
+// Creare il vettore binario dell'evento
 function createEventVector(db, event_id, featureMap) {
     return __awaiter(this, void 0, void 0, function* () {
         // 1. Recuperare generi, strumenti e artisti presenti nell'evento
@@ -131,26 +131,26 @@ function getContentBasedRecommendations(db_1, user_id_1) {
         if (userVector.every(v => v == 0)) { // Se l'utente non ha preferenze, restituisco gli eventi più popolari
             const popularEvent = yield db_operations_1.default.getPopularEventsId(db);
             for (const e of popularEvent) {
-                results.push({ event_id: e, similarity: 0 }); // similarity = 0 perché non c'è similarità
+                results.push({ event_id: e, score: 0 }); // similarity = 0 perché non c'è similarità
             }
             return results.slice(0, nEvents); // Restituisco i primi nEvents eventi più popolari
         }
         // 3. Per ogni evento, creare vettore e calcolare similarità coseno
         for (const id of allEventsId) {
-            if (!userEvents.has(id)) { // Se l'evento non è già seguito dall'utente (Set: complessità O(n))
-                const eventVector = yield createEventVector(db, id, featureMap);
-                const similarity = ml_distance_1.similarity.cosine(userVector, eventVector); // Cosine similarity tra vettore utente e vettore evento
-                /*
-                const alpha = 0.6; // peso da assegnare alla cosine similarity
-                const similarity = alpha * similarity.cosine(userVector, eventVector) + (1 - alpha) * coverageScore(userVector, eventVector);
-                */
-                if (similarity > 0) { // Se la similarità è maggiore di 0, aggiungi alla lista dei risultati
-                    results.push({ event_id: id, similarity });
-                }
+            //if(!userEvents.has(id)){                        // Se l'evento non è già seguito dall'utente (Set: complessità O(n))
+            const eventVector = yield createEventVector(db, id, featureMap);
+            const similarity = ml_distance_1.similarity.cosine(userVector, eventVector); // Cosine similarity tra vettore utente e vettore evento
+            /*
+            const alpha = 0.6; // peso da assegnare alla cosine similarity
+            const similarity = alpha * similarity.cosine(userVector, eventVector) + (1 - alpha) * coverageScore(userVector, eventVector);
+            */
+            if (similarity > 0) { // Se la similarità è maggiore di 0, aggiungi alla lista dei risultati
+                results.push({ event_id: id, score: similarity });
             }
+            //}
         }
         // 4. Ordinare i risultati in base alla similarità decrescente 
-        results.sort((a, b) => b.similarity - a.similarity);
+        results.sort((a, b) => b.score - a.score);
         // 5. Restituire i primi nEvents eventi
         return results.slice(0, nEvents);
     });

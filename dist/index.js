@@ -17,7 +17,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_operations_1 = __importDefault(require("./db_operations"));
-const collaborative_filtering_js_1 = __importDefault(require("./collaborative_filtering.js"));
+const hybrid_recommender_js_1 = __importDefault(require("./hybrid_recommender.js"));
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         const db = yield db_operations_1.default.openDatabase();
@@ -28,12 +28,19 @@ function main() {
             yield db_operations_1.default.populate(db);
             console.log('Database popolato con successo');
         }
-        //const cbResults = await cb.getContentBasedRecommendations(db, 52)
+        const user_id = 9;
+        //const cbResults = await cb.getContentBasedRecommendations(db, user_id)
         //const events: Event[] = await dbOp.getEventsInfoById(db, cbResults)
         //events.forEach(e => e.printInfo())
         //console.log(cbResults)
-        const cfResults = yield collaborative_filtering_js_1.default.getCollaborativeFilteringRecommendations(db, 24);
-        console.log(cfResults);
+        //const cfResults = await cf.getCollaborativeFilteringRecommendations(db, user_id)
+        //console.log(cfResults)
+        console.log("Risultati Ibridi");
+        for (let id = 0; id < 53; id++) {
+            console.log(`Utente ${id}`);
+            const results = yield hybrid_recommender_js_1.default.getHybridRecommendations(db, id);
+            console.log(results);
+        }
         yield db_operations_1.default.closeDatabase(db);
     });
 }

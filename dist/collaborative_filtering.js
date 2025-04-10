@@ -1,5 +1,6 @@
 "use strict";
 // Logica per il collaborative filtering
+// Utilizza la similarità di Jaccard per calcolare la similarità tra gli eventi seguiti dagli utenti
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -14,7 +15,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_operations_1 = __importDefault(require("./db_operations"));
-// Funzione per calcolare la similarità di Jaccard tra due set di eventi
+// Calcolare la similarità di Jaccard tra due set di eventi
 function jaccardSimilarity(setA, setB) {
     const intersection = new Set(); // Intersezione tra i due set
     for (const a of setA) {
@@ -24,13 +25,11 @@ function jaccardSimilarity(setA, setB) {
     if (intersection.size == 0)
         return 0; // Se non ci sono eventi in comune, la similarità è 0
     const union = setA.size + setB.size - intersection.size; // Unione tra i due set
-    if (union == 0)
-        return 0;
     return intersection.size / union; // Similarità di Jaccard
 }
-// Funzione per trovare i k vicini più simili ad un utente target
-function findNearestNeighbors(userTarget_1, usersMap_1) {
-    return __awaiter(this, arguments, void 0, function* (userTarget, usersMap, kNeighbors = 20) {
+// Trovare i k vicini più simili ad un utente target
+function findNearestNeighbors(userTarget, usersMap, kNeighbors) {
+    return __awaiter(this, void 0, void 0, function* () {
         const neighbors = []; // Vicini dell'utente target
         const userTargetEvents = usersMap.get(userTarget); // Eventi seguiti dall'utente target
         // 1. Controllare se l'utente target è presente nella mappa e se ha eventi seguiti
@@ -53,6 +52,16 @@ function findNearestNeighbors(userTarget_1, usersMap_1) {
         return neighbors.slice(0, kNeighbors);
     });
 }
+function normalizeScore(scores, k) {
+    // Controlla se ci sono punteggi da normalizzare
+    if (scores.length == 0 || k <= 0)
+        return; // Se non ci sono punteggi, non fare nulla
+    // Normalizza i punteggi
+    for (const s of scores) {
+        s.normScore = s.score / k;
+    }
+}
+// Funzione principale per ottenere le raccomandazioni collaborative filtering
 function getCollaborativeFilteringRecommendations(db_1, user_id_1) {
     return __awaiter(this, arguments, void 0, function* (db, user_id, kNeighbors = 20, nEvents = 10) {
         // 1. Creare mappa utenti e eventi seguiti
@@ -63,7 +72,7 @@ function getCollaborativeFilteringRecommendations(db_1, user_id_1) {
             console.log(`Nessun vicino trovato per l'utente ${user_id}`); // Se non ci sono vicini, restituisco un array vuoto
             return [];
         }
-        console.log(neighbors);
+        //console.log(neighbors)
         // 3. Ottenere gli eventi seguiti dall'utente target
         const userEvents = allUsersEvents.get(user_id) || new Set();
         // 4. Creare una mappa per tenere traccia degli eventi raccomandati e dei punteggi di similarità
@@ -80,8 +89,9 @@ function getCollaborativeFilteringRecommendations(db_1, user_id_1) {
                 }
             }
         }
-        // 6. Convertire la mappa in un vettore e ordinare in base al punteggio
+        // 6. Convertire la mappa in un vettore, normalizzare i risultati e ordinare in base al punteggio
         const results = Array.from(recommendedEvents.entries()).map(([event_id, score]) => ({ event_id, score }));
+        normalizeScore(results, neighbors.length); // Normalizza i punteggi in base al numero di vicini trovati
         results.sort((a, b) => b.score - a.score); // Ordina in base al punteggio decrescente
         // 7. Restituire i primi nEvents eventi
         return results.slice(0, nEvents);

@@ -7,6 +7,7 @@ import dbOp from './db_operations'
 import {User, Event} from './models.js'
 import cb from './content_based.js'
 import cf from './collaborative_filtering.js'
+import hybrid from './hybrid_recommender.js'
 import {distance} from 'ml-distance'
 
 async function main(){
@@ -20,13 +21,22 @@ async function main(){
         console.log('Database popolato con successo')
     }
 
-    //const cbResults = await cb.getContentBasedRecommendations(db, 52)
+    const user_id = 9
+
+    //const cbResults = await cb.getContentBasedRecommendations(db, user_id)
     //const events: Event[] = await dbOp.getEventsInfoById(db, cbResults)
     //events.forEach(e => e.printInfo())
     //console.log(cbResults)
 
-    const cfResults = await cf.getCollaborativeFilteringRecommendations(db, 24)
-    console.log(cfResults)
+    //const cfResults = await cf.getCollaborativeFilteringRecommendations(db, user_id)
+    //console.log(cfResults)
+
+    console.log("Risultati Ibridi")
+    for(let id = 0; id<53; id++){
+        console.log(`Utente ${id}`)
+        const results = await hybrid.getHybridRecommendations(db, id)
+        console.log(results)
+    }
 
     await dbOp.closeDatabase(db)
 }
