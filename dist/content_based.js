@@ -137,17 +137,17 @@ function getContentBasedRecommendations(db_1, user_id_1) {
         }
         // 3. Per ogni evento, creare vettore e calcolare similarità coseno
         for (const id of allEventsId) {
-            //if(!userEvents.has(id)){                        // Se l'evento non è già seguito dall'utente (Set: complessità O(n))
-            const eventVector = yield createEventVector(db, id, featureMap);
-            const similarity = ml_distance_1.similarity.cosine(userVector, eventVector); // Cosine similarity tra vettore utente e vettore evento
-            /*
-            const alpha = 0.6; // peso da assegnare alla cosine similarity
-            const similarity = alpha * similarity.cosine(userVector, eventVector) + (1 - alpha) * coverageScore(userVector, eventVector);
-            */
-            if (similarity > 0) { // Se la similarità è maggiore di 0, aggiungi alla lista dei risultati
-                results.push({ event_id: id, score: similarity });
+            if (!userEvents.has(id)) { // Se l'evento non è già seguito dall'utente (Set: complessità O(n))
+                const eventVector = yield createEventVector(db, id, featureMap);
+                const similarity = ml_distance_1.similarity.cosine(userVector, eventVector); // Cosine similarity tra vettore utente e vettore evento
+                /*
+                const alpha = 0.6; // peso da assegnare alla cosine similarity
+                const similarity = alpha * similarity.cosine(userVector, eventVector) + (1 - alpha) * coverageScore(userVector, eventVector);
+                */
+                if (similarity > 0) { // Se la similarità è maggiore di 0, aggiungi alla lista dei risultati
+                    results.push({ event_id: id, score: similarity });
+                }
             }
-            //}
         }
         // 4. Ordinare i risultati in base alla similarità decrescente 
         results.sort((a, b) => b.score - a.score);
