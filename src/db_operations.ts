@@ -1,4 +1,6 @@
-// Funzioni necessarie per creare, inserire dati e interrogare il database
+/*  Gestione del database
+    Funzioni necessarie per creare, inserire dati e interrogare il database
+*/
 
 import {Database} from 'sqlite3'
 import fs from 'fs'

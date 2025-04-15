@@ -1,4 +1,6 @@
-// Classi e interfacce per la gestione degli utenti, degli eventi e delle raccomandazioni
+/*  Modelli per gli algoritmi e i dati del db
+    Classi e interfacce per la gestione degli utenti, degli eventi e delle raccomandazioni
+*/ 
 
 //Classe User
 export class User {

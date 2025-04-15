@@ -1,6 +1,7 @@
-// Logica per il content-based filtering
-// Utilizza la similarità coseno (dalla libreria ml-distance) per calcolare la similarità tra le caratteristiche 
-// dell'utente e quelle degli eventi
+/*  Logica per il content-based filtering
+    Utilizza la similarità coseno (dalla libreria ml-distance) per calcolare la similarità tra le caratteristiche 
+    dell'utente e quelle degli eventi
+*/
 
 import {Database} from 'sqlite3'
 import dbOp from './db_operations'

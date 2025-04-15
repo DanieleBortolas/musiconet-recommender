@@ -17,7 +17,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_operations_1 = __importDefault(require("./db_operations"));
+//import {User, Event} from './models.js'
+//import cb from './content_based.js'
+//import cf from './collaborative_filtering.js'
 const hybrid_recommender_js_1 = __importDefault(require("./hybrid_recommender.js"));
+//import {distance} from 'ml-distance'
+function printAllUsersAllRecommendations(db) {
+    return __awaiter(this, void 0, void 0, function* () {
+        for (let id = 0; id < 53; id++) {
+            console.log(`Utente ${id}`);
+            const results = yield hybrid_recommender_js_1.default.getHybridRecommendations(db, id);
+            console.log(results);
+        }
+    });
+}
+function printUserAllRecommendations(db, id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const results = yield hybrid_recommender_js_1.default.getHybridRecommendations(db, id);
+        console.log(`Raccomandazioni per l'utente ${id}\n`, results);
+    });
+}
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         const db = yield db_operations_1.default.openDatabase();
@@ -29,18 +48,7 @@ function main() {
             console.log('Database popolato con successo');
         }
         const user_id = 9;
-        //const cbResults = await cb.getContentBasedRecommendations(db, user_id)
-        //const events: Event[] = await dbOp.getEventsInfoById(db, cbResults)
-        //events.forEach(e => e.printInfo())
-        //console.log(cbResults)
-        //const cfResults = await cf.getCollaborativeFilteringRecommendations(db, user_id)
-        //console.log(cfResults)
-        console.log("Risultati Ibridi");
-        for (let id = 0; id < 53; id++) {
-            console.log(`Utente ${id}`);
-            const results = yield hybrid_recommender_js_1.default.getHybridRecommendations(db, id);
-            console.log(results);
-        }
+        yield printUserAllRecommendations(db, 9);
         yield db_operations_1.default.closeDatabase(db);
     });
 }

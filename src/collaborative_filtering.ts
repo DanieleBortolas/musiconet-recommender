@@ -1,5 +1,6 @@
-// Logica per il collaborative filtering
-// Utilizza la similarità di Jaccard per calcolare la similarità tra gli eventi seguiti dagli utenti
+/*  Logica per il collaborative filtering
+    Utilizza la similarità di Jaccard per calcolare la similarità tra gli eventi seguiti dagli utenti
+*/
 
 import {Database} from 'sqlite3'
 import dbOp from './db_operations'

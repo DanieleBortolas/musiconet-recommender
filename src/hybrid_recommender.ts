@@ -1,5 +1,6 @@
-// Logica per l'approccio ibrido
-// Utilizza sia il content-based filtering che il collaborative filtering per generare raccomandazioni
+/*  Logica per l'approccio ibrido
+    Utilizza sia il content-based filtering che il collaborative filtering per generare raccomandazioni
+*/
 
 import cb from './content_based.js'
 import cf from './collaborative_filtering.js'
