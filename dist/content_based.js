@@ -1,7 +1,8 @@
 "use strict";
-// Logica per il content-based filtering
-// Utilizza la similarità coseno (dalla libreria ml-distance) per calcolare la similarità tra le caratteristiche 
-// dell'utente e quelle degli eventi
+/*  Logica per il content-based filtering
+    Utilizza la similarità coseno (dalla libreria ml-distance) per calcolare la similarità tra le caratteristiche
+    dell'utente e quelle degli eventi
+*/
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {

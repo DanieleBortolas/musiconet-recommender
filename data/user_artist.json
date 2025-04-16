@@ -73,9 +73,9 @@
     {"user_id": 13, "artist_id": 249},
     {"user_id": 13, "artist_id": 259},
 
-    {"user_id": 14, "artist_id": 244},
-    {"user_id": 14, "artist_id": 201},
-    {"user_id": 14, "artist_id": 204},
+    {"user_id": 14, "artist_id": 247},
+    {"user_id": 14, "artist_id": 248},
+    {"user_id": 14, "artist_id": 224},
     
     {"user_id": 15, "artist_id": 249},
     {"user_id": 15, "artist_id": 200},
@@ -133,12 +133,10 @@
     {"user_id": 26, "artist_id": 230},
     {"user_id": 26, "artist_id": 233},
 
-    {"user_id": 27, "artist_id": 216},
     {"user_id": 27, "artist_id": 220},
     {"user_id": 27, "artist_id": 227},
-    {"user_id": 27, "artist_id": 254},
     {"user_id": 27, "artist_id": 256},
-    {"user_id": 27, "artist_id": 244},
+    {"user_id": 27, "artist_id": 248},
 
     {"user_id": 28, "artist_id": 215},
     {"user_id": 28, "artist_id": 226},

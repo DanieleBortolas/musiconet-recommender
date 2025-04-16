@@ -43,6 +43,7 @@ async function main(){
     const user_id = 9
     await printUserAllRecommendations(db, user_id)
 
+    // Chiudo il database
     await dbOp.closeDatabase(db)
 }
 

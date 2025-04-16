@@ -58,7 +58,7 @@ function normalizeScore(scores: Recommendation[], k: number): void{
 }
 
 // Funzione principale per ottenere le raccomandazioni collaborative filtering
-async function getCollaborativeFilteringRecommendations(db: Database, user_id: number, kNeighbors: number = 20, nEvents: number = 10): Promise<Recommendation[]>{
+async function getCollaborativeFilteringRecommendations(db: Database, user_id: number, nEvents: number = 10, kNeighbors: number = 20): Promise<Recommendation[]>{
     // 1. Creare mappa utenti e eventi seguiti
     const allUsersEvents = await dbOp.getAllUsersEvents(db)                                 
 

@@ -1,5 +1,7 @@
 "use strict";
-// Classi e interfacce per la gestione degli utenti, degli eventi e delle raccomandazioni
+/*  Modelli per gli algoritmi e i dati del db
+    Classi e interfacce per la gestione degli utenti, degli eventi e delle raccomandazioni
+*/
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Event = exports.User = void 0;
 //Classe User

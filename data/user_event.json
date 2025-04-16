@@ -59,10 +59,8 @@
     {"user_id": 13, "event_id": 149},
     {"user_id": 13, "event_id": 171},
     
-    {"user_id": 14, "event_id": 121},
     {"user_id": 14, "event_id": 123},
-    {"user_id": 14, "event_id": 174},
-    {"user_id": 14, "event_id": 175},
+    {"user_id": 14, "event_id": 166},
     
     {"user_id": 15, "event_id": 127},
     {"user_id": 15, "event_id": 177},
@@ -109,10 +107,8 @@
     {"user_id": 26, "event_id": 145},
     {"user_id": 26, "event_id": 116},
     
-    {"user_id": 27, "event_id": 123},
+    {"user_id": 27, "event_id": 121},
     {"user_id": 27, "event_id": 137},
-    {"user_id": 27, "event_id": 140},
-    {"user_id": 27, "event_id": 154},
     {"user_id": 27, "event_id": 155},
     
     {"user_id": 28, "event_id": 150},

@@ -8,10 +8,10 @@ import {Database} from 'sqlite3'
 import {Recommendation} from './models.js'
 
 // Funzione principale per ottenere le raccomandazioni ibride
-async function getHybridRecommendations(db: Database, user_id: number, kNeighbors: number = 20, nEvents: number = 10, alpha: number = 0.5): Promise<Recommendation[]>{
+async function getHybridRecommendations(db: Database, user_id: number, nEvents: number = 10, kNeighbors: number = 20, alpha: number = 0.5): Promise<Recommendation[]>{
     // 1. Ottenere le raccomandazioni content-based e collaborative filtering
     const cbResults = await cb.getContentBasedRecommendations(db, user_id, nEvents*2)
-    const cfResults = await cf.getCollaborativeFilteringRecommendations(db, user_id, kNeighbors, nEvents*2)
+    const cfResults = await cf.getCollaborativeFilteringRecommendations(db, user_id, nEvents*2, kNeighbors)
     
     //console.log('Risultati CB: \n', cbResults)
     //console.log('Risultati CF: \n', cfResults)

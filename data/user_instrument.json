@@ -27,7 +27,7 @@
     
     {"user_id": 13, "instrument": "Batteria"},
     
-    {"user_id": 14, "instrument": "Batteria"},
+    {"user_id": 14, "instrument": "Basso"},
     
     {"user_id": 15, "instrument": "Chitarra"},
     
@@ -53,7 +53,7 @@
     
     {"user_id": 26, "instrument": "Pianoforte"},
     
-    {"user_id": 27, "instrument": "Batteria"},
+    {"user_id": 27, "instrument": "Tromba"},
     
     {"user_id": 28, "instrument": "Batteria"},
     

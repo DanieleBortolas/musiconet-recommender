@@ -1,6 +1,7 @@
 "use strict";
-// Logica per il collaborative filtering
-// Utilizza la similarità di Jaccard per calcolare la similarità tra gli eventi seguiti dagli utenti
+/*  Logica per il collaborative filtering
+    Utilizza la similarità di Jaccard per calcolare la similarità tra gli eventi seguiti dagli utenti
+*/
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -63,7 +64,7 @@ function normalizeScore(scores, k) {
 }
 // Funzione principale per ottenere le raccomandazioni collaborative filtering
 function getCollaborativeFilteringRecommendations(db_1, user_id_1) {
-    return __awaiter(this, arguments, void 0, function* (db, user_id, kNeighbors = 20, nEvents = 10) {
+    return __awaiter(this, arguments, void 0, function* (db, user_id, nEvents = 10, kNeighbors = 20) {
         // 1. Creare mappa utenti e eventi seguiti
         const allUsersEvents = yield db_operations_1.default.getAllUsersEvents(db);
         // 2. Trovare i k vicini più simili all'utente target
