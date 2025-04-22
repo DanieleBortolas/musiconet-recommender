@@ -22,7 +22,7 @@ import dbOp from './db_operations'
 // Costanti
 const nEvents: number = 5       // Numero eventi da consigliare
 const kNeighbors: number = 20   // Numero di vicini da considerare per cf e hybrid
-const alpha: number = 0.5       // Peso per il risultato finale in hybrid
+const alpha: number = 0.05       // Peso di cb per il risultato finale in hybrid (il peso di cf è 1-alpha)
 
 
 async function runTestForUser(db: Database, user_id: number): Promise<void>{

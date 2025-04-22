@@ -33,7 +33,7 @@ const db_operations_1 = __importDefault(require("./db_operations"));
 // Costanti
 const nEvents = 5; // Numero eventi da consigliare
 const kNeighbors = 20; // Numero di vicini da considerare per cf e hybrid
-const alpha = 0.5; // Peso per il risultato finale in hybrid
+const alpha = 0.05; // Peso di cb per il risultato finale in hybrid (il peso di cf è 1-alpha)
 function runTestForUser(db, user_id) {
     return __awaiter(this, void 0, void 0, function* () {
         console.log(`Raccomandazioni per l'utente ${user_id}`);

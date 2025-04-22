@@ -49,6 +49,7 @@ function findNearestNeighbors(userTarget, usersMap, kNeighbors) {
         }
         // 3. Ordinare i vicini in base alla similarità
         neighbors.sort((a, b) => b.similarity - a.similarity);
+        console.log(`Vicini trovati per l'utente ${userTarget}:`, neighbors.length); // Stampa il numero di vicini trovati
         // 4. Prendere i primi k vicini
         return neighbors.slice(0, kNeighbors);
     });
