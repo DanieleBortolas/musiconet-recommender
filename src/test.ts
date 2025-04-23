@@ -52,12 +52,8 @@ async function test(): Promise<void> {
     const db = await dbOp.openDatabase()
     await dbOp.createTable(db)
         
-    //Conto il numero di utenti nel database
-    if(!(await dbOp.isDatabasePopulated(db))){
-        //Popolo il database se è vuoto
-        await dbOp.populate(db)
-        console.log('Database popolato con successo')
-    }
+    //Popolo il database se è vuoto
+    await dbOp.populateIfEmpty(db)
 
     // Vettore degli id selezionati
     const idsVector: number[] = [34, 30, 52, 4, 33, 14, 27, 18, 26]

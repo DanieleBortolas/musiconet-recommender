@@ -8,8 +8,12 @@ import dbOp from './db_operations'
 import {Recommendation} from './models'
 import {similarity as mlSimilarity} from 'ml-distance'
 
-// Creare mapping caratteristiche -> indice
-async function buildFeatureMap(db: Database): Promise<Map <string | number, number>>{   // il primo number è l'ID artista
+/**
+ * @summary Costruire la mappa delle caratteristiche
+ * @param db - Database SQLite
+ * @return - Mappa delle caratteristiche (genere, strumento, artista) con ID corrispondenti
+ */
+async function buildFeatureMap(db: Database): Promise<Map <string | number, number>>{   // "string | number": number è l'ID artista
     //1. Ottenere tutti i generi, strumenti e id artisti
     const genres = await dbOp.getAllGenresName(db)
     const instruments = await dbOp.getAllInstrumentsName(db)
@@ -17,35 +21,23 @@ async function buildFeatureMap(db: Database): Promise<Map <string | number, numb
 
     //2. Creare unica mappa per genere, strumento e artista
     const featureMap = new Map<string | number, number>()
-    let j = 0
-    genres.forEach(g => featureMap.set(g, j++))         // Aggiungo generi alla mappa
-    instruments.forEach(i => featureMap.set(i, j++))    // Aggiungo strumenti alla mappa
-    artists.forEach(a => featureMap.set(a, j++))        // Aggiungo artisti alla mappa
+    let i = 0
+    genres.forEach(g => featureMap.set(g, i++))         // Aggiungo generi alla mappa
+    instruments.forEach(j => featureMap.set(j, i++))    // Aggiungo strumenti alla mappa
+    artists.forEach(a => featureMap.set(a, i++))        // Aggiungo artisti alla mappa
 
-    //console.log(`Mappa caratteristiche creata con ${featureMap.size} caratteristiche`)
-    
     return featureMap
 }
 
-// Calcolare quanto le caratteristiche di un utente sono coperte da un evento (POSSIBILE APPROCCIO IBRIDO)
-function coverageScore(userVec: number[], eventVec: number[]) {
-    let intersection = 0;
-    let userFeatureCount = 0;
-  
-    for (let i = 0; i < userVec.length; i++) {
-      if (userVec[i] === 1) {
-        userFeatureCount++;
-        if (eventVec[i] === 1) {
-          intersection++;
-        }
-      }
-    }
-  
-    return userFeatureCount === 0 ? 0 : intersection / userFeatureCount;
-}
-
-// Creare il vettore pesato dell'utente
-async function createUserVector(db: Database, user_id: number, featureMap: Map<string | number, number>): Promise<number[]>{
+/**
+ * @summary Creare il vettore pesato dell'utente in base alle sue preferenze e agli eventi seguiti
+ * @param db - Database SQLite
+ * @param user_id - ID dell'utente
+ * @param featureMap - Mappa delle caratteristiche
+ * @param followedEvents - Array di eventi seguiti dall'utente
+ * @return - Vettore pesato dell'utente
+ */
+async function createUserVector(db: Database, user_id: number, featureMap: Map<string | number, number>, followedEvents: number[]): Promise<number[]>{
     // 1. Recuperare generi, strumenti e artisti preferiti dall'utente
     const userGenres = await dbOp.getGenresNameByUserId(db, user_id)
     const userInstruments = await dbOp.getInstrumentsNameByUserId(db, user_id)
@@ -57,7 +49,6 @@ async function createUserVector(db: Database, user_id: number, featureMap: Map<s
     userArtists.forEach(a => userFeatures.add(a))       // Aggiungo artisti al set
 
     // 2. Recuperare generi, strumenti e artisti dagli eventi seguiti dall'utente
-    const followedEvents = await dbOp.getEventsIdByUserId(db, user_id)  // Eventi seguiti dall'utente
     const userEventsFeatures = new Set<string | number>()               // Secondo set pesato diversamente nella costruzione del vettore
     for(const e of followedEvents){
         const eventGenres = await dbOp.getGenresNameByEventId(db, e)            
@@ -87,10 +78,17 @@ async function createUserVector(db: Database, user_id: number, featureMap: Map<s
             console.error(`Caratteristica ${uf} non trovata`)
         }
     }
+
     return vec
 }
 
-// Creare il vettore binario dell'evento
+/**
+ * @summary Creare il vettore binario dell'evento in base alle sue caratteristiche
+ * @param db - Database SQLite
+ * @param event_id - ID dell'evento
+ * @param featureMap - Mappa delle caratteristiche
+ * @returns - Vettore binario dell'evento
+ */
 async function createEventVector(db: Database, event_id: number, featureMap: Map<string | number, number>): Promise<number[]>{
     // 1. Recuperare generi, strumenti e artisti presenti nell'evento
     const eventGenres = await dbOp.getGenresNameByEventId(db, event_id)
@@ -112,23 +110,30 @@ async function createEventVector(db: Database, event_id: number, featureMap: Map
             console.error(`Caratteristica ${uf} non trovata`)   //Se i è undefined, uf non trovata nella mappa
         }
     }
+
     return vec
 }
 
-// Funzione principale per ottenere le raccomandazioni content-based
+/**
+ * @summary Funzione principale per ottenere le raccomandazioni content-based
+ * @param db - Database SQLite
+ * @param user_id - ID dell'utente
+ * @param nEvents - Numero di eventi da consigliare (default: 10)
+ * @return - Array di raccomandazioni content-based
+ */
 async function getContentBasedRecommendations(db: Database, user_id: number, nEvents: number = 10): Promise<Recommendation[]>{
     // 1. Creare mappa caratteristiche, vettore utente, prelevare tutti gli eventi ed eventi dell'utente 
-    const featureMap: Map <string | number, number> = await buildFeatureMap(db)         // Mappa caratteristiche
-    const userVector: number[] = await createUserVector(db, user_id, featureMap)        // Vettore utente
-    const allEventsId: number[] = await dbOp.getEventsId(db)                            // Tutti gli eventi
-    const userEvents = new Set(await dbOp.getEventsIdByUserId(db, user_id))             // Eventi seguiti dall'utente
+    const featureMap: Map <string | number, number> = await buildFeatureMap(db)                             // Mappa caratteristiche
+    const userEvents = new Set(await dbOp.getEventsIdByUserId(db, user_id))                                 // Eventi seguiti dall'utente
+    const userVector: number[] = await createUserVector(db, user_id, featureMap, Array.from(userEvents))    // Vettore utente
+    const allEventsId: number[] = await dbOp.getEventsId(db)                                                // Tutti gli eventi
     const results: Recommendation[] = []
 
     //2. Gestire se utente è nuovo (cold start)
     if(userVector.every(v => v == 0)){                  // Se l'utente non ha preferenze, restituisco gli eventi più popolari
         const popularEvent = await dbOp.getPopularEventsId(db)
         for(const e of popularEvent){
-            results.push({event_id: e, score: 0})      // similarity = 0 perché non c'è similarità
+            results.push({event_id: e, score: 0})       // similarity = 0 perché non c'è similarità
         }
         return results.slice(0, nEvents)                // Restituisco i primi nEvents eventi più popolari
     }
@@ -137,15 +142,10 @@ async function getContentBasedRecommendations(db: Database, user_id: number, nEv
     for(const id of allEventsId){
         if(!userEvents.has(id)){                        // Se l'evento non è già seguito dall'utente (Set: complessità O(n))
             const eventVector: number[] = await createEventVector(db, id, featureMap)
-            const similarity = mlSimilarity.cosine(userVector, eventVector)            // Cosine similarity tra vettore utente e vettore evento
+            const similarity = mlSimilarity.cosine(userVector, eventVector)             // Cosine similarity tra vettore utente e vettore evento
             
-            /*
-            const alpha = 0.6; // peso da assegnare alla cosine similarity
-            const similarity = alpha * similarity.cosine(userVector, eventVector) + (1 - alpha) * coverageScore(userVector, eventVector);
-            */
-            
-            if(similarity > 0){                             // Se la similarità è maggiore di 0, aggiungi alla lista dei risultati
-                results.push({event_id: id, score: similarity})
+            if(similarity > 0){                         // Se la similarità è maggiore di 0, aggiungi alla lista dei risultati
+                results.push({event_id: id, score: Math.round(similarity*1000)/1000})   // Arrotonda a 3 decimali
             }
         }
     }

@@ -24,29 +24,30 @@ function loadDataFromFile(path) {
     return JSON.parse(data);
 }
 // Gestire le CallBack nelle varie operazioni al Database
+// Input: errore, funzione di risoluzione, funzione di rifiuto, dati di successo (opzionale), messaggio di controllo (opzionale)
 function handleDBCallBack(err, resolve, reject, success_data, control_message) {
     if (err) {
         console.error(err.message);
         reject(err);
     }
     else {
-        control_message ? console.error(control_message) : null;
+        control_message ? console.log(control_message) : null;
         resolve(success_data);
     }
 }
 // Aprire il database
 function openDatabase() {
     return new Promise((resolve, reject) => {
-        const db = new sqlite3_1.Database(`musiconet.db`, (err) => handleDBCallBack(err, resolve, reject, db, "Database aperto correttamente"));
+        const db = new sqlite3_1.Database(`musiconet.db`, (err) => handleDBCallBack(err, resolve, reject, db));
     });
 }
 // Chiudere il database
 function closeDatabase(db) {
     return new Promise((resolve, reject) => {
-        db.close((err) => handleDBCallBack(err, resolve, reject, undefined, "Database chiuso correttamente"));
+        db.close((err) => handleDBCallBack(err, resolve, reject));
     });
 }
-// Utilizzato pre eseguire query di tipo INSERT, CREATE
+// Eseguire una query di tipo INSERT, CREATE 
 function runAsync(db_1, sql_1) {
     return __awaiter(this, arguments, void 0, function* (db, sql, params = []) {
         return new Promise((resolve, reject) => {
@@ -57,8 +58,9 @@ function runAsync(db_1, sql_1) {
 // Creare le tabelle nel database
 function createTable(db) {
     return __awaiter(this, void 0, void 0, function* () {
-        const run = (sql) => runAsync(db, sql); //Creazione di un alias più corto
+        const run = (sql) => runAsync(db, sql); //Creazione di un alias più corto per la funzione runAsync
         try {
+            // Creazione tabella user
             yield run(`
     	    CREATE TABLE IF NOT EXISTS user (
     	        id INTEGER PRIMARY KEY,
@@ -68,6 +70,7 @@ function createTable(db) {
     	        city TEXT
     	    )
     	`);
+            // Creazione tabella event
             yield run(`
     	    CREATE TABLE IF NOT EXISTS event (
     	        id INTEGER PRIMARY KEY,
@@ -77,6 +80,7 @@ function createTable(db) {
     	        description TEXT
     	    )
     	`);
+            // Creazione tabelle genre, instrument e artist
             yield run(`CREATE TABLE IF NOT EXISTS genre (name TEXT PRIMARY KEY)`);
             yield run(`CREATE TABLE IF NOT EXISTS instrument (name TEXT PRIMARY KEY)`);
             yield run(`
@@ -85,6 +89,7 @@ function createTable(db) {
     	        name TEXT
     	    )
     	`);
+            // Creazione tabella per relazione tra utenti ed eventi
             yield run(`
             CREATE TABLE IF NOT EXISTS user_event (
                 user_id INTEGER,
@@ -94,6 +99,7 @@ function createTable(db) {
                 FOREIGN KEY(event_id) REFERENCES event(id)
             )
         `);
+            // Creazione tabella per relazioni tra utenti e generi
             yield run(`
             CREATE TABLE IF NOT EXISTS user_genre (
                 user_id INTEGER,
@@ -103,6 +109,7 @@ function createTable(db) {
                 FOREIGN KEY(genre) REFERENCES genre(name)
             )
         `);
+            // Creazione tabella per relazioni tra utenti e strumenti
             yield run(`
     	    CREATE TABLE IF NOT EXISTS user_instrument (
     	        user_id INTEGER,
@@ -112,6 +119,7 @@ function createTable(db) {
     	        FOREIGN KEY(instrument) REFERENCES instrument(name)
     	    )
     	`);
+            // Creazione tabella per relazioni tra utenti e artisti
             yield run(`
     	    CREATE TABLE IF NOT EXISTS user_artist (
     	        user_id INTEGER,
@@ -121,6 +129,7 @@ function createTable(db) {
     	        FOREIGN KEY(artist_id) REFERENCES artist(id)
     	    )
     	`);
+            // Creazione tabella per relazioni tra eventi e generi
             yield run(`
     	    CREATE TABLE IF NOT EXISTS event_genre (
     	        event_id INTEGER,
@@ -130,6 +139,7 @@ function createTable(db) {
     	        FOREIGN KEY(genre) REFERENCES genre(name)
     	    )
     	`);
+            // Creazione tabella per relazioni tra eventi e strumenti
             yield run(`
     	    CREATE TABLE IF NOT EXISTS event_instrument (
     	        event_id INTEGER,
@@ -139,6 +149,7 @@ function createTable(db) {
     	        FOREIGN KEY(instrument) REFERENCES instrument(name)
     	    )
     	`);
+            // Creazione tabella per relazioni tra eventi e artisti
             yield run(`
     	    CREATE TABLE IF NOT EXISTS event_artist (
     	        event_id INTEGER,
@@ -148,10 +159,9 @@ function createTable(db) {
     	        FOREIGN KEY(artist_id) REFERENCES artist(id)
     	    )
     	`);
-            console.log(`Tabelle create correttamente`);
         }
         catch (err) {
-            console.error(err.message);
+            console.error("Errore in createTable: ", err.message);
             throw err;
         }
     });
@@ -252,7 +262,7 @@ function insertEventArtist(db, event_id, artist_id) {
         return runAsync(db, sql, params);
     });
 }
-// Eseguire una query sul database
+// Eseguire una query di tipo SELECT
 function executeQuery(db_1, query_1) {
     return __awaiter(this, arguments, void 0, function* (db, query, params = []) {
         return new Promise((resolve, reject) => {
@@ -260,37 +270,19 @@ function executeQuery(db_1, query_1) {
         });
     });
 }
-// Ottenere gli utenti dal database
-function getUsers(db) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const results = yield executeQuery(db, `
-        SELECT u.id, u.name, u.surname, u.age, u.city, 
-               GROUP_CONCAT(DISTINCT g.name) AS genres,
-               GROUP_CONCAT(DISTINCT i.name) AS instrument,
-               GROUP_CONCAT(DISTINCT a.name) AS artists
-        FROM user u
-        LEFT JOIN user_instrument ui ON u.id = ui.user_id
-        LEFT JOIN instrument i ON ui.instrument = i.name
-        LEFT JOIN user_genre ug ON u.id = ug.user_id
-        LEFT JOIN genre g ON ug.genre = g.name
-        LEFT JOIN user_artist ua ON u.id = ua.user_id
-        LEFT JOIN artist a ON ua.artist_id = a.id
-        GROUP BY u.id`);
-        return results.map(row => new models_js_1.User(row.id, row.name, row.surname, row.age, row.city, row.genres ? row.genres.split(",") : [], row.instrument !== null ? row.instrument : "Nessuno", row.artists ? row.artists.split(",") : []));
-    });
-}
-// Ottenere tutti gli id utenti e gli id eventi seguiti da ciascuno
+// Ottenere tutti gli id utenti e gli id eventi seguiti da ciascuno (utilizzato in cf)
 function getAllUsersEvents(db) {
     return __awaiter(this, void 0, void 0, function* () {
         const results = yield executeQuery(db, `SELECT user_id, GROUP_CONCAT(event_id) AS events FROM user_event GROUP BY user_id`);
         const map = new Map();
         for (const row of results) {
+            // Creare una mappa per ogni utente con gli eventi seguiti
             map.set(row.user_id, new Set(row.events.split(",").map(Number)));
         }
         return map;
     });
 }
-// Ottenere le informazioni di un evento dal database
+// Ottenere le informazioni di un evento dal database (utilizzato in getEventsInfoById, UNUSED)
 function getEvent(db, event_id) {
     return __awaiter(this, void 0, void 0, function* () {
         const result = yield executeQuery(db, `
@@ -312,6 +304,7 @@ function getEvent(db, event_id) {
     });
 }
 // Ottenere le informazioni di più eventi da un array di id
+// UNUSED e INCORRECT
 function getEventsInfoById(db, eventsMap) {
     return __awaiter(this, void 0, void 0, function* () {
         const events = [];
@@ -321,101 +314,91 @@ function getEventsInfoById(db, eventsMap) {
         return events;
     });
 }
-// Ottenere gli id degli eventi dal database
+// Ottenere gli id degli eventi dal database (utilizzato in cb)
 function getEventsId(db) {
     return __awaiter(this, void 0, void 0, function* () {
         const results = yield executeQuery(db, 'SELECT id FROM event');
         return results.map(row => row.id);
     });
 }
-// Ottenere gli id degli eventi seguiti da un utente
+// Ottenere gli id degli eventi seguiti da un utente (utilizzato in cb)
 function getEventsIdByUserId(db, user_id) {
     return __awaiter(this, void 0, void 0, function* () {
         const results = yield executeQuery(db, 'SELECT event_id FROM user_event WHERE user_id = ?', [user_id]);
         return results.map(row => row.event_id);
     });
 }
-// Ottenere gli id degli eventi più popolari (ordinati per numero di utenti che li seguono)
+// Ottenere gli id degli eventi più popolari, in base al numero di utenti che li seguono (utilizzato in cb)
 function getPopularEventsId(db) {
     return __awaiter(this, void 0, void 0, function* () {
         const results = yield executeQuery(db, `SELECT event_id FROM user_event GROUP BY event_id ORDER BY COUNT(user_id) DESC`);
         return results.map(row => row.event_id);
     });
 }
-// Ottenere i nomi di tutti i generi musicali
+// Ottenere i nomi di tutti i generi musicali (utilizzato in cb)
 function getAllGenresName(db) {
     return __awaiter(this, void 0, void 0, function* () {
         const results = yield executeQuery(db, 'SELECT name FROM genre');
         return results.map(row => row.name);
     });
 }
-// Ottenere i nomi di tutti gli strumenti
+// Ottenere i nomi di tutti gli strumenti (utilizzato in cb)
 function getAllInstrumentsName(db) {
     return __awaiter(this, void 0, void 0, function* () {
         const results = yield executeQuery(db, 'SELECT name FROM instrument');
         return results.map(row => row.name);
     });
 }
-// Ottenere gli id di tutti gli artisti
+// Ottenere gli id di tutti gli artisti (utilizzato in cb)
 function getAllArtistsId(db) {
     return __awaiter(this, void 0, void 0, function* () {
         const results = yield executeQuery(db, 'SELECT id FROM artist');
         return results.map(row => row.id);
     });
 }
-// Ottenere i generi preferiti di un utente
+// Ottenere i generi preferiti di un utente (utilizzato in cb)
 function getGenresNameByUserId(db, user_id) {
     return __awaiter(this, void 0, void 0, function* () {
-        const results = yield executeQuery(db, `SELECT genre FROM user_genre WHERE user_id = ${user_id}`);
+        const results = yield executeQuery(db, 'SELECT genre FROM user_genre WHERE user_id = ?', [user_id]);
         return results.map(row => row.genre);
     });
 }
-// Ottenere gli strumenti suonati da un utente
+// Ottenere gli strumenti suonati da un utente (utilizzato in cb)
 function getInstrumentsNameByUserId(db, user_id) {
     return __awaiter(this, void 0, void 0, function* () {
-        const result = yield executeQuery(db, `SELECT instrument FROM user_instrument WHERE user_id = ${user_id}`);
+        const result = yield executeQuery(db, 'SELECT instrument FROM user_instrument WHERE user_id = ?', [user_id]);
         return result.map(row => row.instrument);
     });
 }
-// Ottenere gli artisti seguiti da un utente
+// Ottenere gli artisti seguiti da un utente (utilizzato in cb)
 function getArtistsIdByUserId(db, user_id) {
     return __awaiter(this, void 0, void 0, function* () {
-        const result = yield executeQuery(db, `SELECT artist_id FROM user_artist WHERE user_id = ${user_id}`);
+        const result = yield executeQuery(db, 'SELECT artist_id FROM user_artist WHERE user_id = ?', [user_id]);
         return result.map(row => row.artist_id);
     });
 }
-// TODO Recupera gli eventi a cui è interessato (user_event) e, per ciascuno di questi eventi, 
-//      recupera i relativi generi (event_genre) e artisti (event_artist). 
-//      Questo arricchisce il profilo utente con interessi dimostrati
-// Ottenere i generi di un evento
+// Ottenere i generi di un evento (utilizzato in cb)
 function getGenresNameByEventId(db, event_id) {
     return __awaiter(this, void 0, void 0, function* () {
-        const results = yield executeQuery(db, `SELECT genre FROM event_genre WHERE event_id = ${event_id}`);
+        const results = yield executeQuery(db, 'SELECT genre FROM event_genre WHERE event_id = ?', [event_id]);
         return results.map(row => row.genre);
     });
 }
-// Ottenere gli strumenti di un evento
+// Ottenere gli strumenti di un evento (utilizzato in cb)
 function getInstrumentsNameByEventId(db, event_id) {
     return __awaiter(this, void 0, void 0, function* () {
-        const results = yield executeQuery(db, `SELECT instrument FROM event_instrument WHERE event_id = ${event_id}`);
+        const results = yield executeQuery(db, 'SELECT instrument FROM event_instrument WHERE event_id = ?', [event_id]);
         return results.map(row => row.instrument);
     });
 }
-// Ottenere gli artisti di un evento
+// Ottenere gli artisti di un evento (utilizzato in cb)
 function getArtistsIdByEventId(db, event_id) {
     return __awaiter(this, void 0, void 0, function* () {
-        const results = yield executeQuery(db, `SELECT artist_id FROM event_artist WHERE event_id = ${event_id}`);
+        const results = yield executeQuery(db, 'SELECT artist_id FROM event_artist WHERE event_id = ?', [event_id]);
         return results.map(row => row.artist_id);
     });
 }
-/* Da sistemare nel caso servisse
-// Ottenere gli eventi di un utente dal database
-async function getUserEvents(db: Database, user_id: number): Promise<any[]>{
-    return executeQuery(db,
-        `SELECT * FROM event WHERE event_id IN (SELECT event_id FROM user_event_relation WHERE user_id = ?)`,
-        [user_id])
-}
-*/
+// Controllare se il database è già popolato, ovvero se contiene almeno un utente
 function isDatabasePopulated(db) {
     return __awaiter(this, void 0, void 0, function* () {
         const result = yield executeQuery(db, 'SELECT COUNT(*) as count FROM user');
@@ -423,104 +406,84 @@ function isDatabasePopulated(db) {
     });
 }
 // Popolare il database con i dati iniziali
-function populate(db) {
+function populateIfEmpty(db) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield executeQuery(db, `BEGIN TRANSACTION`);
-        try {
-            // Inserimento degli user da ./data/user.json
-            const dataUsers = yield loadDataFromFile('./data/user.json');
-            for (const user of dataUsers) {
-                yield insertUser(db, user.id, user.name, user.surname, user.age, user.position);
+        // Controllo se il database è già popolato
+        if (!(yield isDatabasePopulated(db))) {
+            // Se non è popolato, lo popolo con i dati iniziali
+            yield executeQuery(db, `BEGIN TRANSACTION`); // Inizio la transazione
+            console.log("Database vuoto, popolamento in corso...");
+            try {
+                // Inserimento degli user da ./data/user.json
+                const dataUsers = loadDataFromFile('./data/user.json');
+                for (const user of dataUsers) {
+                    yield insertUser(db, user.id, user.name, user.surname, user.age, user.position);
+                }
+                // Inserimento degli eventi da ./data/event.json
+                const dataEvents = loadDataFromFile('./data/event.json');
+                for (const event of dataEvents) {
+                    yield insertEvent(db, event.id, event.name, event.location, event.date, event.description);
+                }
+                //Inserimento dei generi da ./data/genre.json
+                const dataGenres = loadDataFromFile('./data/genre.json');
+                for (const genre of dataGenres) {
+                    yield insertGenre(db, genre.name);
+                }
+                //Inserimento dei strumenti da ./data/instrument.json
+                const dataInstruments = loadDataFromFile('./data/instrument.json');
+                for (const instrument of dataInstruments) {
+                    yield insertInstrument(db, instrument.name);
+                }
+                //Inserimento degli artisti da ./data/artist.json
+                const dataArtists = loadDataFromFile('./data/artist.json');
+                for (const artist of dataArtists) {
+                    yield insertArtist(db, artist.id, artist.name);
+                }
+                // Inserimento delle relazioni tra utenti ed eventi da ./data/user_event.json
+                const dataUserEvent = loadDataFromFile('./data/user_event.json');
+                for (const relation of dataUserEvent) {
+                    yield insertUserEvent(db, relation.user_id, relation.event_id);
+                }
+                // Inserimento delle relazioni tra utenti e generi da ./data/user_genre.json
+                const dataUserGenre = loadDataFromFile('./data/user_genre.json');
+                for (const relation of dataUserGenre) {
+                    yield insertUserGenre(db, relation.user_id, relation.genre);
+                }
+                // Inserimento delle relazioni tra utenti e strumenti da ./data/user_instrument.json
+                const dataUserInstrument = loadDataFromFile('./data/user_instrument.json');
+                for (const relation of dataUserInstrument) {
+                    yield insertUserInstrument(db, relation.user_id, relation.instrument);
+                }
+                // Inserimento delle relazioni tra utenti e artisti da ./data/user_artist.json
+                const dataUserArtist = loadDataFromFile('./data/user_artist.json');
+                for (const relation of dataUserArtist) {
+                    yield insertUserArtist(db, relation.user_id, relation.artist_id);
+                }
+                //Inserimento delle relazioni tra eventi e generi da ./data/event_genre.json
+                const dataEventGenre = loadDataFromFile('./data/event_genre.json');
+                for (const relation of dataEventGenre) {
+                    yield insertEventGenre(db, relation.event_id, relation.genre);
+                }
+                //Inserimento delle relazioni tra eventi e strumenti da ./data/event_genre.json
+                const dataEventInstrument = loadDataFromFile('./data/event_instrument.json');
+                for (const relation of dataEventInstrument) {
+                    yield insertEventInstrument(db, relation.event_id, relation.instrument);
+                }
+                //Inserimento delle relazioni tra eventi e artisti da ./data/event_artist.json
+                const dataEventArtist = loadDataFromFile('./data/event_artist.json');
+                for (const relation of dataEventArtist) {
+                    yield insertEventArtist(db, relation.event_id, relation.artist_id);
+                }
+                yield executeQuery(db, `COMMIT`);
+                console.log("Database popolato con successo");
             }
-            // Inserimento degli eventi da ./data/event.json
-            const dataEvents = yield loadDataFromFile('./data/event.json');
-            for (const event of dataEvents) {
-                yield insertEvent(db, event.id, event.name, event.location, event.date, event.description);
+            catch (err) {
+                yield executeQuery(db, `ROLLBACK`);
+                console.error("Errore in populateIfEmpty: " + err.message);
             }
-            //Inserimento dei generi da ./data/genre.json
-            const dataGenres = yield loadDataFromFile('./data/genre.json');
-            for (const genre of dataGenres) {
-                yield insertGenre(db, genre.name);
-            }
-            //Inserimento dei strumenti da ./data/instrument.json
-            const dataInstruments = yield loadDataFromFile('./data/instrument.json');
-            for (const instrument of dataInstruments) {
-                yield insertInstrument(db, instrument.name);
-            }
-            //Inserimento degli artisti da ./data/artist.json
-            const dataArtists = yield loadDataFromFile('./data/artist.json');
-            for (const artist of dataArtists) {
-                yield insertArtist(db, artist.id, artist.name);
-            }
-            // Inserimento delle relazioni tra utenti ed eventi da ./data/user_event.json
-            const dataUserEvent = yield loadDataFromFile('./data/user_event.json');
-            for (const relation of dataUserEvent) {
-                yield insertUserEvent(db, relation.user_id, relation.event_id);
-            }
-            // Inserimento delle relazioni tra utenti e generi da ./data/user_genre.json
-            const dataUserGenre = yield loadDataFromFile('./data/user_genre.json');
-            for (const relation of dataUserGenre) {
-                yield insertUserGenre(db, relation.user_id, relation.genre);
-            }
-            // Inserimento delle relazioni tra utenti e strumenti da ./data/user_instrument.json
-            const dataUserInstrument = yield loadDataFromFile('./data/user_instrument.json');
-            for (const relation of dataUserInstrument) {
-                yield insertUserInstrument(db, relation.user_id, relation.instrument);
-            }
-            // Inserimento delle relazioni tra utenti e artisti da ./data/user_artist.json
-            const dataUserArtist = yield loadDataFromFile('./data/user_artist.json');
-            for (const relation of dataUserArtist) {
-                yield insertUserArtist(db, relation.user_id, relation.artist_id);
-            }
-            //Inserimento delle relazioni tra eventi e generi da ./data/event_genre.json
-            const dataEventGenre = yield loadDataFromFile('./data/event_genre.json');
-            for (const relation of dataEventGenre) {
-                yield insertEventGenre(db, relation.event_id, relation.genre);
-            }
-            //Inserimento delle relazioni tra eventi e strumenti da ./data/event_genre.json
-            const dataEventInstrument = yield loadDataFromFile('./data/event_instrument.json');
-            for (const relation of dataEventInstrument) {
-                yield insertEventInstrument(db, relation.event_id, relation.instrument);
-            }
-            //Inserimento delle relazioni tra eventi e artisti da ./data/event_artist.json
-            const dataEventArtist = yield loadDataFromFile('./data/event_artist.json');
-            for (const relation of dataEventArtist) {
-                yield insertEventArtist(db, relation.event_id, relation.artist_id);
-            }
-            yield executeQuery(db, `COMMIT`);
-        }
-        catch (err) {
-            yield executeQuery(db, `ROLLBACK`);
-            console.error("Errore in populate: " + err);
         }
     });
 }
-/*
-// Test per stampare i dati
-async function printData(): Promise<void>{
-    const db = openDatabase();
-    try{
-        //await createTable(db)
-        //await populate(db)
-    
-        const users = await getUsers(db)
-        console.log(users)
-        const events = await getEvents(db)
-        console.log(events)
-        const userEvents = await getUserEvents(db, 1)
-        console.log(userEvents)
-
-    }catch(err){
-        console.error("Errore in printData: " + err)
-    }finally{
-        await closeDatabase(db)
-    }
-    }
-    
-    //printData()
-    */
-exports.default = { openDatabase, closeDatabase, createTable, /*insertUser, insertEvent, insertUserEvent,
-                    executeQuery, getUsers, getEvents,*/
-    getAllUsersEvents, getEventsInfoById, getEventsId, getEventsIdByUserId, getPopularEventsId, /*getUserEvents,*/ getAllGenresName, getAllInstrumentsName,
-    getAllArtistsId, getGenresNameByUserId, getInstrumentsNameByUserId, getArtistsIdByUserId, getGenresNameByEventId,
-    getInstrumentsNameByEventId, getArtistsIdByEventId, isDatabasePopulated, populate };
+exports.default = { openDatabase, closeDatabase, createTable, getAllUsersEvents, getEventsId, getEventsIdByUserId, getPopularEventsId,
+    getAllGenresName, getAllInstrumentsName, getAllArtistsId, getGenresNameByUserId, getInstrumentsNameByUserId,
+    getArtistsIdByUserId, getGenresNameByEventId, getInstrumentsNameByEventId, getArtistsIdByEventId, populateIfEmpty };

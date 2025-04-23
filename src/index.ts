@@ -32,13 +32,8 @@ async function main(){
     const db = await dbOp.openDatabase()
     await dbOp.createTable(db)
     
-    //Conto il numero di utenti nel database
-    if(!(await dbOp.isDatabasePopulated(db))){
-        //Popolo il database se è vuoto
-        await dbOp.populate(db)
-        console.log('Database popolato con successo')
-    }
-    
+    //Popolo il database se è vuoto
+    await dbOp.populateIfEmpty(db)
 
     const user_id = 9
     await printUserAllRecommendations(db, user_id)

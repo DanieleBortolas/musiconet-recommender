@@ -18,7 +18,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_operations_1 = __importDefault(require("./db_operations"));
 const ml_distance_1 = require("ml-distance");
-// Creare mapping caratteristiche -> indice
+/**
+ * @summary Costruire la mappa delle caratteristiche
+ * @param db - Database SQLite
+ * @return - Mappa delle caratteristiche (genere, strumento, artista) con ID corrispondenti
+ */
 function buildFeatureMap(db) {
     return __awaiter(this, void 0, void 0, function* () {
         //1. Ottenere tutti i generi, strumenti e id artisti
@@ -27,30 +31,22 @@ function buildFeatureMap(db) {
         const artists = yield db_operations_1.default.getAllArtistsId(db);
         //2. Creare unica mappa per genere, strumento e artista
         const featureMap = new Map();
-        let j = 0;
-        genres.forEach(g => featureMap.set(g, j++)); // Aggiungo generi alla mappa
-        instruments.forEach(i => featureMap.set(i, j++)); // Aggiungo strumenti alla mappa
-        artists.forEach(a => featureMap.set(a, j++)); // Aggiungo artisti alla mappa
-        //console.log(`Mappa caratteristiche creata con ${featureMap.size} caratteristiche`)
+        let i = 0;
+        genres.forEach(g => featureMap.set(g, i++)); // Aggiungo generi alla mappa
+        instruments.forEach(j => featureMap.set(j, i++)); // Aggiungo strumenti alla mappa
+        artists.forEach(a => featureMap.set(a, i++)); // Aggiungo artisti alla mappa
         return featureMap;
     });
 }
-// Calcolare quanto le caratteristiche di un utente sono coperte da un evento (POSSIBILE APPROCCIO IBRIDO)
-function coverageScore(userVec, eventVec) {
-    let intersection = 0;
-    let userFeatureCount = 0;
-    for (let i = 0; i < userVec.length; i++) {
-        if (userVec[i] === 1) {
-            userFeatureCount++;
-            if (eventVec[i] === 1) {
-                intersection++;
-            }
-        }
-    }
-    return userFeatureCount === 0 ? 0 : intersection / userFeatureCount;
-}
-// Creare il vettore pesato dell'utente
-function createUserVector(db, user_id, featureMap) {
+/**
+ * @summary Creare il vettore pesato dell'utente in base alle sue preferenze e agli eventi seguiti
+ * @param db - Database SQLite
+ * @param user_id - ID dell'utente
+ * @param featureMap - Mappa delle caratteristiche
+ * @param followedEvents - Array di eventi seguiti dall'utente
+ * @return - Vettore pesato dell'utente
+ */
+function createUserVector(db, user_id, featureMap, followedEvents) {
     return __awaiter(this, void 0, void 0, function* () {
         // 1. Recuperare generi, strumenti e artisti preferiti dall'utente
         const userGenres = yield db_operations_1.default.getGenresNameByUserId(db, user_id);
@@ -61,7 +57,6 @@ function createUserVector(db, user_id, featureMap) {
         userInstruments.forEach(i => userFeatures.add(i)); // Aggiungo strumenti al set
         userArtists.forEach(a => userFeatures.add(a)); // Aggiungo artisti al set
         // 2. Recuperare generi, strumenti e artisti dagli eventi seguiti dall'utente
-        const followedEvents = yield db_operations_1.default.getEventsIdByUserId(db, user_id); // Eventi seguiti dall'utente
         const userEventsFeatures = new Set(); // Secondo set pesato diversamente nella costruzione del vettore
         for (const e of followedEvents) {
             const eventGenres = yield db_operations_1.default.getGenresNameByEventId(db, e);
@@ -94,7 +89,13 @@ function createUserVector(db, user_id, featureMap) {
         return vec;
     });
 }
-// Creare il vettore binario dell'evento
+/**
+ * @summary Creare il vettore binario dell'evento in base alle sue caratteristiche
+ * @param db - Database SQLite
+ * @param event_id - ID dell'evento
+ * @param featureMap - Mappa delle caratteristiche
+ * @returns - Vettore binario dell'evento
+ */
 function createEventVector(db, event_id, featureMap) {
     return __awaiter(this, void 0, void 0, function* () {
         // 1. Recuperare generi, strumenti e artisti presenti nell'evento
@@ -119,14 +120,20 @@ function createEventVector(db, event_id, featureMap) {
         return vec;
     });
 }
-// Funzione principale per ottenere le raccomandazioni content-based
+/**
+ * @summary Funzione principale per ottenere le raccomandazioni content-based
+ * @param db - Database SQLite
+ * @param user_id - ID dell'utente
+ * @param nEvents - Numero di eventi da consigliare (default: 10)
+ * @return - Array di raccomandazioni content-based
+ */
 function getContentBasedRecommendations(db_1, user_id_1) {
     return __awaiter(this, arguments, void 0, function* (db, user_id, nEvents = 10) {
         // 1. Creare mappa caratteristiche, vettore utente, prelevare tutti gli eventi ed eventi dell'utente 
         const featureMap = yield buildFeatureMap(db); // Mappa caratteristiche
-        const userVector = yield createUserVector(db, user_id, featureMap); // Vettore utente
-        const allEventsId = yield db_operations_1.default.getEventsId(db); // Tutti gli eventi
         const userEvents = new Set(yield db_operations_1.default.getEventsIdByUserId(db, user_id)); // Eventi seguiti dall'utente
+        const userVector = yield createUserVector(db, user_id, featureMap, Array.from(userEvents)); // Vettore utente
+        const allEventsId = yield db_operations_1.default.getEventsId(db); // Tutti gli eventi
         const results = [];
         //2. Gestire se utente è nuovo (cold start)
         if (userVector.every(v => v == 0)) { // Se l'utente non ha preferenze, restituisco gli eventi più popolari
@@ -141,12 +148,8 @@ function getContentBasedRecommendations(db_1, user_id_1) {
             if (!userEvents.has(id)) { // Se l'evento non è già seguito dall'utente (Set: complessità O(n))
                 const eventVector = yield createEventVector(db, id, featureMap);
                 const similarity = ml_distance_1.similarity.cosine(userVector, eventVector); // Cosine similarity tra vettore utente e vettore evento
-                /*
-                const alpha = 0.6; // peso da assegnare alla cosine similarity
-                const similarity = alpha * similarity.cosine(userVector, eventVector) + (1 - alpha) * coverageScore(userVector, eventVector);
-                */
                 if (similarity > 0) { // Se la similarità è maggiore di 0, aggiungi alla lista dei risultati
-                    results.push({ event_id: id, score: similarity });
+                    results.push({ event_id: id, score: Math.round(similarity * 1000) / 1000 }); // Arrotonda a 3 decimali
                 }
             }
         }
