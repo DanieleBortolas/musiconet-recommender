@@ -45,12 +45,8 @@ function main() {
     return __awaiter(this, void 0, void 0, function* () {
         const db = yield db_operations_1.default.openDatabase();
         yield db_operations_1.default.createTable(db);
-        //Conto il numero di utenti nel database
-        if (!(yield db_operations_1.default.isDatabasePopulated(db))) {
-            //Popolo il database se è vuoto
-            yield db_operations_1.default.populate(db);
-            console.log('Database popolato con successo');
-        }
+        //Popolo il database se è vuoto
+        yield db_operations_1.default.populateIfEmpty(db);
         const user_id = 9;
         yield printUserAllRecommendations(db, user_id);
         // Chiudo il database

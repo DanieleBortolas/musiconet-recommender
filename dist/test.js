@@ -56,12 +56,8 @@ function test() {
     return __awaiter(this, void 0, void 0, function* () {
         const db = yield db_operations_1.default.openDatabase();
         yield db_operations_1.default.createTable(db);
-        //Conto il numero di utenti nel database
-        if (!(yield db_operations_1.default.isDatabasePopulated(db))) {
-            //Popolo il database se è vuoto
-            yield db_operations_1.default.populate(db);
-            console.log('Database popolato con successo');
-        }
+        //Popolo il database se è vuoto
+        yield db_operations_1.default.populateIfEmpty(db);
         // Vettore degli id selezionati
         const idsVector = [34, 30, 52, 4, 33, 14, 27, 18, 26];
         // Applico runTestForUser per ogni id nel vettore

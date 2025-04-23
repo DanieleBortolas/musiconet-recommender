@@ -7,12 +7,13 @@ import fs from 'fs'
 import {User, Event} from './models.js'
 
 // Caricare i dati da un file JSON
-function loadDataFromFile(path: string): Promise<any[]>{
+function loadDataFromFile(path: string): any[]{
     const data = fs.readFileSync(path, 'utf-8')
     return JSON.parse(data)
 }
 
 // Gestire le CallBack nelle varie operazioni al Database
+// Input: errore, funzione di risoluzione, funzione di rifiuto, dati di successo (opzionale), messaggio di controllo (opzionale)
 function handleDBCallBack<T = void>(err: Error | null, resolve: (value?: any) => void, 
                                     reject: (reason?: any) => void, success_data?: T, control_message?: string
                                     ): void{
@@ -20,7 +21,7 @@ function handleDBCallBack<T = void>(err: Error | null, resolve: (value?: any) =>
         console.error(err.message)
         reject(err)
     } else{
-        control_message? console.error(control_message): null
+        control_message? console.log(control_message): null
         resolve(success_data)
     }
 }
@@ -28,18 +29,18 @@ function handleDBCallBack<T = void>(err: Error | null, resolve: (value?: any) =>
 // Aprire il database
 function openDatabase(): Promise<Database>{
     return new Promise((resolve, reject) =>{
-        const db = new Database(`musiconet.db`, (err) => handleDBCallBack(err, resolve, reject, db, "Database aperto correttamente"))
+        const db = new Database(`musiconet.db`, (err) => handleDBCallBack(err, resolve, reject, db))
     })
 }
 
 // Chiudere il database
 function closeDatabase(db: Database): Promise<void>{
     return new Promise((resolve, reject) => {
-        db.close((err) => handleDBCallBack(err, resolve, reject, undefined, "Database chiuso correttamente"))
+        db.close((err) => handleDBCallBack(err, resolve, reject))
     })
 }
 
-// Utilizzato pre eseguire query di tipo INSERT, CREATE
+// Eseguire una query di tipo INSERT, CREATE 
 async function runAsync(db: Database, sql: string, params: any[] = []): Promise<void>{
     return new Promise((resolve, reject) => {
         db.run(sql, params, (err) => handleDBCallBack(err, resolve, reject)) 
@@ -48,9 +49,10 @@ async function runAsync(db: Database, sql: string, params: any[] = []): Promise<
 
 // Creare le tabelle nel database
 async function createTable(db: Database): Promise<void>{
-    const run = (sql: string) => runAsync(db, sql)      //Creazione di un alias più corto
+    const run = (sql: string) => runAsync(db, sql)      //Creazione di un alias più corto per la funzione runAsync
     
     try{
+        // Creazione tabella user
         await run(`
     	    CREATE TABLE IF NOT EXISTS user (
     	        id INTEGER PRIMARY KEY,
@@ -60,6 +62,8 @@ async function createTable(db: Database): Promise<void>{
     	        city TEXT
     	    )
     	`)
+        
+        // Creazione tabella event
         await run(`
     	    CREATE TABLE IF NOT EXISTS event (
     	        id INTEGER PRIMARY KEY,
@@ -69,6 +73,8 @@ async function createTable(db: Database): Promise<void>{
     	        description TEXT
     	    )
     	`)
+
+        // Creazione tabelle genre, instrument e artist
     	await run(`CREATE TABLE IF NOT EXISTS genre (name TEXT PRIMARY KEY)`);
     	await run(`CREATE TABLE IF NOT EXISTS instrument (name TEXT PRIMARY KEY)`);
     	await run(`
@@ -77,6 +83,8 @@ async function createTable(db: Database): Promise<void>{
     	        name TEXT
     	    )
     	`);
+
+        // Creazione tabella per relazione tra utenti ed eventi
     	await run(`
             CREATE TABLE IF NOT EXISTS user_event (
                 user_id INTEGER,
@@ -86,6 +94,8 @@ async function createTable(db: Database): Promise<void>{
                 FOREIGN KEY(event_id) REFERENCES event(id)
             )
         `);
+
+       	// Creazione tabella per relazioni tra utenti e generi
         await run(`
             CREATE TABLE IF NOT EXISTS user_genre (
                 user_id INTEGER,
@@ -95,6 +105,8 @@ async function createTable(db: Database): Promise<void>{
                 FOREIGN KEY(genre) REFERENCES genre(name)
             )
         `)
+
+        // Creazione tabella per relazioni tra utenti e strumenti
     	await run(`
     	    CREATE TABLE IF NOT EXISTS user_instrument (
     	        user_id INTEGER,
@@ -104,6 +116,8 @@ async function createTable(db: Database): Promise<void>{
     	        FOREIGN KEY(instrument) REFERENCES instrument(name)
     	    )
     	`)
+
+        // Creazione tabella per relazioni tra utenti e artisti
     	await run(`
     	    CREATE TABLE IF NOT EXISTS user_artist (
     	        user_id INTEGER,
@@ -113,6 +127,8 @@ async function createTable(db: Database): Promise<void>{
     	        FOREIGN KEY(artist_id) REFERENCES artist(id)
     	    )
     	`)
+
+        // Creazione tabella per relazioni tra eventi e generi
     	await run(`
     	    CREATE TABLE IF NOT EXISTS event_genre (
     	        event_id INTEGER,
@@ -122,6 +138,8 @@ async function createTable(db: Database): Promise<void>{
     	        FOREIGN KEY(genre) REFERENCES genre(name)
     	    )
     	`)
+
+        // Creazione tabella per relazioni tra eventi e strumenti
     	await run(`
     	    CREATE TABLE IF NOT EXISTS event_instrument (
     	        event_id INTEGER,
@@ -131,6 +149,8 @@ async function createTable(db: Database): Promise<void>{
     	        FOREIGN KEY(instrument) REFERENCES instrument(name)
     	    )
     	`)
+
+        // Creazione tabella per relazioni tra eventi e artisti
     	await run(`
     	    CREATE TABLE IF NOT EXISTS event_artist (
     	        event_id INTEGER,
@@ -140,10 +160,8 @@ async function createTable(db: Database): Promise<void>{
     	        FOREIGN KEY(artist_id) REFERENCES artist(id)
     	    )
     	`)
-        console.log(`Tabelle create correttamente`)
-    
     }catch (err: any){
-        console.error(err.message)
+        console.error("Errore in createTable: ", err.message)
         throw err;
     }
 }
@@ -232,48 +250,27 @@ async function insertEventArtist(db: Database, event_id: number, artist_id: numb
     return runAsync(db, sql, params)
 }
 
-// Eseguire una query sul database
+// Eseguire una query di tipo SELECT
 async function executeQuery(db: Database, query: string, params: any[] = []): Promise<any[]>{
     return new Promise((resolve, reject) => {
         db.all(query, params, (err, rows) => handleDBCallBack(err, resolve, reject, rows))
     })
 }
 
-// Ottenere gli utenti dal database
-async function getUsers(db: Database): Promise<User[]>{
-    const results = await executeQuery(db, `
-        SELECT u.id, u.name, u.surname, u.age, u.city, 
-               GROUP_CONCAT(DISTINCT g.name) AS genres,
-               GROUP_CONCAT(DISTINCT i.name) AS instrument,
-               GROUP_CONCAT(DISTINCT a.name) AS artists
-        FROM user u
-        LEFT JOIN user_instrument ui ON u.id = ui.user_id
-        LEFT JOIN instrument i ON ui.instrument = i.name
-        LEFT JOIN user_genre ug ON u.id = ug.user_id
-        LEFT JOIN genre g ON ug.genre = g.name
-        LEFT JOIN user_artist ua ON u.id = ua.user_id
-        LEFT JOIN artist a ON ua.artist_id = a.id
-        GROUP BY u.id`)
-    return results.map(row => 
-        new User(row.id, row.name, row.surname, row.age, row.city, 
-                row.genres ? row.genres.split(",") : [], 
-                row.instrument !== null ? row.instrument : "Nessuno", 
-                row.artists ? row.artists.split(",") : []
-            )
-    )
-}
-
-// Ottenere tutti gli id utenti e gli id eventi seguiti da ciascuno
+// Ottenere tutti gli id utenti e gli id eventi seguiti da ciascuno (utilizzato in cf)
 async function getAllUsersEvents(db: Database): Promise<Map<number, Set<number>>>{
     const results = await executeQuery(db, `SELECT user_id, GROUP_CONCAT(event_id) AS events FROM user_event GROUP BY user_id`)
     const map: Map<number, Set<number>> = new Map<number, Set<number>>()
+    
     for(const row of results){
-        map.set(row.user_id, new Set<number>(row.events.split(",").map(Number)))
+        // Creare una mappa per ogni utente con gli eventi seguiti
+        map.set(row.user_id, new Set<number>(row.events.split(",").map(Number)))    
     }
+
     return map
 }
 
-// Ottenere le informazioni di un evento dal database
+// Ottenere le informazioni di un evento dal database (utilizzato in getEventsInfoById, UNUSED)
 async function getEvent(db: Database, event_id: number): Promise<Event>{
     const result = await executeQuery(db, `
         SELECT e.id, e.name, e.location, e.date, e.description, 
@@ -300,6 +297,7 @@ async function getEvent(db: Database, event_id: number): Promise<Event>{
 }
 
 // Ottenere le informazioni di più eventi da un array di id
+// UNUSED e INCORRECT
 async function getEventsInfoById(db: Database, eventsMap:{event_id: number, cosSim: number}[]): Promise<Event[]>{
     const events: Event[] = []
     for (const i of eventsMap) {
@@ -308,205 +306,177 @@ async function getEventsInfoById(db: Database, eventsMap:{event_id: number, cosS
     return events
 }
 
-// Ottenere gli id degli eventi dal database
+// Ottenere gli id degli eventi dal database (utilizzato in cb)
 async function getEventsId(db: Database): Promise<number[]>{
     const results = await executeQuery(db, 'SELECT id FROM event')
     return results.map(row => row.id)
 }
 
-// Ottenere gli id degli eventi seguiti da un utente
+// Ottenere gli id degli eventi seguiti da un utente (utilizzato in cb)
 async function getEventsIdByUserId(db: Database, user_id: number): Promise<number[]>{
     const results = await executeQuery(db, 'SELECT event_id FROM user_event WHERE user_id = ?', [user_id])
     return results.map(row => row.event_id)
 }
 
-// Ottenere gli id degli eventi più popolari (ordinati per numero di utenti che li seguono)
+// Ottenere gli id degli eventi più popolari, in base al numero di utenti che li seguono (utilizzato in cb)
 async function getPopularEventsId(db: Database): Promise<number[]>{
     const results = await executeQuery(db, `SELECT event_id FROM user_event GROUP BY event_id ORDER BY COUNT(user_id) DESC`)
     return results.map(row => row.event_id)
 }
 
-// Ottenere i nomi di tutti i generi musicali
+// Ottenere i nomi di tutti i generi musicali (utilizzato in cb)
 async function getAllGenresName(db: Database): Promise<string[]>{
     const results = await executeQuery(db, 'SELECT name FROM genre')
     return results.map(row => row.name)
 }
 
-// Ottenere i nomi di tutti gli strumenti
+// Ottenere i nomi di tutti gli strumenti (utilizzato in cb)
 async function getAllInstrumentsName(db: Database): Promise<string[]>{
     const results = await executeQuery(db, 'SELECT name FROM instrument')
     return results.map(row => row.name)
 }
 
-// Ottenere gli id di tutti gli artisti
+// Ottenere gli id di tutti gli artisti (utilizzato in cb)
 async function getAllArtistsId(db: Database): Promise<number[]>{
     const results = await executeQuery(db, 'SELECT id FROM artist')
     return results.map(row => row.id)
 }
 
-// Ottenere i generi preferiti di un utente
+// Ottenere i generi preferiti di un utente (utilizzato in cb)
 async function getGenresNameByUserId(db: Database, user_id: number): Promise<string[]>{
-    const results = await executeQuery(db, `SELECT genre FROM user_genre WHERE user_id = ${user_id}`)
+    const results = await executeQuery(db, 'SELECT genre FROM user_genre WHERE user_id = ?', [user_id])
     return results.map(row => row.genre)
 }
 
-// Ottenere gli strumenti suonati da un utente
+// Ottenere gli strumenti suonati da un utente (utilizzato in cb)
 async function getInstrumentsNameByUserId(db: Database, user_id: number): Promise<string[]>{
-    const result = await executeQuery(db, `SELECT instrument FROM user_instrument WHERE user_id = ${user_id}`)
+    const result = await executeQuery(db, 'SELECT instrument FROM user_instrument WHERE user_id = ?', [user_id])
     return result.map(row => row.instrument)
 }
 
-// Ottenere gli artisti seguiti da un utente
+// Ottenere gli artisti seguiti da un utente (utilizzato in cb)
 async function getArtistsIdByUserId(db: Database, user_id: number): Promise<number[]>{
-    const result = await executeQuery(db, `SELECT artist_id FROM user_artist WHERE user_id = ${user_id}`)
+    const result = await executeQuery(db, 'SELECT artist_id FROM user_artist WHERE user_id = ?', [user_id])
     return result.map(row => row.artist_id)
 }
 
-// TODO Recupera gli eventi a cui è interessato (user_event) e, per ciascuno di questi eventi, 
-//      recupera i relativi generi (event_genre) e artisti (event_artist). 
-//      Questo arricchisce il profilo utente con interessi dimostrati
-
-// Ottenere i generi di un evento
+// Ottenere i generi di un evento (utilizzato in cb)
 async function getGenresNameByEventId(db: Database, event_id: number): Promise<string[]>{
-    const results = await executeQuery(db, `SELECT genre FROM event_genre WHERE event_id = ${event_id}`)
+    const results = await executeQuery(db, 'SELECT genre FROM event_genre WHERE event_id = ?', [event_id])
     return results.map(row => row.genre)
 }
 
-// Ottenere gli strumenti di un evento
+// Ottenere gli strumenti di un evento (utilizzato in cb)
 async function getInstrumentsNameByEventId(db: Database, event_id: number): Promise<string[]>{
-    const results = await executeQuery(db, `SELECT instrument FROM event_instrument WHERE event_id = ${event_id}`)
+    const results = await executeQuery(db, 'SELECT instrument FROM event_instrument WHERE event_id = ?', [event_id])
     return results.map(row => row.instrument)
 }
 
-// Ottenere gli artisti di un evento
+// Ottenere gli artisti di un evento (utilizzato in cb)
 async function getArtistsIdByEventId(db: Database, event_id: number): Promise<number[]>{
-    const results = await executeQuery(db, `SELECT artist_id FROM event_artist WHERE event_id = ${event_id}`)
+    const results = await executeQuery(db, 'SELECT artist_id FROM event_artist WHERE event_id = ?', [event_id])
     return results.map(row => row.artist_id)
 }
 
-/* Da sistemare nel caso servisse
-// Ottenere gli eventi di un utente dal database
-async function getUserEvents(db: Database, user_id: number): Promise<any[]>{
-    return executeQuery(db, 
-        `SELECT * FROM event WHERE event_id IN (SELECT event_id FROM user_event_relation WHERE user_id = ?)`, 
-        [user_id]) 
-}
-*/
-
+// Controllare se il database è già popolato, ovvero se contiene almeno un utente
 async function isDatabasePopulated(db: Database): Promise<boolean>{
     const result = await executeQuery(db, 'SELECT COUNT(*) as count FROM user')
     return result[0].count > 0
 }
 
 // Popolare il database con i dati iniziali
-async function populate(db: Database): Promise<void>{
-    await executeQuery(db, `BEGIN TRANSACTION`)
-    try{       
-        // Inserimento degli user da ./data/user.json
-        const dataUsers = await loadDataFromFile('./data/user.json')
-        for(const user of dataUsers){
-            await insertUser(db,user.id, user.name, user.surname, user.age, user.position)
-        }
+async function populateIfEmpty(db: Database): Promise<void>{
+    // Controllo se il database è già popolato
+    if(!await isDatabasePopulated(db)){
         
-        // Inserimento degli eventi da ./data/event.json
-        const dataEvents = await loadDataFromFile('./data/event.json')
-        for(const event of dataEvents){
-            await insertEvent(db, event.id, event.name, event.location, event.date, event.description)
-        }
-
-        //Inserimento dei generi da ./data/genre.json
-        const dataGenres = await loadDataFromFile('./data/genre.json')
-        for(const genre of dataGenres){
-            await insertGenre(db, genre.name)
-        }
+        // Se non è popolato, lo popolo con i dati iniziali
+        await executeQuery(db, `BEGIN TRANSACTION`) // Inizio la transazione
+        console.log("Database vuoto, popolamento in corso...")
         
-        //Inserimento dei strumenti da ./data/instrument.json
-        const dataInstruments = await loadDataFromFile('./data/instrument.json')
-        for(const instrument of dataInstruments){
-            await insertInstrument(db, instrument.name)
-        }
-        
-        //Inserimento degli artisti da ./data/artist.json
-        const dataArtists = await loadDataFromFile('./data/artist.json')
-        for(const artist of dataArtists){
-            await insertArtist(db, artist.id, artist.name)
-        }
-        
-        // Inserimento delle relazioni tra utenti ed eventi da ./data/user_event.json
-        const dataUserEvent = await loadDataFromFile('./data/user_event.json')
-        for(const relation of dataUserEvent){
-            await insertUserEvent(db, relation.user_id, relation.event_id)
-        }
+        try{ 
+            
+            // Inserimento degli user da ./data/user.json
+            const dataUsers = loadDataFromFile('./data/user.json')
+            for(const user of dataUsers){
+                await insertUser(db,user.id, user.name, user.surname, user.age, user.position)
+            }
 
-        // Inserimento delle relazioni tra utenti e generi da ./data/user_genre.json
-        const dataUserGenre = await loadDataFromFile('./data/user_genre.json')
-        for(const relation of dataUserGenre){
-            await insertUserGenre(db, relation.user_id, relation.genre)
-        }
+            // Inserimento degli eventi da ./data/event.json
+            const dataEvents = loadDataFromFile('./data/event.json')
+            for(const event of dataEvents){
+                await insertEvent(db, event.id, event.name, event.location, event.date, event.description)
+            }
 
-        // Inserimento delle relazioni tra utenti e strumenti da ./data/user_instrument.json
-        const dataUserInstrument = await loadDataFromFile('./data/user_instrument.json')
-        for(const relation of dataUserInstrument){
-            await insertUserInstrument(db, relation.user_id, relation.instrument)
-        }
+            //Inserimento dei generi da ./data/genre.json
+            const dataGenres = loadDataFromFile('./data/genre.json')
+            for(const genre of dataGenres){
+                await insertGenre(db, genre.name)
+            }
 
-        // Inserimento delle relazioni tra utenti e artisti da ./data/user_artist.json
-        const dataUserArtist = await loadDataFromFile('./data/user_artist.json')
-        for(const relation of dataUserArtist){
-            await insertUserArtist(db, relation.user_id, relation.artist_id)
-        }
+            //Inserimento dei strumenti da ./data/instrument.json
+            const dataInstruments = loadDataFromFile('./data/instrument.json')
+            for(const instrument of dataInstruments){
+                await insertInstrument(db, instrument.name)
+            }
 
-        //Inserimento delle relazioni tra eventi e generi da ./data/event_genre.json
-        const dataEventGenre = await loadDataFromFile('./data/event_genre.json')
-        for(const relation of dataEventGenre){
-            await insertEventGenre(db, relation.event_id, relation.genre)
-        }
+            //Inserimento degli artisti da ./data/artist.json
+            const dataArtists = loadDataFromFile('./data/artist.json')
+            for(const artist of dataArtists){
+                await insertArtist(db, artist.id, artist.name)
+            }
 
-        //Inserimento delle relazioni tra eventi e strumenti da ./data/event_genre.json
-        const dataEventInstrument = await loadDataFromFile('./data/event_instrument.json')
-        for(const relation of dataEventInstrument){
-            await insertEventInstrument(db, relation.event_id, relation.instrument)
-        }
+            // Inserimento delle relazioni tra utenti ed eventi da ./data/user_event.json
+            const dataUserEvent = loadDataFromFile('./data/user_event.json')
+            for(const relation of dataUserEvent){
+                await insertUserEvent(db, relation.user_id, relation.event_id)
+            }
 
-        //Inserimento delle relazioni tra eventi e artisti da ./data/event_artist.json
-        const dataEventArtist = await loadDataFromFile('./data/event_artist.json')
-        for(const relation of dataEventArtist){
-            await insertEventArtist(db, relation.event_id, relation.artist_id)
-        }
+            // Inserimento delle relazioni tra utenti e generi da ./data/user_genre.json
+            const dataUserGenre = loadDataFromFile('./data/user_genre.json')
+            for(const relation of dataUserGenre){
+                await insertUserGenre(db, relation.user_id, relation.genre)
+            }
 
-        await executeQuery(db, `COMMIT`)
-    }catch(err){
-        await executeQuery(db, `ROLLBACK`)
-        console.error("Errore in populate: " + err)
+            // Inserimento delle relazioni tra utenti e strumenti da ./data/user_instrument.json
+            const dataUserInstrument = loadDataFromFile('./data/user_instrument.json')
+            for(const relation of dataUserInstrument){
+                await insertUserInstrument(db, relation.user_id, relation.instrument)
+            }
+
+            // Inserimento delle relazioni tra utenti e artisti da ./data/user_artist.json
+            const dataUserArtist = loadDataFromFile('./data/user_artist.json')
+            for(const relation of dataUserArtist){
+                await insertUserArtist(db, relation.user_id, relation.artist_id)
+            }
+
+            //Inserimento delle relazioni tra eventi e generi da ./data/event_genre.json
+            const dataEventGenre = loadDataFromFile('./data/event_genre.json')
+            for(const relation of dataEventGenre){
+                await insertEventGenre(db, relation.event_id, relation.genre)
+            }
+
+            //Inserimento delle relazioni tra eventi e strumenti da ./data/event_genre.json
+            const dataEventInstrument = loadDataFromFile('./data/event_instrument.json')
+            for(const relation of dataEventInstrument){
+                await insertEventInstrument(db, relation.event_id, relation.instrument)
+            }
+
+            //Inserimento delle relazioni tra eventi e artisti da ./data/event_artist.json
+            const dataEventArtist = loadDataFromFile('./data/event_artist.json')
+            for(const relation of dataEventArtist){
+                await insertEventArtist(db, relation.event_id, relation.artist_id)
+            }
+
+            await executeQuery(db, `COMMIT`)
+            console.log("Database popolato con successo")
+
+        }catch(err: any){
+            await executeQuery(db, `ROLLBACK`)
+            console.error("Errore in populateIfEmpty: " + err.message)
+        }
     }
 }
 
-/*
-// Test per stampare i dati
-async function printData(): Promise<void>{
-    const db = openDatabase();
-    try{
-        //await createTable(db)
-        //await populate(db)
-    
-        const users = await getUsers(db)
-        console.log(users)
-        const events = await getEvents(db)
-        console.log(events)
-        const userEvents = await getUserEvents(db, 1)
-        console.log(userEvents)
-
-    }catch(err){
-        console.error("Errore in printData: " + err)
-    }finally{
-        await closeDatabase(db)
-    }
-    }
-    
-    //printData()
-    */
-
-export default {openDatabase, closeDatabase, createTable, /*insertUser, insertEvent, insertUserEvent, 
-                executeQuery, getUsers, getEvents,*/getAllUsersEvents, getEventsInfoById, getEventsId, getEventsIdByUserId, getPopularEventsId, /*getUserEvents,*/ getAllGenresName, getAllInstrumentsName,
-                getAllArtistsId, getGenresNameByUserId, getInstrumentsNameByUserId, getArtistsIdByUserId, getGenresNameByEventId,
-                getInstrumentsNameByEventId, getArtistsIdByEventId, isDatabasePopulated, populate}
+export default {openDatabase, closeDatabase, createTable, getAllUsersEvents, getEventsId, getEventsIdByUserId, getPopularEventsId, 
+                getAllGenresName, getAllInstrumentsName, getAllArtistsId, getGenresNameByUserId, getInstrumentsNameByUserId, 
+                getArtistsIdByUserId, getGenresNameByEventId, getInstrumentsNameByEventId, getArtistsIdByEventId, populateIfEmpty}
