@@ -18,7 +18,7 @@ class User {
     }
     // Metodo per stampare le info dell'utente
     printInfo() {
-        console.log(`Nome: ${this.name}, Cognome: ${this.surname}, Età: ${this.age}, Città: ${this.city}, Genere: ${this.genres.join(', ')}, Strumento: ${this.instrument}, Artista seguito: ${this.artists.join(', ')}`);
+        console.log(`\nNome: ${this.name} \nCognome: ${this.surname} \nEtà: ${this.age} \nCittà: ${this.city} \nGenere: ${this.genres.join(', ')} \nStrumento: ${this.instrument} \nArtista seguito: ${this.artists.join(', ')}`);
     }
 }
 exports.User = User;
@@ -36,7 +36,7 @@ class Event {
     }
     // Metodo per stampare le info dell'evento
     printInfo() {
-        console.log(`Nome: ${this.name}, Genere: ${this.genres.join(', ')}, Strumenti: ${this.instrument.join(', ')}, Artista: ${this.artists.join(', ')}, Luogo: ${this.location}, Data: ${this.date}, Descrizione: ${this.description}`);
+        console.log(`\nNome: ${this.name} \nGenere: ${this.genres.join(', ')} \nStrumenti: ${this.instrument.join(', ')} \nArtista: ${this.artists.join(', ')} \nLuogo: ${this.location} \nData: ${this.date} \nDescrizione: ${this.description}`);
     }
 }
 exports.Event = Event;

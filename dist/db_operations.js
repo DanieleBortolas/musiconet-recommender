@@ -2,6 +2,39 @@
 /*  Gestione del database
     Funzioni necessarie per creare, inserire dati e interrogare il database
 */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -18,6 +51,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sqlite3_1 = require("sqlite3");
 const fs_1 = __importDefault(require("fs"));
 const models_js_1 = require("./models.js");
+const constants = __importStar(require("./constants.js"));
 // Caricare i dati da un file JSON
 function loadDataFromFile(path) {
     const data = fs_1.default.readFileSync(path, 'utf-8');
@@ -38,7 +72,7 @@ function handleDBCallBack(err, resolve, reject, success_data, control_message) {
 // Aprire il database
 function openDatabase() {
     return new Promise((resolve, reject) => {
-        const db = new sqlite3_1.Database(`musiconet.db`, (err) => handleDBCallBack(err, resolve, reject, db));
+        const db = new sqlite3_1.Database(constants.DB_PATH, (err) => handleDBCallBack(err, resolve, reject, db));
     });
 }
 // Chiudere il database
@@ -282,8 +316,29 @@ function getAllUsersEvents(db) {
         return map;
     });
 }
-// Ottenere le informazioni di un evento dal database (utilizzato in getEventsInfoById, UNUSED)
-function getEvent(db, event_id) {
+//Ottenere le informazioni di un utente dal database
+function getUserInfo(db, user_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const result = yield executeQuery(db, `
+        SELECT u.id, u.name, u.surname, u.age, u.city, 
+               GROUP_CONCAT(DISTINCT g.name) AS genres,
+               GROUP_CONCAT(DISTINCT i.name) AS instruments,
+               GROUP_CONCAT(DISTINCT a.name) AS artists
+        FROM user u
+        LEFT JOIN user_instrument ui ON u.id = ui.user_id
+        LEFT JOIN instrument i ON ui.instrument = i.name
+        LEFT JOIN user_genre ug ON u.id = ug.user_id
+        LEFT JOIN genre g ON ug.genre = g.name
+        LEFT JOIN user_artist ua ON u.id = ua.user_id
+        LEFT JOIN artist a ON ua.artist_id = a.id
+        WHERE u.id = ? 
+        GROUP BY u.id`, [user_id]);
+        const row = result[0];
+        return new models_js_1.User(row.id, row.name, row.surname, row.age, row.city, row.genres ? row.genres.split(",") : [], row.instruments ? row.instruments.split(",") : [], row.artists ? row.artists.split(",") : []);
+    });
+}
+// Ottenere le informazioni di un evento dal database
+function getEventInfo(db, event_id) {
     return __awaiter(this, void 0, void 0, function* () {
         const result = yield executeQuery(db, `
         SELECT e.id, e.name, e.location, e.date, e.description, 
@@ -309,7 +364,7 @@ function getEventsInfoById(db, eventsMap) {
     return __awaiter(this, void 0, void 0, function* () {
         const events = [];
         for (const i of eventsMap) {
-            events.push(yield getEvent(db, i.event_id));
+            events.push(yield getEventInfo(db, i.event_id));
         }
         return events;
     });
@@ -415,62 +470,62 @@ function populateIfEmpty(db) {
             console.log("Database vuoto, popolamento in corso...");
             try {
                 // Inserimento degli user da ./data/user.json
-                const dataUsers = loadDataFromFile('./data/user.json');
+                const dataUsers = loadDataFromFile(constants.USER_PATH);
                 for (const user of dataUsers) {
                     yield insertUser(db, user.id, user.name, user.surname, user.age, user.position);
                 }
                 // Inserimento degli eventi da ./data/event.json
-                const dataEvents = loadDataFromFile('./data/event.json');
+                const dataEvents = loadDataFromFile(constants.EVENT_PATH);
                 for (const event of dataEvents) {
                     yield insertEvent(db, event.id, event.name, event.location, event.date, event.description);
                 }
                 //Inserimento dei generi da ./data/genre.json
-                const dataGenres = loadDataFromFile('./data/genre.json');
+                const dataGenres = loadDataFromFile(constants.GENRE_PATH);
                 for (const genre of dataGenres) {
                     yield insertGenre(db, genre.name);
                 }
                 //Inserimento dei strumenti da ./data/instrument.json
-                const dataInstruments = loadDataFromFile('./data/instrument.json');
+                const dataInstruments = loadDataFromFile(constants.INSTRUMENT_PATH);
                 for (const instrument of dataInstruments) {
                     yield insertInstrument(db, instrument.name);
                 }
                 //Inserimento degli artisti da ./data/artist.json
-                const dataArtists = loadDataFromFile('./data/artist.json');
+                const dataArtists = loadDataFromFile(constants.ARTIST_PATH);
                 for (const artist of dataArtists) {
                     yield insertArtist(db, artist.id, artist.name);
                 }
                 // Inserimento delle relazioni tra utenti ed eventi da ./data/user_event.json
-                const dataUserEvent = loadDataFromFile('./data/user_event.json');
+                const dataUserEvent = loadDataFromFile(constants.USER_EVENT_PATH);
                 for (const relation of dataUserEvent) {
                     yield insertUserEvent(db, relation.user_id, relation.event_id);
                 }
                 // Inserimento delle relazioni tra utenti e generi da ./data/user_genre.json
-                const dataUserGenre = loadDataFromFile('./data/user_genre.json');
+                const dataUserGenre = loadDataFromFile(constants.USER_GENRE_PATH);
                 for (const relation of dataUserGenre) {
                     yield insertUserGenre(db, relation.user_id, relation.genre);
                 }
                 // Inserimento delle relazioni tra utenti e strumenti da ./data/user_instrument.json
-                const dataUserInstrument = loadDataFromFile('./data/user_instrument.json');
+                const dataUserInstrument = loadDataFromFile(constants.USER_INSTRUMENT_PATH);
                 for (const relation of dataUserInstrument) {
                     yield insertUserInstrument(db, relation.user_id, relation.instrument);
                 }
                 // Inserimento delle relazioni tra utenti e artisti da ./data/user_artist.json
-                const dataUserArtist = loadDataFromFile('./data/user_artist.json');
+                const dataUserArtist = loadDataFromFile(constants.USER_ARTIST_PATH);
                 for (const relation of dataUserArtist) {
                     yield insertUserArtist(db, relation.user_id, relation.artist_id);
                 }
                 //Inserimento delle relazioni tra eventi e generi da ./data/event_genre.json
-                const dataEventGenre = loadDataFromFile('./data/event_genre.json');
+                const dataEventGenre = loadDataFromFile(constants.EVENT_GENRE_PATH);
                 for (const relation of dataEventGenre) {
                     yield insertEventGenre(db, relation.event_id, relation.genre);
                 }
                 //Inserimento delle relazioni tra eventi e strumenti da ./data/event_genre.json
-                const dataEventInstrument = loadDataFromFile('./data/event_instrument.json');
+                const dataEventInstrument = loadDataFromFile(constants.EVENT_INSTRUMENT_PATH);
                 for (const relation of dataEventInstrument) {
                     yield insertEventInstrument(db, relation.event_id, relation.instrument);
                 }
                 //Inserimento delle relazioni tra eventi e artisti da ./data/event_artist.json
-                const dataEventArtist = loadDataFromFile('./data/event_artist.json');
+                const dataEventArtist = loadDataFromFile(constants.EVENT_ARTIST_PATH);
                 for (const relation of dataEventArtist) {
                     yield insertEventArtist(db, relation.event_id, relation.artist_id);
                 }
@@ -479,11 +534,12 @@ function populateIfEmpty(db) {
             }
             catch (err) {
                 yield executeQuery(db, `ROLLBACK`);
-                console.error("Errore in populateIfEmpty: " + err.message);
+                throw new Error("\n -- Errore in populateIfEmpty -- \n" + err.message);
             }
         }
     });
 }
-exports.default = { openDatabase, closeDatabase, createTable, getAllUsersEvents, getEventsId, getEventsIdByUserId, getPopularEventsId,
-    getAllGenresName, getAllInstrumentsName, getAllArtistsId, getGenresNameByUserId, getInstrumentsNameByUserId,
-    getArtistsIdByUserId, getGenresNameByEventId, getInstrumentsNameByEventId, getArtistsIdByEventId, populateIfEmpty };
+exports.default = { openDatabase, closeDatabase, createTable, getUserInfo, getEventInfo, getAllUsersEvents, getEventsId,
+    getEventsIdByUserId, getPopularEventsId, getAllGenresName, getAllInstrumentsName, getAllArtistsId,
+    getGenresNameByUserId, getInstrumentsNameByUserId, getArtistsIdByUserId, getGenresNameByEventId,
+    getInstrumentsNameByEventId, getArtistsIdByEventId, populateIfEmpty };

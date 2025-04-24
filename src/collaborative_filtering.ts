@@ -5,9 +5,10 @@
 import {Database} from 'sqlite3'
 import dbOp from './db_operations'
 import {Recommendation, UserSimilarity} from './models'
+import {DEFAULT_RECOMMENDATIONS, DEFAULT_K_NEIGHBORS} from './constants'
 
 /**
- * @summary Calcola la similarità di Jaccard tra due set di eventi
+ * @summary Calcolare la similarità di Jaccard tra due set di eventi
  * @param setA - Primo set di eventi
  * @param setB - Secondo set di eventi
  * @return - Similarità di Jaccard tra i due set
@@ -25,7 +26,7 @@ function jaccardSimilarity(setA: Set<number>, setB: Set<number>): number{
 }
 
 /***
- * @summary Trova i k vicini più simili all'utente target
+ * @summary Trovare i k vicini più simili all'utente target
  * @param userTarget - ID dell'utente target
  * @param usersMap - Mappa degli utenti e degli eventi seguiti
  * @param kNeighbors - Numero di vicini da considerare
@@ -61,7 +62,7 @@ async function findNearestNeighbors(userTarget: number, usersMap: Map<number, Se
 }
 
 /**
- * @summary Normalizza i punteggi delle raccomandazioni in base al numero di vicini
+ * @summary Normalizzare i punteggi delle raccomandazioni in base al numero di vicini
  * @param scores - Array di oggetti Recommendation contenenti l'ID dell'evento e il punteggio
  * @param k - Numero di vicini
  * @return - Array di oggetti Recommendation con i punteggi normalizzati
@@ -72,7 +73,7 @@ function normalizeScore(scores: Recommendation[], k: number): void{
     
     // Normalizza i punteggi
     for(const s of scores){
-        s.normScore = Math.round((s.score / k)*1000)/1000           // Arrotonda a 3 decimali
+        s.normScore = s.score / k
     }
 }
 
@@ -84,7 +85,7 @@ function normalizeScore(scores: Recommendation[], k: number): void{
  * @param kNeighbors - Numero di vicini da considerare (default: 20)
  * @return - Array di raccomandazioni collaborative filtering
  */
-async function getCollaborativeFilteringRecommendations(db: Database, user_id: number, nEvents: number = 10, kNeighbors: number = 20): Promise<Recommendation[]>{
+async function getCollaborativeFilteringRecommendations(db: Database, user_id: number, nEvents: number = DEFAULT_RECOMMENDATIONS, kNeighbors: number = DEFAULT_K_NEIGHBORS): Promise<Recommendation[]>{
     // 1. Ottenere mappa utenti e eventi seguiti
     const allUsersEvents = await dbOp.getAllUsersEvents(db)                                 
 

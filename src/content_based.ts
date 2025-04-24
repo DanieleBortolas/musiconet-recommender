@@ -7,6 +7,7 @@ import {Database} from 'sqlite3'
 import dbOp from './db_operations'
 import {Recommendation} from './models'
 import {similarity as mlSimilarity} from 'ml-distance'
+import {DEFAULT_RECOMMENDATIONS, EVENT_VECTOR_WEIGHT, USER_VECTOR_EXPLICIT_WEIGHT, USER_VECTOR_IMPLICIT_WEIGHT} from './constants'
 
 /**
  * @summary Costruire la mappa delle caratteristiche
@@ -65,7 +66,7 @@ async function createUserVector(db: Database, user_id: number, featureMap: Map<s
     for(const uef of userEventsFeatures){
         let i: number | undefined = featureMap.get(uef)         //Indice può essere un numero o indefinito
         if(i != undefined){
-            vec[i] = 1                                          // Caratteristiche degli eventi seguiti dall'utente pesate 1
+            vec[i] = USER_VECTOR_IMPLICIT_WEIGHT                // Caratteristiche degli eventi seguiti dall'utente pesate 1
         }else{
             console.error(`Caratteristica ${uef} non trovata`)  //Se i è undefined, uf non trovata nella mappa
         }
@@ -73,7 +74,7 @@ async function createUserVector(db: Database, user_id: number, featureMap: Map<s
     for(const uf of userFeatures){
         let i: number | undefined = featureMap.get(uf)
         if(i != undefined){
-            vec[i] = 2                                          // Caratteristiche esplicite dell'utente pesate 2
+            vec[i] = USER_VECTOR_EXPLICIT_WEIGHT                // Caratteristiche esplicite dell'utente pesate 2
         }else{
             console.error(`Caratteristica ${uf} non trovata`)
         }
@@ -105,7 +106,7 @@ async function createEventVector(db: Database, event_id: number, featureMap: Map
     for(const uf of eventFeatures){
         let i: number | undefined = featureMap.get(uf)          //Indice può essere un numero o indefinito
         if(i != undefined){
-            vec[i] = 1                                          // Caratteristiche dell'evento pesate 1
+            vec[i] = EVENT_VECTOR_WEIGHT                        // Caratteristiche dell'evento pesate 1
         }else{
             console.error(`Caratteristica ${uf} non trovata`)   //Se i è undefined, uf non trovata nella mappa
         }
@@ -121,7 +122,7 @@ async function createEventVector(db: Database, event_id: number, featureMap: Map
  * @param nEvents - Numero di eventi da consigliare (default: 10)
  * @return - Array di raccomandazioni content-based
  */
-async function getContentBasedRecommendations(db: Database, user_id: number, nEvents: number = 10): Promise<Recommendation[]>{
+async function getContentBasedRecommendations(db: Database, user_id: number, nEvents: number = DEFAULT_RECOMMENDATIONS): Promise<Recommendation[]>{
     // 1. Creare mappa caratteristiche, vettore utente, prelevare tutti gli eventi ed eventi dell'utente 
     const featureMap: Map <string | number, number> = await buildFeatureMap(db)                             // Mappa caratteristiche
     const userEvents = new Set(await dbOp.getEventsIdByUserId(db, user_id))                                 // Eventi seguiti dall'utente
@@ -145,7 +146,7 @@ async function getContentBasedRecommendations(db: Database, user_id: number, nEv
             const similarity = mlSimilarity.cosine(userVector, eventVector)             // Cosine similarity tra vettore utente e vettore evento
             
             if(similarity > 0){                         // Se la similarità è maggiore di 0, aggiungi alla lista dei risultati
-                results.push({event_id: id, score: Math.round(similarity*1000)/1000})   // Arrotonda a 3 decimali
+                results.push({event_id: id, score: similarity})   // Arrotonda a 3 decimali
             }
         }
     }

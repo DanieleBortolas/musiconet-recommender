@@ -16,8 +16,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_operations_1 = __importDefault(require("./db_operations"));
+const constants_1 = require("./constants");
 /**
- * @summary Calcola la similarità di Jaccard tra due set di eventi
+ * @summary Calcolare la similarità di Jaccard tra due set di eventi
  * @param setA - Primo set di eventi
  * @param setB - Secondo set di eventi
  * @return - Similarità di Jaccard tra i due set
@@ -34,7 +35,7 @@ function jaccardSimilarity(setA, setB) {
     return intersection.size / union; // Similarità di Jaccard
 }
 /***
- * @summary Trova i k vicini più simili all'utente target
+ * @summary Trovare i k vicini più simili all'utente target
  * @param userTarget - ID dell'utente target
  * @param usersMap - Mappa degli utenti e degli eventi seguiti
  * @param kNeighbors - Numero di vicini da considerare
@@ -66,7 +67,7 @@ function findNearestNeighbors(userTarget, usersMap, kNeighbors) {
     });
 }
 /**
- * @summary Normalizza i punteggi delle raccomandazioni in base al numero di vicini
+ * @summary Normalizzare i punteggi delle raccomandazioni in base al numero di vicini
  * @param scores - Array di oggetti Recommendation contenenti l'ID dell'evento e il punteggio
  * @param k - Numero di vicini
  * @return - Array di oggetti Recommendation con i punteggi normalizzati
@@ -77,7 +78,7 @@ function normalizeScore(scores, k) {
         return; // Se non ci sono punteggi, non fare nulla
     // Normalizza i punteggi
     for (const s of scores) {
-        s.normScore = Math.round((s.score / k) * 1000) / 1000; // Arrotonda a 3 decimali
+        s.normScore = s.score / k;
     }
 }
 /***
@@ -89,7 +90,7 @@ function normalizeScore(scores, k) {
  * @return - Array di raccomandazioni collaborative filtering
  */
 function getCollaborativeFilteringRecommendations(db_1, user_id_1) {
-    return __awaiter(this, arguments, void 0, function* (db, user_id, nEvents = 10, kNeighbors = 20) {
+    return __awaiter(this, arguments, void 0, function* (db, user_id, nEvents = constants_1.DEFAULT_RECOMMENDATIONS, kNeighbors = constants_1.DEFAULT_K_NEIGHBORS) {
         // 1. Ottenere mappa utenti e eventi seguiti
         const allUsersEvents = yield db_operations_1.default.getAllUsersEvents(db);
         // 2. Trovare i k vicini più simili all'utente target
@@ -117,7 +118,7 @@ function getCollaborativeFilteringRecommendations(db_1, user_id_1) {
         // 6. Convertire la mappa in un vettore, normalizzare i risultati e ordinare in base al punteggio
         const results = Array.from(recommendedEvents.entries()).map(([event_id, score]) => ({ event_id, score }));
         normalizeScore(results, neighbors.length); // Normalizza i punteggi in base al numero di vicini trovati
-        results.sort((a, b) => b.score - a.score); // Ordina in base al punteggio decrescente
+        results.sort((a, b) => (b.normScore || 0) - (a.normScore || 0)); // Ordina in base al punteggio decrescente
         // 7. Restituire i primi nEvents eventi
         return results.slice(0, nEvents);
     });

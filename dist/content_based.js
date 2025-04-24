@@ -18,6 +18,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_operations_1 = __importDefault(require("./db_operations"));
 const ml_distance_1 = require("ml-distance");
+const constants_1 = require("./constants");
 /**
  * @summary Costruire la mappa delle caratteristiche
  * @param db - Database SQLite
@@ -71,7 +72,7 @@ function createUserVector(db, user_id, featureMap, followedEvents) {
         for (const uef of userEventsFeatures) {
             let i = featureMap.get(uef); //Indice può essere un numero o indefinito
             if (i != undefined) {
-                vec[i] = 1; // Caratteristiche degli eventi seguiti dall'utente pesate 1
+                vec[i] = constants_1.USER_VECTOR_IMPLICIT_WEIGHT; // Caratteristiche degli eventi seguiti dall'utente pesate 1
             }
             else {
                 console.error(`Caratteristica ${uef} non trovata`); //Se i è undefined, uf non trovata nella mappa
@@ -80,7 +81,7 @@ function createUserVector(db, user_id, featureMap, followedEvents) {
         for (const uf of userFeatures) {
             let i = featureMap.get(uf);
             if (i != undefined) {
-                vec[i] = 2; // Caratteristiche esplicite dell'utente pesate 2
+                vec[i] = constants_1.USER_VECTOR_EXPLICIT_WEIGHT; // Caratteristiche esplicite dell'utente pesate 2
             }
             else {
                 console.error(`Caratteristica ${uf} non trovata`);
@@ -111,7 +112,7 @@ function createEventVector(db, event_id, featureMap) {
         for (const uf of eventFeatures) {
             let i = featureMap.get(uf); //Indice può essere un numero o indefinito
             if (i != undefined) {
-                vec[i] = 1; // Caratteristiche dell'evento pesate 1
+                vec[i] = constants_1.EVENT_VECTOR_WEIGHT; // Caratteristiche dell'evento pesate 1
             }
             else {
                 console.error(`Caratteristica ${uf} non trovata`); //Se i è undefined, uf non trovata nella mappa
@@ -128,7 +129,7 @@ function createEventVector(db, event_id, featureMap) {
  * @return - Array di raccomandazioni content-based
  */
 function getContentBasedRecommendations(db_1, user_id_1) {
-    return __awaiter(this, arguments, void 0, function* (db, user_id, nEvents = 10) {
+    return __awaiter(this, arguments, void 0, function* (db, user_id, nEvents = constants_1.DEFAULT_RECOMMENDATIONS) {
         // 1. Creare mappa caratteristiche, vettore utente, prelevare tutti gli eventi ed eventi dell'utente 
         const featureMap = yield buildFeatureMap(db); // Mappa caratteristiche
         const userEvents = new Set(yield db_operations_1.default.getEventsIdByUserId(db, user_id)); // Eventi seguiti dall'utente
@@ -149,7 +150,7 @@ function getContentBasedRecommendations(db_1, user_id_1) {
                 const eventVector = yield createEventVector(db, id, featureMap);
                 const similarity = ml_distance_1.similarity.cosine(userVector, eventVector); // Cosine similarity tra vettore utente e vettore evento
                 if (similarity > 0) { // Se la similarità è maggiore di 0, aggiungi alla lista dei risultati
-                    results.push({ event_id: id, score: Math.round(similarity * 1000) / 1000 }); // Arrotonda a 3 decimali
+                    results.push({ event_id: id, score: similarity }); // Arrotonda a 3 decimali
                 }
             }
         }

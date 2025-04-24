@@ -31,27 +31,38 @@ const collaborative_filtering_1 = __importDefault(require("./collaborative_filte
 const hybrid_recommender_1 = __importDefault(require("./hybrid_recommender"));
 const db_operations_1 = __importDefault(require("./db_operations"));
 // Costanti
-const nEvents = 5; // Numero eventi da consigliare
-const kNeighbors = 20; // Numero di vicini da considerare per cf e hybrid
-const alpha = 0.05; // Peso di cb per il risultato finale in hybrid (il peso di cf è 1-alpha)
+const N_RECOMMENDATIONS = 5; // Numero eventi da consigliare
+const K_NEIGHBORS = 20; // Numero di vicini da considerare per cf e hybrid
+const ALPHA = 0.05; // Peso di cb per il risultato finale in hybrid (il peso di cf è 1-alpha)
+/**
+ * @summary Eseguire l'algoritmo di raccomandazione per un utente specifico
+ * @param db - Database SQLite
+ * @param user_id - ID dell'utente
+ * @return - Void
+ */
 function runTestForUser(db, user_id) {
     return __awaiter(this, void 0, void 0, function* () {
         console.log(`Raccomandazioni per l'utente ${user_id}`);
         // Stampa delle raccomandazioni da cb
         console.log(`Content based: `);
-        const cbResults = yield content_based_1.default.getContentBasedRecommendations(db, user_id, nEvents);
+        const cbResults = yield content_based_1.default.getContentBasedRecommendations(db, user_id, N_RECOMMENDATIONS);
         console.log(cbResults);
         // Stampa delle raccomandazioni da cf
         console.log(`Collaborative filtering: `);
-        const cfResults = yield collaborative_filtering_1.default.getCollaborativeFilteringRecommendations(db, user_id, nEvents, kNeighbors);
+        const cfResults = yield collaborative_filtering_1.default.getCollaborativeFilteringRecommendations(db, user_id, N_RECOMMENDATIONS, K_NEIGHBORS);
         console.log(cfResults);
         // Stampa delle raccomandazioni di hybrid
         console.log(`Hybrid: `);
-        const hybridResults = yield hybrid_recommender_1.default.getHybridRecommendations(db, user_id, nEvents, kNeighbors, alpha);
+        const hybridResults = yield hybrid_recommender_1.default.getHybridRecommendations(db, user_id, N_RECOMMENDATIONS, K_NEIGHBORS, ALPHA);
         console.log(hybridResults);
         console.log("\n----------------------------------------\n");
     });
 }
+/**
+ * @summary Funzione principale per testare gli algoritmi di raccomandazione
+ * @param - Void
+ * @return - Void
+ */
 function test() {
     return __awaiter(this, void 0, void 0, function* () {
         const db = yield db_operations_1.default.openDatabase();
@@ -69,4 +80,5 @@ function test() {
         yield db_operations_1.default.closeDatabase(db);
     });
 }
+// Eseguire il test
 test();

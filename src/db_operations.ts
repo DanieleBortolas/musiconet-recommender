@@ -5,6 +5,7 @@
 import {Database} from 'sqlite3'
 import fs from 'fs'
 import {User, Event} from './models.js'
+import * as constants from './constants.js'
 
 // Caricare i dati da un file JSON
 function loadDataFromFile(path: string): any[]{
@@ -29,7 +30,7 @@ function handleDBCallBack<T = void>(err: Error | null, resolve: (value?: any) =>
 // Aprire il database
 function openDatabase(): Promise<Database>{
     return new Promise((resolve, reject) =>{
-        const db = new Database(`musiconet.db`, (err) => handleDBCallBack(err, resolve, reject, db))
+        const db = new Database(constants.DB_PATH, (err) => handleDBCallBack(err, resolve, reject, db))
     })
 }
 
@@ -270,8 +271,33 @@ async function getAllUsersEvents(db: Database): Promise<Map<number, Set<number>>
     return map
 }
 
-// Ottenere le informazioni di un evento dal database (utilizzato in getEventsInfoById, UNUSED)
-async function getEvent(db: Database, event_id: number): Promise<Event>{
+//Ottenere le informazioni di un utente dal database
+async function getUserInfo(db: Database, user_id: number): Promise<User>{
+    const result = await executeQuery(db, `
+        SELECT u.id, u.name, u.surname, u.age, u.city, 
+               GROUP_CONCAT(DISTINCT g.name) AS genres,
+               GROUP_CONCAT(DISTINCT i.name) AS instruments,
+               GROUP_CONCAT(DISTINCT a.name) AS artists
+        FROM user u
+        LEFT JOIN user_instrument ui ON u.id = ui.user_id
+        LEFT JOIN instrument i ON ui.instrument = i.name
+        LEFT JOIN user_genre ug ON u.id = ug.user_id
+        LEFT JOIN genre g ON ug.genre = g.name
+        LEFT JOIN user_artist ua ON u.id = ua.user_id
+        LEFT JOIN artist a ON ua.artist_id = a.id
+        WHERE u.id = ? 
+        GROUP BY u.id`, [user_id])
+    
+    const row = result[0]
+    return new User(row.id, row.name, row.surname, row.age, row.city,
+                row.genres ? row.genres.split(",") : [], 
+                row.instruments ? row.instruments.split(",") : [], 
+                row.artists ? row.artists.split(",") : []
+            )
+}
+
+// Ottenere le informazioni di un evento dal database
+async function getEventInfo(db: Database, event_id: number): Promise<Event>{
     const result = await executeQuery(db, `
         SELECT e.id, e.name, e.location, e.date, e.description, 
                GROUP_CONCAT(DISTINCT g.name) AS genres,
@@ -301,7 +327,7 @@ async function getEvent(db: Database, event_id: number): Promise<Event>{
 async function getEventsInfoById(db: Database, eventsMap:{event_id: number, cosSim: number}[]): Promise<Event[]>{
     const events: Event[] = []
     for (const i of eventsMap) {
-        events.push(await getEvent(db, i.event_id))
+        events.push(await getEventInfo(db, i.event_id))
     }
     return events
 }
@@ -396,73 +422,73 @@ async function populateIfEmpty(db: Database): Promise<void>{
         try{ 
             
             // Inserimento degli user da ./data/user.json
-            const dataUsers = loadDataFromFile('./data/user.json')
+            const dataUsers = loadDataFromFile(constants.USER_PATH)
             for(const user of dataUsers){
                 await insertUser(db,user.id, user.name, user.surname, user.age, user.position)
             }
 
             // Inserimento degli eventi da ./data/event.json
-            const dataEvents = loadDataFromFile('./data/event.json')
+            const dataEvents = loadDataFromFile(constants.EVENT_PATH)
             for(const event of dataEvents){
                 await insertEvent(db, event.id, event.name, event.location, event.date, event.description)
             }
 
             //Inserimento dei generi da ./data/genre.json
-            const dataGenres = loadDataFromFile('./data/genre.json')
+            const dataGenres = loadDataFromFile(constants.GENRE_PATH)
             for(const genre of dataGenres){
                 await insertGenre(db, genre.name)
             }
 
             //Inserimento dei strumenti da ./data/instrument.json
-            const dataInstruments = loadDataFromFile('./data/instrument.json')
+            const dataInstruments = loadDataFromFile(constants.INSTRUMENT_PATH)
             for(const instrument of dataInstruments){
                 await insertInstrument(db, instrument.name)
             }
 
             //Inserimento degli artisti da ./data/artist.json
-            const dataArtists = loadDataFromFile('./data/artist.json')
+            const dataArtists = loadDataFromFile(constants.ARTIST_PATH)
             for(const artist of dataArtists){
                 await insertArtist(db, artist.id, artist.name)
             }
 
             // Inserimento delle relazioni tra utenti ed eventi da ./data/user_event.json
-            const dataUserEvent = loadDataFromFile('./data/user_event.json')
+            const dataUserEvent = loadDataFromFile(constants.USER_EVENT_PATH)
             for(const relation of dataUserEvent){
                 await insertUserEvent(db, relation.user_id, relation.event_id)
             }
 
             // Inserimento delle relazioni tra utenti e generi da ./data/user_genre.json
-            const dataUserGenre = loadDataFromFile('./data/user_genre.json')
+            const dataUserGenre = loadDataFromFile(constants.USER_GENRE_PATH)
             for(const relation of dataUserGenre){
                 await insertUserGenre(db, relation.user_id, relation.genre)
             }
 
             // Inserimento delle relazioni tra utenti e strumenti da ./data/user_instrument.json
-            const dataUserInstrument = loadDataFromFile('./data/user_instrument.json')
+            const dataUserInstrument = loadDataFromFile(constants.USER_INSTRUMENT_PATH)
             for(const relation of dataUserInstrument){
                 await insertUserInstrument(db, relation.user_id, relation.instrument)
             }
 
             // Inserimento delle relazioni tra utenti e artisti da ./data/user_artist.json
-            const dataUserArtist = loadDataFromFile('./data/user_artist.json')
+            const dataUserArtist = loadDataFromFile(constants.USER_ARTIST_PATH)
             for(const relation of dataUserArtist){
                 await insertUserArtist(db, relation.user_id, relation.artist_id)
             }
 
             //Inserimento delle relazioni tra eventi e generi da ./data/event_genre.json
-            const dataEventGenre = loadDataFromFile('./data/event_genre.json')
+            const dataEventGenre = loadDataFromFile(constants.EVENT_GENRE_PATH)
             for(const relation of dataEventGenre){
                 await insertEventGenre(db, relation.event_id, relation.genre)
             }
 
             //Inserimento delle relazioni tra eventi e strumenti da ./data/event_genre.json
-            const dataEventInstrument = loadDataFromFile('./data/event_instrument.json')
+            const dataEventInstrument = loadDataFromFile(constants.EVENT_INSTRUMENT_PATH)
             for(const relation of dataEventInstrument){
                 await insertEventInstrument(db, relation.event_id, relation.instrument)
             }
 
             //Inserimento delle relazioni tra eventi e artisti da ./data/event_artist.json
-            const dataEventArtist = loadDataFromFile('./data/event_artist.json')
+            const dataEventArtist = loadDataFromFile(constants.EVENT_ARTIST_PATH)
             for(const relation of dataEventArtist){
                 await insertEventArtist(db, relation.event_id, relation.artist_id)
             }
@@ -472,11 +498,12 @@ async function populateIfEmpty(db: Database): Promise<void>{
 
         }catch(err: any){
             await executeQuery(db, `ROLLBACK`)
-            console.error("Errore in populateIfEmpty: " + err.message)
+            throw new Error("\n -- Errore in populateIfEmpty -- \n" + err.message)
         }
     }
 }
 
-export default {openDatabase, closeDatabase, createTable, getAllUsersEvents, getEventsId, getEventsIdByUserId, getPopularEventsId, 
-                getAllGenresName, getAllInstrumentsName, getAllArtistsId, getGenresNameByUserId, getInstrumentsNameByUserId, 
-                getArtistsIdByUserId, getGenresNameByEventId, getInstrumentsNameByEventId, getArtistsIdByEventId, populateIfEmpty}
+export default {openDatabase, closeDatabase, createTable, getUserInfo, getEventInfo, getAllUsersEvents, getEventsId, 
+                getEventsIdByUserId, getPopularEventsId, getAllGenresName, getAllInstrumentsName, getAllArtistsId, 
+                getGenresNameByUserId, getInstrumentsNameByUserId, getArtistsIdByUserId, getGenresNameByEventId, 
+                getInstrumentsNameByEventId, getArtistsIdByEventId, populateIfEmpty}

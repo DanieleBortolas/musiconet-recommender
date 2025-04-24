@@ -20,34 +20,42 @@ import {Database} from 'sqlite3'
 import dbOp from './db_operations'
 
 // Costanti
-const nEvents: number = 5       // Numero eventi da consigliare
-const kNeighbors: number = 20   // Numero di vicini da considerare per cf e hybrid
-const alpha: number = 0.05       // Peso di cb per il risultato finale in hybrid (il peso di cf è 1-alpha)
+const N_RECOMMENDATIONS: number = 5     // Numero eventi da consigliare
+const K_NEIGHBORS: number = 20          // Numero di vicini da considerare per cf e hybrid
+const ALPHA: number = 0.05              // Peso di cb per il risultato finale in hybrid (il peso di cf è 1-alpha)
 
-
+/**
+ * @summary Eseguire l'algoritmo di raccomandazione per un utente specifico
+ * @param db - Database SQLite
+ * @param user_id - ID dell'utente
+ * @return - Void
+ */
 async function runTestForUser(db: Database, user_id: number): Promise<void>{
     console.log(`Raccomandazioni per l'utente ${user_id}`)
         
     // Stampa delle raccomandazioni da cb
     console.log(`Content based: `)
-    const cbResults = await cb.getContentBasedRecommendations(db, user_id, nEvents)
+    const cbResults = await cb.getContentBasedRecommendations(db, user_id, N_RECOMMENDATIONS)
     console.log(cbResults)
 
     // Stampa delle raccomandazioni da cf
     console.log(`Collaborative filtering: `)
-    const cfResults = await cf.getCollaborativeFilteringRecommendations(db, user_id, nEvents, kNeighbors)
+    const cfResults = await cf.getCollaborativeFilteringRecommendations(db, user_id, N_RECOMMENDATIONS, K_NEIGHBORS)
     console.log(cfResults)
 
     // Stampa delle raccomandazioni di hybrid
     console.log(`Hybrid: `)
-    const hybridResults = await hybrid.getHybridRecommendations(db, user_id, nEvents, kNeighbors, alpha)
+    const hybridResults = await hybrid.getHybridRecommendations(db, user_id, N_RECOMMENDATIONS, K_NEIGHBORS, ALPHA)
     console.log(hybridResults)
 
     console.log("\n----------------------------------------\n");
 }
 
-
-
+/**
+ * @summary Funzione principale per testare gli algoritmi di raccomandazione
+ * @param - Void
+ * @return - Void
+ */
 async function test(): Promise<void> {
     const db = await dbOp.openDatabase()
     await dbOp.createTable(db)
@@ -68,4 +76,5 @@ async function test(): Promise<void> {
     await dbOp.closeDatabase(db)
 }
 
+// Eseguire il test
 test()
