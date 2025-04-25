@@ -534,7 +534,7 @@ function populateIfEmpty(db) {
             }
             catch (err) {
                 yield executeQuery(db, `ROLLBACK`);
-                throw new Error("\n -- Errore in populateIfEmpty -- \n" + err.message);
+                throw new Error("\n  ----- Errore in populateIfEmpty -----\n" + err.message);
             }
         }
     });

@@ -498,7 +498,7 @@ async function populateIfEmpty(db: Database): Promise<void>{
 
         }catch(err: any){
             await executeQuery(db, `ROLLBACK`)
-            throw new Error("\n -- Errore in populateIfEmpty -- \n" + err.message)
+            throw new Error("\n  ----- Errore in populateIfEmpty -----\n" + err.message)
         }
     }
 }
