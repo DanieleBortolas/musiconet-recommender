@@ -2,7 +2,7 @@
 /*  File contenente tutte le costanti utilizzate nel progetto
 */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EVENT_ARTIST_PATH = exports.EVENT_INSTRUMENT_PATH = exports.EVENT_GENRE_PATH = exports.USER_ARTIST_PATH = exports.USER_INSTRUMENT_PATH = exports.USER_GENRE_PATH = exports.USER_EVENT_PATH = exports.ARTIST_PATH = exports.INSTRUMENT_PATH = exports.GENRE_PATH = exports.EVENT_PATH = exports.USER_PATH = exports.DB_PATH = exports.EVENT_VECTOR_WEIGHT = exports.USER_VECTOR_IMPLICIT_WEIGHT = exports.USER_VECTOR_EXPLICIT_WEIGHT = exports.DEFAULT_ALPHA = exports.DEFAULT_RECOMMENDATIONS = exports.DEFAULT_K_NEIGHBORS = void 0;
+exports.NEW_USER_PATH = exports.EVENT_ARTIST_PATH = exports.EVENT_INSTRUMENT_PATH = exports.EVENT_GENRE_PATH = exports.USER_ARTIST_PATH = exports.USER_INSTRUMENT_PATH = exports.USER_GENRE_PATH = exports.USER_EVENT_PATH = exports.ARTIST_PATH = exports.INSTRUMENT_PATH = exports.GENRE_PATH = exports.EVENT_PATH = exports.USER_PATH = exports.DB_PATH = exports.EVENT_VECTOR_WEIGHT = exports.USER_VECTOR_IMPLICIT_WEIGHT = exports.USER_VECTOR_EXPLICIT_WEIGHT = exports.DEFAULT_ALPHA = exports.DEFAULT_RECOMMENDATIONS = exports.DEFAULT_K_NEIGHBORS = void 0;
 // Costanti per le raccomandazioni
 exports.DEFAULT_K_NEIGHBORS = 20; // Numero di vicini da considerare per il collaborative filtering
 exports.DEFAULT_RECOMMENDATIONS = 10; // Numero di eventi da consigliare
@@ -24,3 +24,5 @@ exports.USER_ARTIST_PATH = './data/user_artist.json'; // Percorso del file JSON 
 exports.EVENT_GENRE_PATH = './data/event_genre.json'; // Percorso del file JSON contenente la relazione evento generi
 exports.EVENT_INSTRUMENT_PATH = './data/event_instrument.json'; // Percorso del file JSON contenente la relazione evento strumenti
 exports.EVENT_ARTIST_PATH = './data/event_artist.json'; // Percorso del file JSON contenente la relazione evento artisti
+// constanti per l'inserimenti di un nuovo utente
+exports.NEW_USER_PATH = './data/new_user.json'; // Percorso del file JSON contenente il nuovo utente

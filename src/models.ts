@@ -5,7 +5,7 @@
 //Classe User
 export class User {
     constructor(
-        private id: number, 
+        public id: number, 
         public name: string, 
         public surname: string, 
         public age: number, 
@@ -24,7 +24,7 @@ export class User {
 //Classe Event
 export class Event{
     constructor(
-        private id: number,
+        public id: number,
         public name: string,
         public genres: string[],
         public instrument: string[],

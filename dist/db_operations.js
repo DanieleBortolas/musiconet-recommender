@@ -296,6 +296,29 @@ function insertEventArtist(db, event_id, artist_id) {
         return runAsync(db, sql, params);
     });
 }
+// Inserire un utente nel database a partire da un oggetto User
+/*
+async function insertUserFromObjUser(db: Database, user: any): Promise<void>{
+    await insertUser(db, user.id, user.name, user.surname, user.age, user.city)
+    for(const genre of user.genres){
+        await insertUserGenre(db, user.id, genre)
+    }
+    
+    await insertUserInstrument(db, user.id, user.instrument)
+    
+
+
+
+    console.log("ARTISTI:", user.artists[0])
+    const artists = await getArtistsIdByName(db, user.artists)
+    console.log("ok")
+    
+    for(const artist of artists){
+        console.log("ARTIST ID: ", artist)
+        await insertUserArtist(db, user.id, artist)
+    }
+}
+*/
 // Eseguire una query di tipo SELECT
 function executeQuery(db_1, query_1) {
     return __awaiter(this, arguments, void 0, function* (db, query, params = []) {
@@ -453,6 +476,20 @@ function getArtistsIdByEventId(db, event_id) {
         return results.map(row => row.artist_id);
     });
 }
+//Ottenere gli id degli artisti dato il nome (utilizzato in insertUserFromObjUser)
+function getArtistsIdByName(db, name) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const results = yield executeQuery(db, 'SELECT id FROM artist WHERE name = ?', [name]);
+        return results[0].id;
+    });
+}
+// Ottenere l'ultimo id di una tabella (utilizzato per l'inserimento di nuovi dati)
+function getLastId(db, table) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const result = yield executeQuery(db, 'SELECT MAX(id) as maxId FROM ' + table);
+        return result[0].maxId || 0;
+    });
+}
 // Controllare se il database è già popolato, ovvero se contiene almeno un utente
 function isDatabasePopulated(db) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -539,7 +576,8 @@ function populateIfEmpty(db) {
         }
     });
 }
-exports.default = { openDatabase, closeDatabase, createTable, getUserInfo, getEventInfo, getAllUsersEvents, getEventsId,
-    getEventsIdByUserId, getPopularEventsId, getAllGenresName, getAllInstrumentsName, getAllArtistsId,
+exports.default = { insertUser, insertUserGenre, insertUserInstrument, insertUserArtist,
+    openDatabase, closeDatabase, createTable, /*insertUserFromObjUser,*/ insertUserEvent, getUserInfo, getEventInfo, getAllUsersEvents,
+    getEventsId, getEventsIdByUserId, getPopularEventsId, getAllGenresName, getAllInstrumentsName, getAllArtistsId,
     getGenresNameByUserId, getInstrumentsNameByUserId, getArtistsIdByUserId, getGenresNameByEventId,
-    getInstrumentsNameByEventId, getArtistsIdByEventId, populateIfEmpty };
+    getInstrumentsNameByEventId, getArtistsIdByEventId, getLastId, getArtistsIdByName, populateIfEmpty };

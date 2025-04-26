@@ -1,0 +1,11 @@
+{
+    "id": 99,
+    "name": "Daniele", 
+    "surname": "Bortolas",
+    "age": 23,
+    "city": null,
+    "genres": ["Metal", "Rock"],
+    "instrument": "Chitarra",
+    "artists": ["Metallica", "Architects"],
+    "events": []
+}

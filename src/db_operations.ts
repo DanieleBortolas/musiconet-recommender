@@ -404,6 +404,19 @@ async function getArtistsIdByEventId(db: Database, event_id: number): Promise<nu
     return results.map(row => row.artist_id)
 }
 
+//Ottenere gli id degli artisti dato il nome (utilizzato in insertUserFromObjUser)
+async function getArtistsIdByName(db: Database, name: string): Promise<number>{
+    const results = await executeQuery(db, 'SELECT id FROM artist WHERE name = ?', [name])
+    return results[0].id
+}
+
+// Ottenere l'ultimo id di una tabella (utilizzato per l'inserimento di nuovi dati)
+async function getLastId(db: Database, table: string): Promise<number>{
+    const result = await executeQuery(db, 'SELECT MAX(id) as maxId FROM ' + table)
+    return result[0].maxId || 0
+}
+
+
 // Controllare se il database è già popolato, ovvero se contiene almeno un utente
 async function isDatabasePopulated(db: Database): Promise<boolean>{
     const result = await executeQuery(db, 'SELECT COUNT(*) as count FROM user')
@@ -503,7 +516,8 @@ async function populateIfEmpty(db: Database): Promise<void>{
     }
 }
 
-export default {openDatabase, closeDatabase, createTable, getUserInfo, getEventInfo, getAllUsersEvents, getEventsId, 
-                getEventsIdByUserId, getPopularEventsId, getAllGenresName, getAllInstrumentsName, getAllArtistsId, 
+export default {insertUser, insertUserGenre, insertUserInstrument, insertUserArtist,
+                openDatabase, closeDatabase, createTable, /*insertUserFromObjUser,*/ insertUserEvent, getUserInfo, getEventInfo, getAllUsersEvents, 
+                getEventsId, getEventsIdByUserId, getPopularEventsId, getAllGenresName, getAllInstrumentsName, getAllArtistsId, 
                 getGenresNameByUserId, getInstrumentsNameByUserId, getArtistsIdByUserId, getGenresNameByEventId, 
-                getInstrumentsNameByEventId, getArtistsIdByEventId, populateIfEmpty}
+                getInstrumentsNameByEventId, getArtistsIdByEventId, getLastId, getArtistsIdByName, populateIfEmpty}
