@@ -37,11 +37,13 @@ function loadNewUserData(filePath: string): UserData{
     }
 }
 
+
 /**
  * @summary Aggiungere un nuovo utente al database
  * @param userData
  * @return - Void 
  */
+/*
 async function addUserFromFile(userData: UserData) {
     let db: Database | null = null;
     console.log(`Tentativo di inserimento utente ID: ${userData.id} (${userData.name} ${userData.surname})...`);
@@ -106,7 +108,7 @@ try {
     // L'errore è già stato loggato da loadNewUserData
     console.log("Inserimento annullato a causa di errore nel file di input.");
 }
-
+*/
 
 
 

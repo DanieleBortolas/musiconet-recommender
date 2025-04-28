@@ -1,5 +1,4 @@
-/*  File contenente tutte le costanti utilizzate nel progetto
-*/
+/*  File contenente tutte le costanti utilizzate nel progetto   */
 
 // Costanti per le raccomandazioni
 export const DEFAULT_K_NEIGHBORS: number = 20;          // Numero di vicini da considerare per il collaborative filtering

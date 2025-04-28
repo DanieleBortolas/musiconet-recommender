@@ -33,7 +33,11 @@ function loadNewUserData(filePath) {
         throw err;
     }
 }
-// --- Funzione Principale di Inserimento ---
+/**
+ * @summary Aggiungere un nuovo utente al database
+ * @param userData
+ * @return - Void
+ */
 function addUserFromFile(userData) {
     return __awaiter(this, void 0, void 0, function* () {
         let db = null;
@@ -45,9 +49,6 @@ function addUserFromFile(userData) {
             yield db_operations_1.default.insertUser(db, userData.id, userData.name, userData.surname, userData.age, userData.city);
             // 2. Inserisci relazioni Genere (controlla se esistono?)
             for (const genreName of userData.genres) {
-                // QUI: Idealmente, dovresti verificare se genreName esiste nella tabella 'genre'.
-                // Se non esiste, potresti decidere di non inserire la relazione o di inserire anche il genere.
-                // Per semplicità ora, assumiamo che esistano e inseriamo la relazione.
                 yield db_operations_1.default.insertUserGenre(db, userData.id, genreName);
             }
             // 3. Inserisci relazioni Strumento

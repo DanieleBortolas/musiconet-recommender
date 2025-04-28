@@ -1,6 +1,7 @@
 /*  Logica per il content-based filtering
     Utilizza la similarità coseno (dalla libreria ml-distance) per calcolare la similarità tra le caratteristiche 
     dell'utente e quelle degli eventi
+    Cosine similarity: (vettore utente * vettore evento) / (||vettore utente|| * ||vettore evento||)
 */
 
 import {Database} from 'sqlite3'
@@ -141,10 +142,9 @@ async function getContentBasedRecommendations(db: Database, user_id: number, nEv
 
     // 3. Per ogni evento, creare vettore e calcolare similarità coseno
     for(const id of allEventsId){
-        if(!userEvents.has(id)){                        // Se l'evento non è già seguito dall'utente (Set: complessità O(n))
+        if(!userEvents.has(id)){                        // Se l'evento non è già seguito dall'utente (Set: complessità O(1))
             const eventVector: number[] = await createEventVector(db, id, featureMap)
             const similarity = mlSimilarity.cosine(userVector, eventVector)             // Cosine similarity tra vettore utente e vettore evento
-            
             if(similarity > 0){                         // Se la similarità è maggiore di 0, aggiungi alla lista dei risultati
                 results.push({event_id: id, score: similarity})   // Arrotonda a 3 decimali
             }

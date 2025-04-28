@@ -517,7 +517,7 @@ async function populateIfEmpty(db: Database): Promise<void>{
 }
 
 export default {insertUser, insertUserGenre, insertUserInstrument, insertUserArtist,
-                openDatabase, closeDatabase, createTable, /*insertUserFromObjUser,*/ insertUserEvent, getUserInfo, getEventInfo, getAllUsersEvents, 
+                openDatabase, closeDatabase, createTable, insertUserEvent, getUserInfo, getEventInfo, getAllUsersEvents, 
                 getEventsId, getEventsIdByUserId, getPopularEventsId, getAllGenresName, getAllInstrumentsName, getAllArtistsId, 
                 getGenresNameByUserId, getInstrumentsNameByUserId, getArtistsIdByUserId, getGenresNameByEventId, 
                 getInstrumentsNameByEventId, getArtistsIdByEventId, getLastId, getArtistsIdByName, populateIfEmpty}

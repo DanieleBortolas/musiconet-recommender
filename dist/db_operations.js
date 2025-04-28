@@ -296,29 +296,6 @@ function insertEventArtist(db, event_id, artist_id) {
         return runAsync(db, sql, params);
     });
 }
-// Inserire un utente nel database a partire da un oggetto User
-/*
-async function insertUserFromObjUser(db: Database, user: any): Promise<void>{
-    await insertUser(db, user.id, user.name, user.surname, user.age, user.city)
-    for(const genre of user.genres){
-        await insertUserGenre(db, user.id, genre)
-    }
-    
-    await insertUserInstrument(db, user.id, user.instrument)
-    
-
-
-
-    console.log("ARTISTI:", user.artists[0])
-    const artists = await getArtistsIdByName(db, user.artists)
-    console.log("ok")
-    
-    for(const artist of artists){
-        console.log("ARTIST ID: ", artist)
-        await insertUserArtist(db, user.id, artist)
-    }
-}
-*/
 // Eseguire una query di tipo SELECT
 function executeQuery(db_1, query_1) {
     return __awaiter(this, arguments, void 0, function* (db, query, params = []) {

@@ -1,5 +1,7 @@
 /*  Logica per il collaborative filtering
     Utilizza la similarità di Jaccard per calcolare la similarità tra gli eventi seguiti dai vicini dell'utente target
+    e gli eventi seguiti dall'utente target. Le raccomandazioni sono basate sugli eventi seguiti dai vicini più simili.
+    Similarità di Jaccard = |A ∩ B| / |A ∪ B|
 */
 
 import {Database} from 'sqlite3'
@@ -51,7 +53,7 @@ async function findNearestNeighbors(userTarget: number, usersMap: Map<number, Se
             }
         }
     }
-    console.log(`Vicini trovati per l'utente ${userTarget}:`, neighbors.length) // Stampa il numero di vicini trovati
+    console.log(`Vicini trovati per l'utente ${userTarget}:`, neighbors.length)         // Stampa il numero di vicini trovati
 
     // 3. Ordinare i vicini in base alla similarità
     neighbors.sort((a, b) => b.similarity - a.similarity)

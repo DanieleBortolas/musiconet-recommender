@@ -41,7 +41,7 @@ async function getHybridRecommendations(db: Database, user_id: number, nEvents: 
     const hybridResults: Recommendation[] = []
     for(const [event_id, scores] of mapEventScores.entries()){
         const finalScore = (alpha * (scores.cbScore || 0)) + ((1 - alpha) * (scores.cfScore || 0))  // Calcola il punteggio finale
-        hybridResults.push({event_id, score: Math.round(finalScore*1000)/1000})   // Arrotonda a 3 decimali 
+        hybridResults.push({event_id, score: Math.round(finalScore*1000)/1000})                     // Arrotonda a 3 decimali 
     }
 
     // 4. Ordinare i risultati in base al punteggio finale
