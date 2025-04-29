@@ -1,6 +1,5 @@
 "use strict";
-/*  File contenente tutte le costanti utilizzate nel progetto
-*/
+/*  File contenente tutte le costanti utilizzate nel progetto   */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NEW_USER_PATH = exports.EVENT_ARTIST_PATH = exports.EVENT_INSTRUMENT_PATH = exports.EVENT_GENRE_PATH = exports.USER_ARTIST_PATH = exports.USER_INSTRUMENT_PATH = exports.USER_GENRE_PATH = exports.USER_EVENT_PATH = exports.ARTIST_PATH = exports.INSTRUMENT_PATH = exports.GENRE_PATH = exports.EVENT_PATH = exports.USER_PATH = exports.DB_PATH = exports.EVENT_VECTOR_WEIGHT = exports.USER_VECTOR_IMPLICIT_WEIGHT = exports.USER_VECTOR_EXPLICIT_WEIGHT = exports.DEFAULT_ALPHA = exports.DEFAULT_RECOMMENDATIONS = exports.DEFAULT_K_NEIGHBORS = void 0;
 // Costanti per le raccomandazioni

@@ -1,6 +1,8 @@
 "use strict";
 /*  Logica per il collaborative filtering
     Utilizza la similarità di Jaccard per calcolare la similarità tra gli eventi seguiti dai vicini dell'utente target
+    e gli eventi seguiti dall'utente target. Le raccomandazioni sono basate sugli eventi seguiti dai vicini più simili.
+    Similarità di Jaccard = |A ∩ B| / |A ∪ B|
 */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
