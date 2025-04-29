@@ -174,6 +174,47 @@ async function insertUser(db: Database, id: number, name: string, surname: strin
     return runAsync(db, sql, params)
 }
 
+// Inserire un utente nel database a partire da un oggetto User
+async function insertNewUser(db: Database, user: User, events: string[]): Promise<void>{
+    try{
+        await executeQuery(db, `BEGIN TRANSACTION`)                                     // Inizio la transazione
+
+        await insertUser(db, user.id, user.name, user.surname, user.age, user.city)
+        
+        for(const genre of user.genres){
+            const genreExists: boolean = await existsGenre(db, genre)                   // Verificare se il genere esiste nel database
+            if(genreExists) await insertUserGenre(db, user.id, genre)                   // Inserire i generi dell'utente nel database
+            else throw new Error(`Genere ${genre} non trovato nel database`)            // Messaggio di errore se il genere non esiste
+        }
+
+        const instrumentExists: boolean = await existsInstrument(db, user.instrument)   // Verificare se lo strumento esiste nel database
+        if(instrumentExists) await insertUserInstrument(db, user.id, user.instrument)   // Inserire lo strumento dell'utente nel database
+        else throw new Error(`Strumento ${user.instrument} non trovato nel database`)   // Messaggio di errore se lo strumento non esiste
+
+
+        for(const artist of user.artists){
+            const artist_id: number | null = await getArtistsIdByName(db, artist)       // Verificare se l'artista esiste nel database       
+            
+            if(artist_id != null) await insertUserArtist(db, user.id, artist_id)        // Inserire la relazione tra l'utente e l'artista nel database
+            else throw new Error(`Artista ${artist} non trovato nel database`)          // Messaggio di errore se l'artista non esiste
+        }
+
+        for(const event of events){
+            const event_id: number | null = await getEventsIdByName(db, event)          // Verificare se l'evento esiste nel database	
+            
+            if(event_id != null) await insertUserEvent(db, user.id, event_id)           // Inserire la relazione tra l'utente e l'evento nel database
+            else throw new Error(`Evento ${event} non trovato nel database`)            // Messaggio di errore se l'evento non esiste
+        }
+
+        await executeQuery(db, `COMMIT`)                                                // Commit della transazione
+    
+    }catch(err: any){
+        console.error(err.message)
+        await executeQuery(db, `ROLLBACK`)                                              // Rollback della transazione in caso di errore
+        throw err
+    }
+}
+
 // Inserire un evento nel database
 async function insertEvent(db: Database, id: number, name: string, location: string, date: string, description: string): Promise<void>{
     const sql = `INSERT INTO event (id, name, location, date, description) VALUES (?, ?, ?, ?, ?)`
@@ -322,16 +363,6 @@ async function getEventInfo(db: Database, event_id: number): Promise<Event>{
             )
 }
 
-// Ottenere le informazioni di più eventi da un array di id
-// UNUSED e INCORRECT
-async function getEventsInfoById(db: Database, eventsMap:{event_id: number, cosSim: number}[]): Promise<Event[]>{
-    const events: Event[] = []
-    for (const i of eventsMap) {
-        events.push(await getEventInfo(db, i.event_id))
-    }
-    return events
-}
-
 // Ottenere gli id degli eventi dal database (utilizzato in cb)
 async function getEventsId(db: Database): Promise<number[]>{
     const results = await executeQuery(db, 'SELECT id FROM event')
@@ -404,10 +435,27 @@ async function getArtistsIdByEventId(db: Database, event_id: number): Promise<nu
     return results.map(row => row.artist_id)
 }
 
-//Ottenere gli id degli artisti dato il nome (utilizzato in insertUserFromObjUser)
-async function getArtistsIdByName(db: Database, name: string): Promise<number>{
+//Ottenere gli id degli artisti dato il nome (utilizzato in     ObjUser)
+async function getArtistsIdByName(db: Database, name: string): Promise<number | null>{
     const results = await executeQuery(db, 'SELECT id FROM artist WHERE name = ?', [name])
-    return results[0].id
+    return results.length > 0 ? results[0].id : null
+}
+
+async function getEventsIdByName(db: Database, name: string): Promise<number | null>{
+    const results = await executeQuery(db, `SELECT id FROM event WHERE name = ?`, [name])
+    return results.length > 0 ? results[0].id : null
+}
+
+// Verificare se un genere esiste nel database (utilizzato in insertUserFromObjUser)
+async function existsGenre(db: Database, genre: string): Promise<boolean>{
+    const result = await executeQuery(db, 'SELECT COUNT(*) as count FROM genre WHERE name = ?', [genre])
+    return result[0].count > 0
+}
+
+// Verificare se uno strumento esiste nel database (utilizzato in insertUserFromObjUser)
+async function existsInstrument(db: Database, instrument: string): Promise<boolean>{
+    const result = await executeQuery(db, 'SELECT COUNT(*) as count FROM instrument WHERE name = ?', [instrument])
+    return result[0].count > 0
 }
 
 // Ottenere l'ultimo id di una tabella (utilizzato per l'inserimento di nuovi dati)
@@ -516,8 +564,8 @@ async function populateIfEmpty(db: Database): Promise<void>{
     }
 }
 
-export default {insertUser, insertUserGenre, insertUserInstrument, insertUserArtist,
+export default {insertNewUser,
                 openDatabase, closeDatabase, createTable, insertUserEvent, getUserInfo, getEventInfo, getAllUsersEvents, 
                 getEventsId, getEventsIdByUserId, getPopularEventsId, getAllGenresName, getAllInstrumentsName, getAllArtistsId, 
                 getGenresNameByUserId, getInstrumentsNameByUserId, getArtistsIdByUserId, getGenresNameByEventId, 
-                getInstrumentsNameByEventId, getArtistsIdByEventId, getLastId, getArtistsIdByName, populateIfEmpty}
+                getInstrumentsNameByEventId, getArtistsIdByEventId, getLastId, populateIfEmpty}

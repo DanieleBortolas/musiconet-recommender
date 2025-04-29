@@ -208,6 +208,51 @@ function insertUser(db, id, name, surname, age, city) {
         return runAsync(db, sql, params);
     });
 }
+// Inserire un utente nel database a partire da un oggetto User
+function insertNewUser(db, user, events) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            yield executeQuery(db, `BEGIN TRANSACTION`); // Inizio la transazione
+            yield insertUser(db, user.id, user.name, user.surname, user.age, user.city);
+            for (const genre of user.genres) {
+                const genreExists = yield existsGenre(db, genre); // Verificare se il genere esiste nel database
+                if (genreExists)
+                    yield insertUserGenre(db, user.id, genre); // Inserire i generi dell'utente nel database
+                else
+                    throw new Error(`Genere ${genre} non trovato nel database`); // Messaggio di errore se il genere non esiste
+            }
+            const instrumentExists = yield existsInstrument(db, user.instrument); // Verificare se lo strumento esiste nel database
+            if (instrumentExists)
+                yield insertUserInstrument(db, user.id, user.instrument); // Inserire lo strumento dell'utente nel database
+            else
+                throw new Error(`Strumento ${user.instrument} non trovato nel database`); // Messaggio di errore se lo strumento non esiste
+            for (const artist of user.artists) {
+                try {
+                    const id = yield getArtistsIdByName(db, artist); // Verificare se l'artista esiste nel database       
+                    yield insertUserArtist(db, user.id, id); // Inserire la relazione tra l'utente e l'artista nel database
+                }
+                catch (err) {
+                    throw new Error(`Artista ${artist} non trovato nel database`); // Messaggio di errore se l'artista non esiste
+                }
+            }
+            for (const event of events) {
+                try {
+                    const event_id = yield getEventsIdByName(db, event); // Verificare se l'evento esiste nel database	
+                    yield insertUserEvent(db, user.id, event_id); // Inserire la relazione tra l'utente e l'evento nel database
+                }
+                catch (err) {
+                    throw new Error(`Evento ${event} non trovato nel database`); // Messaggio di errore se l'evento non esiste
+                }
+            }
+            yield executeQuery(db, `COMMIT`); // Commit della transazione
+        }
+        catch (err) {
+            console.error(err.message);
+            yield executeQuery(db, `ROLLBACK`); // Rollback della transazione in caso di errore
+            throw err;
+        }
+    });
+}
 // Inserire un evento nel database
 function insertEvent(db, id, name, location, date, description) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -358,17 +403,6 @@ function getEventInfo(db, event_id) {
         return new models_js_1.Event(row.id, row.name, row.genres ? row.genres.split(",") : [], row.instruments ? row.instruments.split(",") : [], row.artists ? row.artists.split(",") : [], row.location, row.date, row.description);
     });
 }
-// Ottenere le informazioni di più eventi da un array di id
-// UNUSED e INCORRECT
-function getEventsInfoById(db, eventsMap) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const events = [];
-        for (const i of eventsMap) {
-            events.push(yield getEventInfo(db, i.event_id));
-        }
-        return events;
-    });
-}
 // Ottenere gli id degli eventi dal database (utilizzato in cb)
 function getEventsId(db) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -453,11 +487,31 @@ function getArtistsIdByEventId(db, event_id) {
         return results.map(row => row.artist_id);
     });
 }
-//Ottenere gli id degli artisti dato il nome (utilizzato in insertUserFromObjUser)
+//Ottenere gli id degli artisti dato il nome (utilizzato in     ObjUser)
 function getArtistsIdByName(db, name) {
     return __awaiter(this, void 0, void 0, function* () {
         const results = yield executeQuery(db, 'SELECT id FROM artist WHERE name = ?', [name]);
         return results[0].id;
+    });
+}
+function getEventsIdByName(db, name) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const results = yield executeQuery(db, `SELECT id FROM event WHERE name = ?`, [name]);
+        return results[0].id;
+    });
+}
+// Verificare se un genere esiste nel database (utilizzato in insertUserFromObjUser)
+function existsGenre(db, genre) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const result = yield executeQuery(db, 'SELECT COUNT(*) as count FROM genre WHERE name = ?', [genre]);
+        return result[0].count > 0;
+    });
+}
+// Verificare se uno strumento esiste nel database (utilizzato in insertUserFromObjUser)
+function existsInstrument(db, instrument) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const result = yield executeQuery(db, 'SELECT COUNT(*) as count FROM instrument WHERE name = ?', [instrument]);
+        return result[0].count > 0;
     });
 }
 // Ottenere l'ultimo id di una tabella (utilizzato per l'inserimento di nuovi dati)
@@ -553,8 +607,8 @@ function populateIfEmpty(db) {
         }
     });
 }
-exports.default = { insertUser, insertUserGenre, insertUserInstrument, insertUserArtist,
+exports.default = { insertNewUser,
     openDatabase, closeDatabase, createTable, insertUserEvent, getUserInfo, getEventInfo, getAllUsersEvents,
     getEventsId, getEventsIdByUserId, getPopularEventsId, getAllGenresName, getAllInstrumentsName, getAllArtistsId,
     getGenresNameByUserId, getInstrumentsNameByUserId, getArtistsIdByUserId, getGenresNameByEventId,
-    getInstrumentsNameByEventId, getArtistsIdByEventId, getLastId, getArtistsIdByName, populateIfEmpty };
+    getInstrumentsNameByEventId, getArtistsIdByEventId, getLastId, populateIfEmpty };
