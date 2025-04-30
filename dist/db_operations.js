@@ -227,22 +227,18 @@ function insertNewUser(db, user, events) {
             else
                 throw new Error(`Strumento ${user.instrument} non trovato nel database`); // Messaggio di errore se lo strumento non esiste
             for (const artist of user.artists) {
-                try {
-                    const id = yield getArtistsIdByName(db, artist); // Verificare se l'artista esiste nel database       
-                    yield insertUserArtist(db, user.id, id); // Inserire la relazione tra l'utente e l'artista nel database
-                }
-                catch (err) {
+                const artist_id = yield getArtistsIdByName(db, artist); // Verificare se l'artista esiste nel database       
+                if (artist_id != null)
+                    yield insertUserArtist(db, user.id, artist_id); // Inserire la relazione tra l'utente e l'artista nel database
+                else
                     throw new Error(`Artista ${artist} non trovato nel database`); // Messaggio di errore se l'artista non esiste
-                }
             }
             for (const event of events) {
-                try {
-                    const event_id = yield getEventsIdByName(db, event); // Verificare se l'evento esiste nel database	
+                const event_id = yield getEventsIdByName(db, event); // Verificare se l'evento esiste nel database	
+                if (event_id != null)
                     yield insertUserEvent(db, user.id, event_id); // Inserire la relazione tra l'utente e l'evento nel database
-                }
-                catch (err) {
+                else
                     throw new Error(`Evento ${event} non trovato nel database`); // Messaggio di errore se l'evento non esiste
-                }
             }
             yield executeQuery(db, `COMMIT`); // Commit della transazione
         }
@@ -491,13 +487,13 @@ function getArtistsIdByEventId(db, event_id) {
 function getArtistsIdByName(db, name) {
     return __awaiter(this, void 0, void 0, function* () {
         const results = yield executeQuery(db, 'SELECT id FROM artist WHERE name = ?', [name]);
-        return results[0].id;
+        return results.length > 0 ? results[0].id : null;
     });
 }
 function getEventsIdByName(db, name) {
     return __awaiter(this, void 0, void 0, function* () {
         const results = yield executeQuery(db, `SELECT id FROM event WHERE name = ?`, [name]);
-        return results[0].id;
+        return results.length > 0 ? results[0].id : null;
     });
 }
 // Verificare se un genere esiste nel database (utilizzato in insertUserFromObjUser)
