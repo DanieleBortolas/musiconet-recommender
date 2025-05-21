@@ -65,7 +65,7 @@ async function createUserVector(db: Database, user_id: number, featureMap: Map<s
     // 3. Costruire il vettore pesato
     const vec = new Array(featureMap.size).fill(0)
     for(const uef of userEventsFeatures){
-        let i: number | undefined = featureMap.get(uef)         //Indice può essere un numero o indefinito
+        const i: number | undefined = featureMap.get(uef)         //Indice può essere un numero o indefinito
         if(i != undefined){
             vec[i] = USER_VECTOR_IMPLICIT_WEIGHT                // Caratteristiche degli eventi seguiti dall'utente pesate 1
         }else{
@@ -73,7 +73,7 @@ async function createUserVector(db: Database, user_id: number, featureMap: Map<s
         }
     }
     for(const uf of userFeatures){
-        let i: number | undefined = featureMap.get(uf)
+        const i: number | undefined = featureMap.get(uf)
         if(i != undefined){
             vec[i] = USER_VECTOR_EXPLICIT_WEIGHT                // Caratteristiche esplicite dell'utente pesate 2
         }else{
@@ -105,7 +105,7 @@ async function createEventVector(db: Database, event_id: number, featureMap: Map
     // 2. Costruire il vettore binario
     const vec = new Array(featureMap.size).fill(0)
     for(const uf of eventFeatures){
-        let i: number | undefined = featureMap.get(uf)          //Indice può essere un numero o indefinito
+        const i: number | undefined = featureMap.get(uf)          //Indice può essere un numero o indefinito
         if(i != undefined){
             vec[i] = EVENT_VECTOR_WEIGHT                        // Caratteristiche dell'evento pesate 1
         }else{
