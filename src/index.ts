@@ -219,9 +219,40 @@ async function main(){
             }
 
         }else if(args.user_id){
-            // Se l'utente è specificato, stampo le raccomandazioni per quell'utente
-            console.log(`\n------ Esecuzione alg. per utente ${args.user_id} ------\n`);
-            await runTestForUser(db, args.user_id, args.n, args.k, args.alpha, args.showDetailsUser, args.showDetailsEvents)
+            let esci = false            
+            while(esci == false){ // Ciclo per chiedere se si vuole aggiungere un evento all'utente
+                // Se l'utente è specificato, stampo le raccomandazioni per quell'utente
+                console.log(`\n------ Esecuzione alg. per utente ${args.user_id} ------\n`);
+                await runTestForUser(db, args.user_id, args.n, args.k, args.alpha, args.showDetailsUser, args.showDetailsEvents)
+
+            
+                // Chiedo se si vuole aggiungere un evento all'utente
+                const rl = require('readline').createInterface({
+                    input: process.stdin,
+                    output: process.stdout
+                });
+                const answer: string = await new Promise((resolve) => {
+                    rl.question("Vuoi aggiungere un evento all'utente? (s/n): ", resolve);
+                });
+                if(answer.toLowerCase() == "s"){
+                    // Chiedo l'ID dell'evento da aggiungere
+                    const eventId: string = await new Promise((resolve) => {
+                        rl.question("Inserisci l'ID dell'evento da aggiungere: ", resolve);
+                    });
+                    const eventIdNum: number = parseInt(eventId);
+                    if(!isNaN(eventIdNum)){
+                        // Aggiungo l'evento all'utente
+                        await dbOp.insertUserEvent(db, args.user_id, eventIdNum)
+                        console.log(`Evento ${eventIdNum} aggiunto all'utente ${args.user_id}`)
+                    }else{
+                        console.error("ID evento non valido")
+                        esci = true // Esci dal ciclo se l'ID non è valido
+                    }
+                }else{
+                    esci = true // Esci dal ciclo se l'utente non vuole aggiungere un evento
+                }
+                rl.close()                
+            } // Continua a chiedere se si vuole aggiungere un evento finché l'utente risponde 's'
         }
         
         // 4. Chiudere il database

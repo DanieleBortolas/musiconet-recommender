@@ -233,13 +233,16 @@ function insertNewUser(db, user, events) {
                 else
                     throw new Error(`Artista ${artist} non trovato nel database`); // Messaggio di errore se l'artista non esiste
             }
-            for (const event of events) {
-                const event_id = yield getEventsIdByName(db, event); // Verificare se l'evento esiste nel database	
-                if (event_id != null)
-                    yield insertUserEvent(db, user.id, event_id); // Inserire la relazione tra l'utente e l'evento nel database
-                else
-                    throw new Error(`Evento ${event} non trovato nel database`); // Messaggio di errore se l'evento non esiste
+            /*
+            if(events.length != 0){
+                for(const event of events){
+                    const event_id: number | null = await getEventsIdByName(db, event)          // Verificare se l'evento esiste nel database
+                
+                    if(event_id != null) await insertUserEvent(db, user.id, event_id)           // Inserire la relazione tra l'utente e l'evento nel database
+                    else throw new Error(`Evento ${event} non trovato nel database`)            // Messaggio di errore se l'evento non esiste
+                }
             }
+            */
             yield executeQuery(db, `COMMIT`); // Commit della transazione
         }
         catch (err) {
